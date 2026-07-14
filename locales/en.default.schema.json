@@ -1073,6 +1073,9 @@
       "input_preset": "Input",
       "checkbox_preset": "Checkbox label"
     },
+    // Enable Compare toggle on collection pages
+    "product_compare": "Product compare",
+    // End
     // Checkbox setting to enable quick add to cart from product cards
     "quick_add": "Quick add",
     // Color scheme for quick add buttons on product cards

@@ -1849,6 +1849,12 @@
     "settings": [
       {
         "type": "checkbox",
+        "id": "product_compare_toggle",
+        "label": "t:settings.product_compare",
+        "default": false
+      },
+      {
+        "type": "checkbox",
         "id": "quick_add",
         "label": "t:settings.quick_add",
         "default": true

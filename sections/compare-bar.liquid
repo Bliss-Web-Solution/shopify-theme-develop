@@ -1,0 +1,275 @@
+{% liquid
+  if section.settings.background_color != blank or section.settings.text_color != blank
+    render 'contrast-override', background_color: section.settings.background_color, text_color: section.settings.text_color, section_id: section.id
+  endif
+%}
+
+<compare-bar
+  class="compare-bar {% if section.settings.background_color != blank or section.settings.text_color != blank %}color-custom-{{ section.id }}{% endif %}"
+  hidden
+>
+  {%- comment -%} Content hydrated by compare.js {%- endcomment -%}
+</compare-bar>
+
+{% style %}
+  .compare-bar {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 40%;
+    z-index: 1;
+    background: var(--color-background);
+    padding: 0;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+
+    &[hidden] {
+      display: none;
+      pointer-events: none;
+      opacity: 0;
+      transform: translate(-50%, 20px);
+    }
+  }
+
+  .compare-bar__inner {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .compare-bar__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 10px;
+  }
+
+  .compare-bar__title {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--color-foreground);
+  }
+
+  .compare-bar__clear {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    color: rgba(var(--color-foreground), 0.7);
+  }
+
+  .compare-bar__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .compare-bar__items {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    flex: 1;
+    min-width: 0;
+    padding-bottom: 5px;
+    scrollbar-width: thin;
+  }
+
+  .compare-bar__items::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .compare-bar__items::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .compare-bar__items::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+
+  .compare-bar__item {
+    position: relative;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    background: var(--color-background);
+  }
+
+  .compare-bar__img-container {
+    width: 100%;
+    height: 100%;
+  }
+
+  .compare-bar__item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .compare-bar__remove {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.4);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+    color: var(--color-background);
+    padding: 0;
+  }
+
+  .compare-bar__item:hover .compare-bar__remove {
+    opacity: 1;
+  }
+
+  .compare-bar__remove svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .compare-bar__actions {
+    flex-grow: 1;
+    max-width: 200px;
+
+    .button {
+      width: 100%;
+    }
+  }
+
+  .compare-bar__actions .compare-bar__minimized-view {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+  }
+
+  /* Minimized State */
+  .compare-bar[data-minimized='true'] {
+    width: auto;
+    left: auto;
+    right: 30px;
+    bottom: 30px;
+    transform: none;
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    max-width: none;
+  }
+
+  .compare-bar[data-minimized='true'] .compare-bar__inner {
+    display: none;
+  }
+
+  .compare-bar[data-minimized='true'] .compare-bar__minimized-view {
+    display: block;
+    position: relative;
+    padding: 0;
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  .compare-bar__minimized-trigger {
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 24px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--color-foreground);
+    white-space: nowrap;
+  }
+
+  .compare-bar__minimized-trigger svg {
+    transform: none; /* Point up or standard */
+  }
+
+  .compare-bar__toggle-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    color: inherit;
+  }
+
+  @media screen and (max-width: 750px) {
+    .compare-bar {
+      bottom: 0;
+      width: 100%;
+      border-radius: 0;
+      max-width: none;
+      transform: translateX(0);
+      left: 0;
+      border-left: 0;
+      border-right: 0;
+      border-bottom: 0;
+    }
+    .compare-bar[hidden] {
+      transform: translateY(100%);
+    }
+
+    .compare-bar[data-minimized='true'] {
+      bottom: 20px;
+      right: 20px;
+      left: auto;
+      transform: none;
+      width: auto;
+      border-radius: 0;
+    }
+  }
+{% endstyle %}
+
+<script src="{{ 'compare.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Compare Bar",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:content.appearance"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "t:settings.background_color"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "t:settings.text_color"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Compare Bar"
+    }
+  ]
+}
+{% endschema %}
