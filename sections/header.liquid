@@ -1,15 +1,15 @@
 {% liquid
-  assign order = 'logo,menu,localization,search,drawer_search,actions'
+  assign order = 'logo,menu,localization,search,actions'
 
   if shop.customer_accounts_enabled
-    assign order = 'drawer_search,logo,menu,localization,search,actions'
+    assign order = 'logo,menu,localization,search,actions'
   endif
 
   assign rows = 'top,bottom' | split: ','
   assign search_style = 'none'
 
   if section.settings.show_search
-    assign search_style = 'modal'
+    assign search_style = section.settings.search_style | default: 'modal'
   endif
 
   if section.settings.show_search
@@ -98,52 +98,25 @@
     render 'header-actions', customer_account_menu: section.settings.customer_account_menu, display_style: section.settings.actions_display_style, section: section
   endcapture
 
-  if shop.customer_accounts_enabled
-    assign search_class = 'search-action--hidden-on-drawer'
-  endif
-
   # Handle localization positioning
   if section.settings.localization_position == 'left'
     if section.settings.search_position == 'left'
-      if shop.customer_accounts_enabled
-        assign order = 'drawer_search,logo,search,localization,menu,actions'
-      else
-        assign order = 'logo,search,localization,menu,drawer_search,actions'
-      endif
+      assign order = 'logo,search,localization,menu,actions'
     else
-      if shop.customer_accounts_enabled
-        assign order = 'drawer_search,logo,localization,menu,search,actions'
-      else
-        assign order = 'logo,localization,menu,search,drawer_search,actions'
-      endif
+      assign order = 'logo,localization,menu,search,actions'
     endif
   else
     if section.settings.search_position == 'left'
-      if shop.customer_accounts_enabled
-        assign order = 'drawer_search,logo,search,menu,localization,actions'
-      else
-        assign order = 'logo,search,menu,localization,drawer_search,actions'
-      endif
+      assign order = 'logo,search,menu,localization,actions'
     endif
   endif
+
+  assign search_class = ''
+
   capture search
     render 'search', style: search_style, class: search_class, display_style: section.settings.actions_display_style
   endcapture
-
-  # Skip drawer search under specific conditions:
-  # Always render if search_row is bottom
-  # Don't render when shop.customer_accounts_enabled is false and search_position is left and search_style is not none
-  assign skip_drawer_search = false
-  if shop.customer_accounts_enabled == false and section.settings.search_position == 'left' and search_style != 'none'
-    assign skip_drawer_search = true
-  endif
-
-  if section.settings.search_row == 'bottom' or search_style != 'none' and skip_drawer_search == false
-    # Mobile search duplicate for when search is not in the right order for mobile layout
-    capture drawer_search
-      render 'search', class: 'search-action--hidden-on-menu', style: search_style, display_style: section.settings.actions_display_style
-    endcapture
-  endif
+  assign drawer_search = ''
 
   assign show_language = section.settings.show_language
   if localization.available_languages.size <= 1
@@ -161,8 +134,13 @@
     assign bottom_row_blocks = bottom_row_blocks | append: 'menu,'
   endif
 
-  if section.settings.search_style != 'none'
+  if search_style != 'none'
+    assign search_in_bottom = false
     if section.settings.search_row == 'bottom'
+      assign search_in_bottom = true
+    endif
+
+    if search_in_bottom
       assign bottom_row_blocks = bottom_row_blocks | append: 'search,'
     endif
   endif
@@ -855,6 +833,7 @@
       grid-template-areas: 'leftA leftB center rightA rightB';
       grid-column: span 3;
       column-gap: 0;
+      row-gap: 0;
       align-items: center;
       padding-block: 0;
       padding-inline: 0 var(--padding-3xs);
@@ -890,6 +869,7 @@
     grid-template-areas: 'leftA leftB center rightA rightB';
     grid-column: span 3;
     column-gap: 0;
+    row-gap: 0;
     align-items: center;
     padding-block: 0;
     padding-inline: 0 var(--padding-3xs);
@@ -913,6 +893,36 @@
     header-actions {
       grid-area: rightB;
     }
+  }
+
+  @media screen and (min-width: 750px) {
+    #header-component[data-menu-style='drawer'] .header__columns {
+      --header-template-columns: var(--header-mobile-bookend) auto 1fr auto auto;
+      column-gap: var(--gap-md);
+      padding-inline: var(--padding-sm);
+    }
+  }
+
+  #header-component[data-menu-style='drawer'] .header__columns:has(.predictive-search--inline:not(.mobile\:hidden)) {
+    grid-template-rows: auto auto;
+  }
+
+  #header-component[data-menu-style='drawer'] .predictive-search--inline {
+    display: flex !important;
+    grid-row: 2;
+    grid-column: 1 / -1;
+    width: auto;
+    max-width: none;
+    margin-inline: var(--padding-sm);
+    margin-block: var(--padding-xs) var(--padding-sm);
+  }
+
+  #header-component[data-menu-style='drawer'] .predictive-search--inline.mobile\:hidden {
+    display: none !important;
+  }
+
+  #header-component[data-menu-style='drawer'] .search-action.desktop\:hidden {
+    display: flex !important;
   }
 
   /* Single column layout if there are no columns within */
@@ -1272,12 +1282,37 @@
     },
     {
       "type": "select",
+      "id": "search_style",
+      "label": "Search style",
+      "options": [
+        {
+          "value": "modal",
+          "label": "Search icon (modal)"
+        },
+        {
+          "value": "open",
+          "label": "Open search bar for desktop only"
+        },
+        {
+          "value": "always_open",
+          "label": "Always open"
+        }
+      ],
+      "default": "modal",
+      "visible_if": "{{ section.settings.show_search }}"
+    },
+    {
+      "type": "select",
       "id": "search_position",
       "label": "t:settings.search_position",
       "options": [
         {
           "value": "left",
           "label": "t:options.left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
         },
         {
           "value": "right",
