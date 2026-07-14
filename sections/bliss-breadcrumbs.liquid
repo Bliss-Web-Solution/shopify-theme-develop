@@ -1,0 +1,245 @@
+{% liquid
+  assign show_breadcrumbs = section.settings.enabled
+
+  assign separator = '/'
+  case section.settings.separator
+    when 'chevron'
+      assign separator = '&rsaquo;'
+    when 'dot'
+      assign separator = '&middot;'
+  endcase
+
+  assign current_title = ''
+  assign parent_title = ''
+  assign parent_url = ''
+
+  case request.page_type
+    when 'collection'
+      assign current_title = collection.title
+    when 'list-collections'
+      assign current_title = 'Collections'
+    when 'product'
+      assign current_title = product.title
+      assign collection_source = section.settings.product_collection_source | default: 'current'
+      assign current_collection = collection
+      assign current_collection_title = ''
+      assign current_collection_url = ''
+
+      if request.path contains '/collections/' and request.path contains '/products/'
+        assign collection_handle = request.path | split: '/collections/' | last | split: '/products/' | first
+
+        if current_collection == blank
+          assign current_collection = collections[collection_handle]
+        endif
+
+        unless collection_handle == 'all'
+          assign current_collection_title = collection_handle | replace: '-', ' ' | capitalize
+          assign current_collection_url = routes.collections_url | append: '/' | append: collection_handle
+        endunless
+      endif
+
+      assign first_assigned_collection = product.collections.first
+
+      case collection_source
+        when 'first_assigned'
+          assign breadcrumb_collection = first_assigned_collection | default: current_collection
+        else
+          assign breadcrumb_collection = current_collection
+      endcase
+
+      if section.settings.show_product_collection and collection_source == 'current' and current_collection_title != blank and current_collection_url != blank
+        assign parent_title = current_collection_title
+        assign parent_url = current_collection_url
+      elsif section.settings.show_product_collection and breadcrumb_collection != blank and breadcrumb_collection.title != blank and breadcrumb_collection.url != blank
+        assign parent_title = breadcrumb_collection.title
+        assign parent_url = breadcrumb_collection.url
+      endif
+    when 'blog'
+      assign current_title = blog.title
+    when 'article'
+      assign current_title = article.title
+      assign parent_title = blog.title
+      assign parent_url = blog.url
+    when 'page'
+      assign current_title = page.title
+  endcase
+%}
+
+{% if show_breadcrumbs and current_title != blank %}
+  <div
+    class="section breadcrumbs-section{% if section.settings.width == 'full' %} section--full-width{% else %} section--page-width{% endif %}"
+    style="
+      --breadcrumbs-padding-block-start: {{ section.settings.padding-block-start }}px;
+      --breadcrumbs-padding-block-end: {{ section.settings.padding-block-end }}px;
+      --breadcrumbs-gap: {{ section.settings.item_spacing }}px;
+    "
+  >
+    <nav
+      class="breadcrumbs breadcrumbs--{{ section.settings.alignment }}"
+      aria-label="Breadcrumb"
+    >
+      <ol class="breadcrumbs__list">
+        <li class="breadcrumbs__item">
+          <a href="{{ routes.root_url }}" class="breadcrumbs__link">Home</a>
+        </li>
+
+        {% if parent_title != blank and parent_url != blank %}
+          <li class="breadcrumbs__separator" aria-hidden="true">{{ separator }}</li>
+          <li class="breadcrumbs__item">
+            <a href="{{ parent_url }}" class="breadcrumbs__link">{{ parent_title | escape }}</a>
+          </li>
+        {% endif %}
+
+        <li class="breadcrumbs__separator" aria-hidden="true">{{ separator }}</li>
+        <li class="breadcrumbs__item breadcrumbs__item--current" aria-current="page">
+          {{ current_title | escape }}
+        </li>
+      </ol>
+    </nav>
+  </div>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": {{ 'Home' | json }},
+          "item": {{ shop.url | append: routes.root_url | json }}
+        }{% if parent_title != blank and parent_url != blank %},
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": {{ parent_title | json }},
+          "item": {{ shop.url | append: parent_url | json }}
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": {{ current_title | json }},
+          "item": {{ shop.url | append: request.path | json }}
+        }{% else %},
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": {{ current_title | json }},
+          "item": {{ shop.url | append: request.path | json }}
+        }{% endif %}
+      ]
+    }
+  </script>
+{% endif %}
+
+{% stylesheet %}
+  .breadcrumbs-section {
+    width: 100%;
+    padding-block-start: var(--breadcrumbs-padding-block-start);
+    padding-block-end: var(--breadcrumbs-padding-block-end);
+  }
+
+
+  .breadcrumbs {
+    width: 100%;
+    font-size: var(--font-paragraph-small--size);
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+  }
+
+  .breadcrumbs__list {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: calc(var(--breadcrumbs-gap) / 2) var(--breadcrumbs-gap);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .breadcrumbs--center .breadcrumbs__list {
+    justify-content: center;
+  }
+
+  .breadcrumbs__link {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .breadcrumbs__link:hover {
+    color: var(--color-foreground);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .breadcrumbs__separator {
+    opacity: var(--opacity-60);
+  }
+
+  .breadcrumbs__item--current {
+    color: var(--color-foreground);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Breadcrumbs",
+  "enabled_on": {
+    "templates": ["collection", "list-collections", "product", "blog", "article", "page"]
+  },
+  "settings": [
+    { "type": "checkbox", "id": "enabled", "label": "Enable breadcrumbs", "default": true },
+    { "type": "checkbox", "id": "show_product_collection", "label": "Show collection on product pages", "default": true },
+    {
+      "type": "select",
+      "id": "product_collection_source",
+      "label": "Product page collection",
+      "options": [
+        { "value": "current", "label": "Current collection" },
+        { "value": "first_assigned", "label": "First assigned collection" }
+      ],
+      "default": "current"
+    },
+    { "type": "header", "content": "Style" },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Width",
+      "options": [
+        { "value": "page", "label": "Page" },
+        { "value": "full", "label": "Full" }
+      ],
+      "default": "page"
+    },
+    {
+      "type": "select",
+      "id": "separator",
+      "label": "Separator style",
+      "options": [
+        { "value": "slash", "label": "Slash" },
+        { "value": "chevron", "label": "Chevron" },
+        { "value": "dot", "label": "Dot" }
+      ],
+      "default": "slash"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "left"
+    },
+    { "type": "range", "id": "item_spacing", "label": "Item spacing", "min": 4, "max": 50, "step": 1, "unit": "px", "default": 8 },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding-block-start", "label": "Top", "min": 0, "max": 50, "step": 1, "unit": "px", "default": 12 },
+    { "type": "range", "id": "padding-block-end", "label": "Bottom", "min": 0, "max": 50, "step": 1, "unit": "px", "default": 12 }
+  ],
+  "presets": [
+    {
+      "name": "Breadcrumbs"
+    }
+  ]
+}
+{% endschema %}

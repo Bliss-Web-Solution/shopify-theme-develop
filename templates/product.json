@@ -9,6 +9,20 @@
  */
 {
   "sections": {
+    "breadcrumbs": {
+      "type": "bliss-breadcrumbs",
+      "settings": {
+        "enabled": true,
+        "show_product_collection": true,
+        "product_collection_source": "current",
+        "width": "page",
+        "separator": "slash",
+        "alignment": "left",
+        "item_spacing": 8,
+        "padding-block-start": 12,
+        "padding-block-end": 12
+      }
+    },
     "main": {
       "type": "product-information",
       "blocks": {
@@ -409,6 +423,7 @@
     }
   },
   "order": [
+    "breadcrumbs",
     "main",
     "product_recommendations_qggXJq"
   ]
