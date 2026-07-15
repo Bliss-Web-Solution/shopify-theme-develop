@@ -1,0 +1,31 @@
+<script>
+  (function () {
+    const storageKey = 'recently_viewed_products';
+    const currentHandle = {{ product.handle | json }};
+
+    let handles = [];
+
+    try {
+      handles = JSON.parse(localStorage.getItem(storageKey)) || [];
+    } catch (e) {
+      handles = [];
+    }
+
+    handles = handles.map(function (item) {
+      return typeof item === 'string' ? item : item.handle;
+    }).filter(Boolean);
+
+    handles = handles.filter(function (handle) {
+      return handle !== currentHandle;
+    });
+
+    if (currentHandle) {
+      handles.unshift(currentHandle);
+      handles = [...new Set(handles)].slice(0, 10);
+
+      localStorage.setItem(storageKey, JSON.stringify(handles));
+
+      document.dispatchEvent(new CustomEvent('recentlyViewedUpdated'));
+    }
+  })();
+</script>
