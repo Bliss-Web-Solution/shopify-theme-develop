@@ -1,0 +1,135 @@
+{%- assign phone_text = block.settings.text | strip_html | strip -%}
+{%- assign clean_phone = phone_text | remove: ' ' | remove: '-' | remove: '(' | remove: ')' -%}
+
+{% if phone_text != blank %}
+  <div 
+    class="announcement-contact-item" 
+    data-block-type="_announcement-phone" 
+    {{ block.shopify_attributes }}
+    style="
+      margin-top: {{ block.settings.margin_top }}px;
+      margin-bottom: {{ block.settings.margin_bottom }}px;
+      margin-left: {{ block.settings.margin_left }}px;
+      margin-right: {{ block.settings.margin_right }}px;
+    "
+  >
+    <a href="tel:{{ clean_phone }}" class="announcement-contact-link" aria-label="Call us at {{ phone_text }}">
+      
+      {%- if block.settings.icon != blank -%}
+        {{ block.settings.icon 
+          | image_url: width: block.settings.icon_width 
+          | image_tag: 
+            width: block.settings.icon_width, 
+            height: block.settings.icon_height, 
+            class: 'announcement-contact-icon' }}
+      {%- else -%}
+        <svg 
+          aria-hidden="true" 
+          focusable="false" 
+          class="icon icon-phone announcement-contact-icon" 
+          viewBox="0 0 20 20" 
+          fill="currentColor"
+          width="{{ block.settings.icon_width }}"
+          height="{{ block.settings.icon_height }}"
+        >
+          <path d="M2 3.5A1.5 1.5 0 013.5 2h1.1c.48 0 .9.31 1.03.77l1.24 4.35a1 1 0 01-.43 1.09l-2.02 1.22a10.05 10.05 0 004.28 4.28l1.22-2.02a1 1 0 011.09-.43l4.35 1.24c.46.13.77.55.77 1.03v1.1a1.5 1.5 0 01-1.5 1.5h-1.1c-6.35 0-11.5-5.15-11.5-11.5V3.5z"/>
+        </svg>
+      {%- endif -%}
+
+      {% if block.settings.show_phone %}
+        <span class="announcement-contact-text">{{ phone_text }}</span>
+      {% endif %}
+    </a>
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Phone",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Phone Number"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_phone",
+      "label": "Phone Number Visible",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Icon Size Settings"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon",
+      "label": "Custom icon"
+    },
+    {
+      "type": "range",
+      "id": "icon_width",
+      "label": "Icon Width",
+      "min": 10,
+      "max": 50,
+      "step": 1,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "icon_height",
+      "label": "Icon Height",
+      "min": 10,
+      "max": 50,
+      "step": 1,
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Margin Settings"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Margin Top",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Margin Bottom",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_left",
+      "label": "Margin Left",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_right",
+      "label": "Margin Right",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Phone"
+    }
+  ]
+}
+{% endschema %}

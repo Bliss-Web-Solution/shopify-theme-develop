@@ -1,0 +1,25 @@
+<div class="announcement-group" data-block-type="_announcement-group" {{ block.shopify_attributes }}>
+  {% content_for 'blocks' %}
+</div>
+
+{% schema %}
+{
+  "name": "Announcement Group",
+  "blocks": [
+    {
+      "type": "bliss-announcement-phone"
+    },
+    {
+      "type": "bliss-announcement-email"
+    },
+    {
+      "type": "social-links"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement Group"
+    }
+  ]
+}
+{% endschema %}

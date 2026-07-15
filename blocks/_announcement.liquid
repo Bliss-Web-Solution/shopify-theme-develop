@@ -25,7 +25,7 @@
     {{ block.shopify_attributes }}
     aria-hidden="{% if block_index == 0 %}false{% else %}true{% endif %}"
   >
-    <p class="announcement-bar__text">
+    <p class="announcement-bar__text" style="text-align: {{ block.settings.alignment }};">
       {{ block.settings.text }}
     </p>
 
@@ -272,6 +272,12 @@
         }
       ],
       "default": ""
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "Text alignment",
+      "default": "center"
     },
     {
       "type": "select",
