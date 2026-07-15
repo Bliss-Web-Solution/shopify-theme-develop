@@ -2116,5 +2116,32 @@
         "default": "equal-width-buttons"
       }
     ]
+  },
+  {
+    "name": "Back to top",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "back_to_top_enabled",
+        "label": "Enable back to top button",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "back_to_top_position",
+        "label": "Button position",
+        "options": [
+          {
+            "value": "bottom-right",
+            "label": "Bottom right"
+          },
+          {
+            "value": "bottom-left",
+            "label": "Bottom left"
+          }
+        ],
+        "default": "bottom-right"
+      }
+    ]
   }
 ]
