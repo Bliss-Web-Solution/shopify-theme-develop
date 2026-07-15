@@ -1,0 +1,119 @@
+{% comment %}
+  Floating back-to-top control.
+  Kept as a self-contained Bliss snippet so Horizon assets stay untouched.
+{% endcomment %}
+
+{% liquid
+    assign back_to_top_enabled = settings.back_to_top_enabled
+    assign back_to_top_position = settings.back_to_top_position | default: 'bottom-right'
+%}
+
+{% if back_to_top_enabled %}
+
+    <button type="button" class="back-to-top back-to-top--{{ back_to_top_position }}" aria-label="Back to top" data-back-to-top>
+        <svg xmlns="http://www.w3.org/2000/svg" class="back-to-top__icon" aria-hidden="true" viewBox="0 0 20 20" fill="none" stroke-width="2" stroke="currentColor" width="24" height="24">
+            <path d="M10 15.25V4.75M10 4.75L5.75 9M10 4.75L14.25 9" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+            <title>Scroll back to the top of the page</title>
+        </svg>
+        <span class="visually-hidden">Back to top</span>
+    </button>
+
+    <style>
+        .back-to-top {
+            --size: 48px;
+            position: fixed;
+            bottom: 30px;
+            z-index: 30;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: var(--size);
+            height: var(--size);
+            padding: 0;
+            color: var(--color-background);
+            background: var(--color-foreground);
+            border: 0;
+            border-radius: 50%;
+            box-shadow: 0 8px 24px rgb(var(--color-foreground-rgb) / 0.18);
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(12px);
+            transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+        }
+
+        .back-to-top--bottom-left {
+            left: 30px;
+        }
+
+        .back-to-top--bottom-right {
+            right: 30px;
+        }
+        .back-to-top.is-visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .back-to-top:focus-visible {
+            outline: 2px solid currentColor;
+            outline-offset: 3px;
+        }
+
+        .back-to-top__icon {
+            pointer-events: none;
+        }
+
+        @media screen and (max-width: 749px) {
+            .back-to-top {
+                --size: 44px;
+                bottom: 16px;
+            }
+
+            .back-to-top--bottom-left {
+                left: 16px;
+            }
+
+            .back-to-top--bottom-right {
+                right: 16px;
+            }
+        }
+    </style>
+
+    <script>
+        (function () {
+        const button = document.querySelector('[data-back-to-top]');
+
+        if (!button) return;
+
+        const desktop = window.matchMedia('(min-width: 990px)');
+        const pageWrapper = document.querySelector('.page-wrapper');
+
+        const getScroller = () => {
+            if (desktop.matches && pageWrapper) {
+            return pageWrapper;
+            }
+
+            return document.scrollingElement || document.documentElement;
+        };
+
+        const toggleVisibility = () => {
+            const scroller = getScroller();
+            const scrollTop = scroller?.scrollTop || 0;
+
+            button.classList.toggle('is-visible', scrollTop >= 400);
+        };
+
+        button.addEventListener('click', () => {
+            getScroller()?.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        document.addEventListener('scroll', toggleVisibility, { passive: true });
+        pageWrapper?.addEventListener('scroll', toggleVisibility, { passive: true });
+        desktop.addEventListener('change', toggleVisibility);
+
+        toggleVisibility();
+        })();
+    </script>
+
+{% endif %}
