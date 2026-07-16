@@ -43,7 +43,8 @@ class AccordionCustom extends HTMLElement {
     this.addEventListener('keydown', this.#handleKeyDown, { signal });
     this.summary.addEventListener('click', this.handleClick, { signal });
     this.details.addEventListener('click', this.#handleContentClick, { signal });
-    mediaQueryLarge.addEventListener('change', this.#handleMediaQueryChange, { signal });
+    // this.details.addEventListener('toggle', this.#handleToggle, { signal });
+    // mediaQueryLarge.addEventListener('change', this.#handleMediaQueryChange, { signal });
   }
 
   /**
@@ -62,11 +63,34 @@ class AccordionCustom extends HTMLElement {
     const isMobile = isMobileBreakpoint();
     const isDesktop = !isMobile;
 
-    // Stop default behaviour from the browser
+    // Stop default behaviour
     if ((isMobile && this.#disableOnMobile) || (isDesktop && this.#disableOnDesktop)) {
       event.preventDefault();
       return;
     }
+
+    // Agar ye accordion already open hai to browser ko close karne do
+    if (this.details.open) return;
+
+    // Browser pehle current accordion open kare
+    requestAnimationFrame(() => {
+      // Thoda wait taki opening animation start ho jaye
+      setTimeout(() => {
+        const section =
+          this.closest('.accordion') ||
+          document;
+
+        section.querySelectorAll('accordion-custom').forEach((accordion) => {
+          if (accordion === this) return;
+
+          if (!(accordion instanceof AccordionCustom)) return;
+
+          if (accordion.details.open) {
+            accordion.details.open = false;
+          }
+        });
+      }, 120);
+    });
   };
 
   /**
@@ -86,21 +110,36 @@ class AccordionCustom extends HTMLElement {
   };
 
   /**
-   * Handles the media query change event.
-   */
-  #handleMediaQueryChange = () => {
-    this.#setDefaultOpenState();
-  };
-
-  /**
    * Sets the default open state of the accordion based on the `open-by-default-on-mobile` and `open-by-default-on-desktop` attributes.
    */
   #setDefaultOpenState() {
-    const isMobile = isMobileBreakpoint();
+    // Sirf ek baar initialize karo
+    if (this.dataset.initialized === 'true') return;
 
-    this.details.open =
-      (isMobile && this.hasAttribute('open-by-default-on-mobile')) ||
-      (!isMobile && this.hasAttribute('open-by-default-on-desktop'));
+    this.dataset.initialized = 'true';
+
+    const container = this.closest('.accordion');
+
+    if (!container) return;
+
+    const openFirst = container.dataset.openFirstDefault === 'true';
+
+    // Agar "Open first FAQ by default" OFF hai,
+    // to existing Horizon behavior use karo.
+    if (!openFirst) {
+      const isMobile = isMobileBreakpoint();
+
+      this.details.open =
+        (isMobile && this.hasAttribute('open-by-default-on-mobile')) ||
+        (!isMobile && this.hasAttribute('open-by-default-on-desktop'));
+
+      return;
+    }
+
+    // Sirf first accordion open hoga
+    const firstAccordion = container.querySelector('accordion-custom');
+
+    this.details.open = firstAccordion === this;
   }
 
   /**
