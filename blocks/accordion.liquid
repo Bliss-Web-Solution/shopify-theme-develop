@@ -8,6 +8,7 @@
 
 <div
   class="accordion accordion--{{ block.id }} accordion--{{ block_settings.icon }} border-style spacing-style{% if block_settings.background_color != blank or block_settings.text_color != blank %} color-custom-{{ block.id }}{% endif %}{% if block_settings.background_color != blank %} accordion--custom-background{% endif %}{% if block_settings.dividers %} accordion--dividers{% endif %}"
+  data-open-first-default="{{ block_settings.open_first_by_default }}"
   style="
     --summary-font-family: var(--font-{{ block_settings.type_preset }}--family);
      --summary-font-style: var(--font-{{ block_settings.type_preset }}--style);
@@ -37,6 +38,12 @@
     }
   ],
   "settings": [
+    {
+  "type": "checkbox",
+  "id": "open_first_by_default",
+  "label": "Open first FAQ by default",
+  "default": false
+},
     {
       "type": "select",
       "id": "icon",
