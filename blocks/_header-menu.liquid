@@ -92,9 +92,46 @@
 
     {% capture children %}
       {% for link in block_settings.menu.links %}
+        {%- liquid
+          assign menu_item_handle = link.title | handleize
+          assign has_custom_promotion = false
+          assign custom_menu_slot = ''
+          for promotion_slot in (1..5)
+            assign promotion_menu_name_setting = 'custom_mega_menu_item_name_' | append: promotion_slot
+            assign promotion_type_setting = 'custom_mega_menu_promotion_type_' | append: promotion_slot
+            assign promotion_menu_item_handle = block_settings[promotion_menu_name_setting] | handleize
+            assign promotion_type = block_settings[promotion_type_setting]
+            assign promotion_resources_setting = 'custom_mega_menu_' | append: promotion_type | append: '_' | append: promotion_slot
+            if promotion_menu_item_handle == menu_item_handle and block_settings[promotion_resources_setting] != blank
+              assign has_custom_promotion = true
+              assign custom_menu_slot = promotion_slot
+              break
+            endif
+          endfor
+
+          assign is_compact = false
+          if block_settings.dynamic_dropdown_layout and link.links != blank and has_custom_promotion == false
+            assign item_count = 0
+            for child_link in link.links
+              assign item_count = item_count | plus: 1
+              for grandchild_link in child_link.links
+                assign item_count = item_count | plus: 1
+              endfor
+            endfor
+            if item_count <= block_settings.submenu_item_threshold
+              assign is_compact = true
+            endif
+          endif
+
+          assign link_menu_content_type = menu_content_type
+          if has_custom_promotion
+            # Custom promotion blocks replace automatic featured content for this menu item.
+            assign link_menu_content_type = 'text'
+          endif
+        -%}
         <li
           role="presentation"
-          class="menu-list__list-item"
+          class="menu-list__list-item{% if is_compact %} menu-list__list-item--compact-parent{% endif %}"
           on:focus="/activate"
           on:blur="/deactivate"
           on:pointerenter="/activate"
@@ -104,7 +141,7 @@
             href="{{ link.url }}"
             data-skip-node-update="true"
             class="menu-list__link{% if link.active %} menu-list__link--active{% endif %}"
-            {%- if link.links != blank -%}
+            {%- if link.links != blank or has_custom_promotion -%}
               aria-controls="submenu-{{ forloop.index }}"
               aria-haspopup="true"
               aria-expanded="false"
@@ -116,32 +153,78 @@
           >
             <span class="menu-list__link-title">{{- link.title -}}</span>
           </a>
-          {%- if link.links != blank -%}
-            <div class="menu-list__submenu{{ background_color_classes }}" ref="submenu[]">
+          {%- if link.links != blank or has_custom_promotion -%}
+            <div class="menu-list__submenu{% if is_compact %} menu-list__submenu--compact{% endif %}{{ background_color_classes }}" ref="submenu[]">
               <div
                 id="submenu-{{ forloop.index }}"
                 class="menu-list__submenu-inner"
                 style="{% render 'submenu-font-styles', settings: block_settings %}"
               >
-                {% assign list_id = 'MegaMenuList-' | append: forloop.index %}
-                <div class="mega-menu section section--full-width-margin section--{{ section.settings.section_width }}">
-                  <div
-                    class="mega-menu__grid"
-                    data-menu-grid-id="{{ list_id }}"
-                  >
-                    {% render 'mega-menu-list',
-                      parent_link: link,
-                      id: list_id,
-                      section: section,
-                      grid_columns_count: 6,
-                      grid_columns_count_tablet: 4,
-                      grid_columns_count_collection_images: 8,
-                      menu_content_type: menu_content_type,
-                      content_aspect_ratio: ratio,
-                      image_border_radius: image_border_radius
-                    %}
+                {%- if is_compact -%}
+                  <ul class="compact-dropdown__list list-unstyled" role="list">
+                    {%- for child_link in link.links -%}
+                      <li>
+                        <a href="{{ child_link.url }}" class="compact-dropdown__link{% if child_link.current %} compact-dropdown__link--active{% endif %}"{% if child_link.current %} aria-current="page"{% endif %}>
+                          {{ child_link.title | escape }}
+                        </a>
+                      </li>
+                      {%- for grandchild_link in child_link.links -%}
+                        <li>
+                          <a href="{{ grandchild_link.url }}" class="compact-dropdown__link compact-dropdown__link--grandchild{% if grandchild_link.current %} compact-dropdown__link--active{% endif %}"{% if grandchild_link.current %} aria-current="page"{% endif %}>
+                            {{ grandchild_link.title | escape }}
+                          </a>
+                        </li>
+                      {%- endfor -%}
+                    {%- endfor -%}
+                  </ul>
+                {%- else -%}
+                  {% assign list_id = 'MegaMenuList-' | append: forloop.index %}
+                  <div class="mega-menu section section--full-width-margin section--{{ section.settings.section_width }}">
+                    <div
+                      class="mega-menu__grid"
+                      data-menu-grid-id="{{ list_id }}"
+                    >
+                      {% render 'mega-menu-list',
+                        parent_link: link,
+                        id: list_id,
+                        section: section,
+                        grid_columns_count: 6,
+                        grid_columns_count_tablet: 4,
+                        grid_columns_count_collection_images: 8,
+                        menu_content_type: link_menu_content_type,
+                        content_aspect_ratio: ratio,
+                        image_border_radius: image_border_radius
+                      %}
+
+                      {% if has_custom_promotion %}
+                        <div
+                          class="mega-menu__content mega-menu__content--custom"
+                          style="--menu-content-columns-desktop: 3; --menu-content-columns-tablet: 2; --resource-card-corner-radius: {{ image_border_radius }}px;"
+                        >
+                          <ul class="mega-menu__content-list mega-menu__content-list--custom list-unstyled">
+                            {% assign promotion_type_setting = 'custom_mega_menu_promotion_type_' | append: custom_menu_slot %}
+                            {% assign promotion_type = block_settings[promotion_type_setting] %}
+                            {% assign promotion_resources_setting = 'custom_mega_menu_' | append: promotion_type | append: '_' | append: custom_menu_slot %}
+                            {% assign promotion_aspect_ratio_setting = promotion_resources_setting | append: '_aspect_ratio' %}
+                            {% if promotion_type == 'collections' %}
+                              {% for collection in block_settings[promotion_resources_setting] %}
+                                <li class="mega-menu__content-list-item">
+                                  {% render 'resource-card', resource: collection, resource_type: 'collection', style: 'overlay', image_aspect_ratio: block_settings[promotion_aspect_ratio_setting], image_sizes: '300px' %}
+                                </li>
+                              {% endfor %}
+                            {% elsif promotion_type == 'products' %}
+                              {% for product in block_settings[promotion_resources_setting] %}
+                                <li class="mega-menu__content-list-item">
+                                  {% render 'resource-card', resource: product, resource_type: 'product', image_hover: true, image_aspect_ratio: block_settings[promotion_aspect_ratio_setting], image_sizes: '300px', product_view_context: 'dialog' %}
+                                </li>
+                              {% endfor %}
+                            {% endif %}
+                          </ul>
+                        </div>
+                      {% endif %}
+                    </div>
                   </div>
-                </div>
+                {%- endif -%}
               </div>
             </div>
           {%- endif -%}
@@ -181,7 +264,7 @@
             children: children,
             minimum-items: 2,
             data-testid: 'header-menu-overflow-list',
-            attributes: 'data-skip-node-update'
+            attributes: 'data-skip-node-update disabled="true"'
           %}
         </nav>
       </div>
@@ -652,6 +735,16 @@
     }
   }
 
+  .mega-menu__content-list--custom {
+    display: grid;
+    grid-template-columns: repeat(var(--menu-content-columns-tablet), minmax(0, 300px));
+    gap: var(--menu-vertical-gap) var(--menu-horizontal-gap);
+
+    @media screen and (min-width: 990px) {
+      grid-template-columns: repeat(var(--menu-content-columns-desktop), minmax(0, 300px));
+    }
+  }
+
   .mega-menu__list {
     display: grid;
     grid-template-columns: subgrid;
@@ -698,6 +791,62 @@
   /* Hide product cards in collapsed submenus from the IntersectionObserver that fires product view events */
   .menu-list__list-item:not(:has([aria-expanded='true'])) > .menu-list__submenu product-component {
     display: none;
+  }
+
+  /* Compact Dropdown Styles */
+  .menu-list__list-item--compact-parent {
+    position: relative;
+  }
+
+  .menu-list__list-item:where(:not([slot='overflow'])) > .menu-list__submenu--compact {
+    --submenu-content-opacity: 0;
+    --submenu-content-animation: opacity calc(var(--submenu-animation-speed) * 0.75) var(--animation-easing);
+    visibility: hidden;
+
+    width: max-content;
+    min-width: 200px;
+    left: 0;
+    top: -22px;
+    z-index: var(--layer-header-menu);
+    padding-inline: 0;
+
+    background-color: #ffffff;
+    clip-path: rect(var(--header-height) 200vw var(--full-open-header-height) -50px);
+    transition: clip-path var(--submenu-animation-speed) var(--ease-out-cubic);
+  }
+
+  .menu-list__link:is(:hover, [aria-expanded='true']) + .menu-list__submenu--compact,
+  .menu-list__submenu--compact:hover {
+    --submenu-content-opacity: 1;
+    visibility: visible;
+  }
+
+  .menu-list__submenu--compact .menu-list__submenu-inner {
+    padding: 1rem;
+    transform: none;
+    margin-top: var(--header-height);
+    opacity: var(--submenu-content-opacity);
+    transition: var(--submenu-content-animation);
+  }
+
+  .compact-dropdown__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .compact-dropdown__link {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: var(--color-foreground);
+    text-decoration: none;
+    font-family: var(--menu-child-font-family);
+    font-size: var(--menu-child-font-size);
+  }
+
+  .compact-dropdown__link--grandchild {
+    padding-left: 2rem;
+    font-size: calc(var(--menu-child-font-size) * 0.9);
   }
 {% endstylesheet %}
 
@@ -827,6 +976,164 @@
     {
       "type": "header",
       "content": "t:content.submenu_feature"
+    },
+    {
+      "type": "header",
+      "content": "Custom mega menu promotions"
+    },
+    {
+      "type": "header",
+      "content": "Promotion 1"
+    },
+    {
+      "type": "text",
+      "id": "custom_mega_menu_item_name_1",
+      "label": "Top-level menu item name",
+      "info": "Enter the exact menu label, for example: Collection."
+    },
+    {
+      "type": "select",
+      "id": "custom_mega_menu_promotion_type_1",
+      "label": "Show",
+      "options": [{ "value": "collections", "label": "Collections" }, { "value": "products", "label": "Products" }],
+      "default": "collections"
+    },
+    {
+      "type": "collection_list",
+      "id": "custom_mega_menu_collections_1",
+      "label": "Collections",
+      "limit": 6
+    },
+    {
+      "type": "product_list",
+      "id": "custom_mega_menu_products_1",
+      "label": "Products",
+      "limit": 6
+    },
+    {
+      "type": "header",
+      "content": "Promotion 2"
+    },
+    {
+      "type": "text",
+      "id": "custom_mega_menu_item_name_2",
+      "label": "Top-level menu item name"
+    },
+    {
+      "type": "select",
+      "id": "custom_mega_menu_promotion_type_2",
+      "label": "Show",
+      "options": [{ "value": "collections", "label": "Collections" }, { "value": "products", "label": "Products" }],
+      "default": "collections"
+    },
+    {
+      "type": "collection_list",
+      "id": "custom_mega_menu_collections_2",
+      "label": "Collections",
+      "limit": 6
+    },
+    {
+      "type": "product_list",
+      "id": "custom_mega_menu_products_2",
+      "label": "Products",
+      "limit": 6
+    },
+    {
+      "type": "header",
+      "content": "Promotion 3"
+    },
+    {
+      "type": "text",
+      "id": "custom_mega_menu_item_name_3",
+      "label": "Top-level menu item name"
+    },
+    {
+      "type": "select",
+      "id": "custom_mega_menu_promotion_type_3",
+      "label": "Show",
+      "options": [{ "value": "collections", "label": "Collections" }, { "value": "products", "label": "Products" }],
+      "default": "collections"
+    },
+    {
+      "type": "collection_list",
+      "id": "custom_mega_menu_collections_3",
+      "label": "Collections",
+      "limit": 6
+    },
+    {
+      "type": "product_list",
+      "id": "custom_mega_menu_products_3",
+      "label": "Products",
+      "limit": 6
+    },
+    {
+      "type": "header",
+      "content": "Promotion 4"
+    },
+    {
+      "type": "text",
+      "id": "custom_mega_menu_item_name_4",
+      "label": "Top-level menu item name"
+    },
+    {
+      "type": "select",
+      "id": "custom_mega_menu_promotion_type_4",
+      "label": "Show",
+      "options": [{ "value": "collections", "label": "Collections" }, { "value": "products", "label": "Products" }],
+      "default": "collections"
+    },
+    {
+      "type": "collection_list",
+      "id": "custom_mega_menu_collections_4",
+      "label": "Collections",
+      "limit": 6
+    },
+    {
+      "type": "product_list",
+      "id": "custom_mega_menu_products_4",
+      "label": "Products",
+      "limit": 6
+    },
+    {
+      "type": "header",
+      "content": "Promotion 5"
+    },
+    {
+      "type": "text",
+      "id": "custom_mega_menu_item_name_5",
+      "label": "Top-level menu item name"
+    },
+    {
+      "type": "select",
+      "id": "custom_mega_menu_promotion_type_5",
+      "label": "Show",
+      "options": [{ "value": "collections", "label": "Collections" }, { "value": "products", "label": "Products" }],
+      "default": "collections"
+    },
+    {
+      "type": "collection_list",
+      "id": "custom_mega_menu_collections_5",
+      "label": "Collections",
+      "limit": 6
+    },
+    {
+      "type": "product_list",
+      "id": "custom_mega_menu_products_5",
+      "label": "Products",
+      "limit": 6
+    },
+    {
+      "type": "checkbox",
+      "id": "dynamic_dropdown_layout",
+      "label": "Enable dynamic dropdown layout",
+      "default": false
+    },
+    {
+      "type": "number",
+      "id": "submenu_item_threshold",
+      "label": "Submenu item threshold",
+      "default": 5,
+      "visible_if": "{{ block.settings.dynamic_dropdown_layout == true }}"
     },
     {
       "type": "select",
