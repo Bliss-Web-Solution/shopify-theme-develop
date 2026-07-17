@@ -69,12 +69,9 @@ class AccordionCustom extends HTMLElement {
       return;
     }
 
-    // Agar ye accordion already open hai to browser ko close karne do
     if (this.details.open) return;
 
-    // Browser pehle current accordion open kare
     requestAnimationFrame(() => {
-      // Thoda wait taki opening animation start ho jaye
       setTimeout(() => {
         const section = this.closest('[data-faq-accordion="true"]');
         if (!section) return;
@@ -109,7 +106,6 @@ class AccordionCustom extends HTMLElement {
   };
 
   #handleMediaQueryChange = () => {
-  // Sirf non-FAQ accordions ko reset karo
   if (!this.closest('[data-faq-accordion="true"]')) {
     this.#setDefaultOpenState();
   }
