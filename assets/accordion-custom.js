@@ -43,6 +43,8 @@ class AccordionCustom extends HTMLElement {
     this.addEventListener('keydown', this.#handleKeyDown, { signal });
     this.summary.addEventListener('click', this.handleClick, { signal });
     this.details.addEventListener('click', this.#handleContentClick, { signal });
+
+    mediaQueryLarge.addEventListener('change', this.#handleMediaQueryChange, { signal });
   }
 
   /**
@@ -74,9 +76,8 @@ class AccordionCustom extends HTMLElement {
     requestAnimationFrame(() => {
       // Thoda wait taki opening animation start ho jaye
       setTimeout(() => {
-        const section =
-          this.closest('.accordion') ||
-          document;
+        const section = this.closest('[data-faq-accordion="true"]');
+        if (!section) return;
 
         section.querySelectorAll('accordion-custom').forEach((accordion) => {
           if (accordion === this) return;
@@ -107,26 +108,29 @@ class AccordionCustom extends HTMLElement {
     this.details.open = false;
   };
 
+  #handleMediaQueryChange = () => {
+  // Sirf non-FAQ accordions ko reset karo
+  if (!this.closest('[data-faq-accordion="true"]')) {
+    this.#setDefaultOpenState();
+  }
+};
   /**
    * Sets the default open state of the accordion based on the `open-by-default-on-mobile` and `open-by-default-on-desktop` attributes.
    */
-  #setDefaultOpenState() {
-    // Sirf ek baar initialize karo
+#setDefaultOpenState() {
+  const isMobile = isMobileBreakpoint();
+
+  const faqContainer = this.closest('[data-faq-accordion="true"]');
+
+  // FAQ custom behavior
+  if (faqContainer) {
     if (this.dataset.initialized === 'true') return;
 
     this.dataset.initialized = 'true';
 
-    const container = this.closest('.accordion');
+    const openFirst = faqContainer.dataset.openFirstDefault === 'true';
 
-    if (!container) return;
-
-    const openFirst = container.dataset.openFirstDefault === 'true';
-
-    // Agar "Open first FAQ by default" OFF hai,
-    // to existing Horizon behavior use karo.
     if (!openFirst) {
-      const isMobile = isMobileBreakpoint();
-
       this.details.open =
         (isMobile && this.hasAttribute('open-by-default-on-mobile')) ||
         (!isMobile && this.hasAttribute('open-by-default-on-desktop'));
@@ -134,26 +138,25 @@ class AccordionCustom extends HTMLElement {
       return;
     }
 
-    // Sirf first accordion open hoga
-    const firstAccordion = container.querySelector('accordion-custom');
+    const firstAccordion = faqContainer.querySelector('accordion-custom');
 
     this.details.open = firstAccordion === this;
+    return;
   }
 
-  /**
-   * Handles keydown events for the accordion
-   *
-   * @param {KeyboardEvent} event - The keyboard event.
-   */
-  #handleKeyDown(event) {
-    // Close the accordion when used as a menu
-    if (event.key === 'Escape' && this.#closeWithEscape) {
-      event.preventDefault();
+  // Horizon default behavior
+  this.details.open =
+    (isMobile && this.hasAttribute('open-by-default-on-mobile')) ||
+    (!isMobile && this.hasAttribute('open-by-default-on-desktop'));
+}
+#handleKeyDown(event) {
+  if (event.key === 'Escape' && this.#closeWithEscape) {
+    event.preventDefault();
 
-      this.summary.focus();
-      this.details.open = false;
-    }
+    this.summary.focus();
+    this.details.open = false;
   }
+}
 }
 
 if (!customElements.get('accordion-custom')) {
