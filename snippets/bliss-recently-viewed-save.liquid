@@ -21,7 +21,7 @@
 
     if (currentHandle) {
       handles.unshift(currentHandle);
-      handles = [...new Set(handles)].slice(0, 10);
+      handles = [...new Set(handles)].slice(0, 20);
 
       localStorage.setItem(storageKey, JSON.stringify(handles));
 

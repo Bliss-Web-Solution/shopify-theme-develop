@@ -43,10 +43,7 @@
           data-placeholder-slide="{{ forloop.index0 }}"
         >
           {% liquid 
-            assign closest_product = null
-            if request.page_type == 'product'
-              assign closest_product = product
-            endif
+            assign closest_product = product
           %}
           {% content_for 'block', type: '_product-card', id: 'static-product-card', closest.product: closest_product %}
         </div>
@@ -72,8 +69,6 @@
       %}
     </template>
 
-
-
     <div
       class="section-resource-list__content"
       style="--horizontal-alignment: {{ section.settings.horizontal_alignment }};"
@@ -85,8 +80,6 @@
 
 <script>
   (function () {
-    // section.id is the runtime instance ID, used only for DOM selectors.
-    // The SECTION FILE NAME (static) is used for the Section Rendering API.
     const sectionId = {{ section.id | json }};
     const sectionFileName = 'bliss-recently-viewed-products';
     const storageKey = 'recently_viewed_products';
@@ -95,9 +88,6 @@
       const sectionElement = document.querySelector('[data-recently-viewed-section-id="' + sectionId + '"]');
       if (!sectionElement) return;
 
-      // -----------------------------------------------------------------
-      // 1. Read & normalise handles from localStorage
-      // -----------------------------------------------------------------
       let handles = [];
       try {
         handles = JSON.parse(localStorage.getItem(storageKey)) || [];
@@ -121,15 +111,9 @@
       const maxProducts = {{ section.settings.max_products | default: 4 }};
       const handlesToLoad = handles.slice(0, maxProducts);
 
-      // -----------------------------------------------------------------
-      // 2. Get the local template (rendered by Liquid on page load)
-      // -----------------------------------------------------------------
       const template = document.getElementById('recently-viewed-template-' + sectionId);
       if (!template) return;
 
-      // -----------------------------------------------------------------
-      // 3. If no handles → show skeleton in design mode, hide otherwise
-      // -----------------------------------------------------------------
       if (handlesToLoad.length === 0) {
         if (window.Shopify && Shopify.designMode) {
           renderClone(template, [], maxProducts, sectionElement);
@@ -140,29 +124,19 @@
         return;
       }
 
-      // -----------------------------------------------------------------
-      // 4. Fetch each product using the STATIC section file name.
-      //    The Section Rendering API requires the file name, not the
-      //    runtime instance ID. The response is a full HTML page where
-      //    the section HTML is injected into the body; we parse the
-      //    .resource-list__item elements directly from the body — NOT
-      //    from inside a <template> tag (which is inert after DOMParser).
-      // -----------------------------------------------------------------
       const rootUrl = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) ? window.Shopify.routes.root : '/';
 
       const fetchPromises = handlesToLoad.map(async function (handle) {
         try {
-          const url = rootUrl + 'products/' + encodeURIComponent(handle) + '?section_id=' + sectionFileName;
+          const url = rootUrl + 'products/' + encodeURIComponent(handle) + '?section_id=' + sectionId;
           const response = await fetch(url);
           if (!response.ok) return null;
           const html = await response.text();
           const parser = new DOMParser();
           const doc = parser.parseFromString(html, 'text/html');
-          // The section renders placeholder .resource-list__item elements
-          // in the body. We grab the FIRST one (index 0) since all are
-          // identical placeholders; only the first has the real product.
-          // Actually each fetch is for ONE handle, so we want index 0.
-          const item = doc.querySelector('.resource-list__item');
+
+          const template = doc.querySelector('template');
+          const item = template ? template.content.querySelector('.resource-list__item') : null;
           return item || null;
         } catch (e) {
           return null;
@@ -172,29 +146,15 @@
       const fetchedItems = await Promise.all(fetchPromises);
       const validCards = fetchedItems.filter(Boolean);
 
-      // -----------------------------------------------------------------
-      // 5. Render
-      // -----------------------------------------------------------------
       renderClone(template, validCards, maxProducts, sectionElement);
       sectionElement.style.display = validCards.length > 0 ? 'block' : 'none';
 
       window.dispatchEvent(new Event('resize'));
     }
 
-    // -------------------------------------------------------------------
-    // renderClone: clones the local <template>, replaces placeholder items
-    // with fetched cards, removes leftover placeholders, then injects the
-    // result into the DOM.
-    //
-    // IMPORTANT: DocumentFragment nodes are "moved" when inserted, so we
-    // must collect the actual child Elements BEFORE the insert, otherwise
-    // querySelector on the fragment returns nothing after insertion.
-    // -------------------------------------------------------------------
     function renderClone(template, validCards, maxProducts, sectionElement) {
-      // Clone the full resource-list structure from the template
       const frag = template.content.cloneNode(true);
 
-      // Replace placeholder divs with real fetched cards
       validCards.forEach(function (card, idx) {
         frag.querySelectorAll('[data-placeholder-slide="' + idx + '"]').forEach(function (placeholder) {
           const newCard = card.cloneNode(true);
@@ -203,7 +163,6 @@
         });
       });
 
-      // Remove placeholders that have no corresponding product
       for (let i = validCards.length; i < maxProducts; i++) {
         frag.querySelectorAll('[data-placeholder-slide="' + i + '"]').forEach(function (placeholder) {
           const slide = placeholder.closest('slideshow-slide');
@@ -211,7 +170,6 @@
         });
       }
 
-      // Update slideshow timeline attributes if carousel layout
       const slideshow = frag.querySelector('slideshow-component');
       if (slideshow) {
         const slides = Array.from(frag.querySelectorAll('slideshow-slide'));
@@ -228,15 +186,27 @@
         el.remove();
       });
 
-      // Insert the fragment's children BEFORE the content/blocks div.
-      // We must spread childNodes to an array first because inserting a
-      // DocumentFragment moves (empties) it.
       const contentDiv = sectionElement.querySelector('.section-resource-list__content');
       const parent = contentDiv ? contentDiv.parentNode : sectionElement.querySelector('.section');
       const insertBefore = contentDiv || null;
       Array.from(frag.childNodes).forEach(function (node) {
         parent.insertBefore(node, insertBefore);
       });
+
+      var activeSlideCount = validCards.length;
+
+      if (activeSlideCount > 0) {
+        parent.querySelectorAll('.slideshow-controls__dots').forEach(function (dotsContainer) {
+          var dotItems = Array.from(dotsContainer.querySelectorAll('li'));
+
+          if (activeSlideCount <= 1) {
+            var slideshowControls = dotsContainer.closest('slideshow-controls');
+            if (slideshowControls) slideshowControls.hidden = true;
+          } else {
+            dotItems.slice(activeSlideCount).forEach(function (li) { li.remove(); });
+          }
+        });
+      }
     }
 
     // -----------------------------------------------------------------
@@ -248,10 +218,8 @@
       initRecentlyViewed();
     }
 
-    // Re-run when a product page is visited and saves to localStorage
     document.addEventListener('recentlyViewedUpdated', initRecentlyViewed);
 
-    // Re-run when the section is reloaded in the Theme Editor
     document.addEventListener('shopify:section:load', function (event) {
       if (event.detail.sectionId === sectionId) {
         initRecentlyViewed();
@@ -276,10 +244,7 @@
     }
   ],
   "disabled_on": {
-    "groups": [
-      "header",
-      "footer"
-    ]
+    "groups": ["header", "footer"]
   },
   "settings": [
     {
@@ -440,6 +405,13 @@
       "visible_if": "{{ section.settings.icons_style != 'none' and section.settings.layout_type == 'carousel' or section.settings.carousel_on_mobile == true }}"
     },
     {
+      "type": "checkbox",
+      "id": "show_navigation_dots",
+      "label": "Navigation dots",
+      "default": false,
+      "visible_if": "{{ section.settings.layout_type == 'carousel' or section.settings.carousel_on_mobile == true }}"
+    },
+    {
       "type": "header",
       "content": "t:content.section_layout"
     },
@@ -534,6 +506,7 @@
         "rows_gap": 24,
         "icons_style": "arrow",
         "icons_shape": "none",
+        "show_navigation_dots": false,
         "section_width": "page-width",
         "gap": 28,
         "padding-block-start": 48,
@@ -607,10 +580,7 @@
               }
             }
           },
-          "block_order": [
-            "product_list_text",
-            "product_list_button"
-          ]
+          "block_order": ["product_list_text", "product_list_button"]
         },
         "static-product-card": {
           "type": "_product-card",
@@ -688,11 +658,7 @@
               }
             }
           },
-          "block_order": [
-            "product-card-gallery",
-            "product_title",
-            "price"
-          ]
+          "block_order": ["product-card-gallery", "product_title", "price"]
         }
       },
       "block_order": []
@@ -710,6 +676,7 @@
         "rows_gap": 24,
         "icons_style": "arrow",
         "icons_shape": "circle",
+        "show_navigation_dots": false,
         "section_width": "page-width",
         "gap": 28,
         "padding-block-start": 48,
@@ -783,10 +750,7 @@
               }
             }
           },
-          "block_order": [
-            "product_list_text",
-            "product_list_button"
-          ]
+          "block_order": ["product_list_text", "product_list_button"]
         },
         "static-product-card": {
           "type": "_product-card",
@@ -864,11 +828,7 @@
               }
             }
           },
-          "block_order": [
-            "product-card-gallery",
-            "product_title",
-            "price"
-          ]
+          "block_order": ["product-card-gallery", "product_title", "price"]
         }
       },
       "block_order": []
@@ -886,6 +846,7 @@
         "rows_gap": 24,
         "icons_style": "arrow",
         "icons_shape": "none",
+        "show_navigation_dots": false,
         "section_width": "page-width",
         "horizontal_alignment": "flex-start",
         "gap": 64,
@@ -960,10 +921,7 @@
               }
             }
           },
-          "block_order": [
-            "product_list_text",
-            "product_list_button"
-          ]
+          "block_order": ["product_list_text", "product_list_button"]
         },
         "static-product-card": {
           "type": "_product-card",
@@ -1041,11 +999,7 @@
               }
             }
           },
-          "block_order": [
-            "product-card-gallery",
-            "product_title",
-            "price"
-          ]
+          "block_order": ["product-card-gallery", "product_title", "price"]
         }
       },
       "block_order": []
