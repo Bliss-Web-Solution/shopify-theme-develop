@@ -43,6 +43,7 @@ class AccordionCustom extends HTMLElement {
     this.addEventListener('keydown', this.#handleKeyDown, { signal });
     this.summary.addEventListener('click', this.handleClick, { signal });
     this.details.addEventListener('click', this.#handleContentClick, { signal });
+
     mediaQueryLarge.addEventListener('change', this.#handleMediaQueryChange, { signal });
   }
 
@@ -62,11 +63,30 @@ class AccordionCustom extends HTMLElement {
     const isMobile = isMobileBreakpoint();
     const isDesktop = !isMobile;
 
-    // Stop default behaviour from the browser
+    // Stop default behaviour
     if ((isMobile && this.#disableOnMobile) || (isDesktop && this.#disableOnDesktop)) {
       event.preventDefault();
       return;
     }
+
+    if (this.details.open) return;
+
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        const section = this.closest('[data-faq-accordion="true"]');
+        if (!section) return;
+
+        section.querySelectorAll('accordion-custom').forEach((accordion) => {
+          if (accordion === this) return;
+
+          if (!(accordion instanceof AccordionCustom)) return;
+
+          if (accordion.details.open) {
+            accordion.details.open = false;
+          }
+        });
+      }, 120);
+    });
   };
 
   /**
@@ -85,38 +105,54 @@ class AccordionCustom extends HTMLElement {
     this.details.open = false;
   };
 
-  /**
-   * Handles the media query change event.
-   */
   #handleMediaQueryChange = () => {
+  if (!this.closest('[data-faq-accordion="true"]')) {
     this.#setDefaultOpenState();
-  };
-
+  }
+};
   /**
    * Sets the default open state of the accordion based on the `open-by-default-on-mobile` and `open-by-default-on-desktop` attributes.
    */
-  #setDefaultOpenState() {
-    const isMobile = isMobileBreakpoint();
+#setDefaultOpenState() {
+  const isMobile = isMobileBreakpoint();
 
-    this.details.open =
-      (isMobile && this.hasAttribute('open-by-default-on-mobile')) ||
-      (!isMobile && this.hasAttribute('open-by-default-on-desktop'));
-  }
+  const faqContainer = this.closest('[data-faq-accordion="true"]');
 
-  /**
-   * Handles keydown events for the accordion
-   *
-   * @param {KeyboardEvent} event - The keyboard event.
-   */
-  #handleKeyDown(event) {
-    // Close the accordion when used as a menu
-    if (event.key === 'Escape' && this.#closeWithEscape) {
-      event.preventDefault();
+  // FAQ custom behavior
+  if (faqContainer) {
+    if (this.dataset.initialized === 'true') return;
 
-      this.summary.focus();
-      this.details.open = false;
+    this.dataset.initialized = 'true';
+
+    const openFirst = faqContainer.dataset.openFirstDefault === 'true';
+
+    if (!openFirst) {
+      this.details.open =
+        (isMobile && this.hasAttribute('open-by-default-on-mobile')) ||
+        (!isMobile && this.hasAttribute('open-by-default-on-desktop'));
+
+      return;
     }
+
+    const firstAccordion = faqContainer.querySelector('accordion-custom');
+
+    this.details.open = firstAccordion === this;
+    return;
   }
+
+  // Horizon default behavior
+  this.details.open =
+    (isMobile && this.hasAttribute('open-by-default-on-mobile')) ||
+    (!isMobile && this.hasAttribute('open-by-default-on-desktop'));
+}
+#handleKeyDown(event) {
+  if (event.key === 'Escape' && this.#closeWithEscape) {
+    event.preventDefault();
+
+    this.summary.focus();
+    this.details.open = false;
+  }
+}
 }
 
 if (!customElements.get('accordion-custom')) {
