@@ -38,20 +38,6 @@
   {% endfor %}
 {% endcapture %}
 
-{% capture controls %}
-  {% if settings.show_navigation_dots %}
-    {%- render 'slideshow-controls',
-      style: 'dots',
-      autoplay: false,
-      item_count: slide_count,
-      show_arrows: false,
-      arrows_on_media: false,
-      controls_on_media: false,
-      pagination_position: 'center'
-    -%}
-  {% endif %}
-{% endcapture %}
-
 <div style="{{ gutter_style }} --slide-width-max: {{ slide_width_max | default: '300px' }};">
   {% render 'slideshow',
     ref: slideshow_ref,
@@ -64,8 +50,7 @@
     infinite: false,
     initial_slide: 0,
     slide_count: slide_count,
-    slideshow_gutters: slideshow_gutters,
-    controls: controls
+    slideshow_gutters: slideshow_gutters
   %}
 </div>
 

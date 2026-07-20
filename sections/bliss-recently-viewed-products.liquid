@@ -192,21 +192,6 @@
       Array.from(frag.childNodes).forEach(function (node) {
         parent.insertBefore(node, insertBefore);
       });
-
-      var activeSlideCount = validCards.length;
-
-      if (activeSlideCount > 0) {
-        parent.querySelectorAll('.slideshow-controls__dots').forEach(function (dotsContainer) {
-          var dotItems = Array.from(dotsContainer.querySelectorAll('li'));
-
-          if (activeSlideCount <= 1) {
-            var slideshowControls = dotsContainer.closest('slideshow-controls');
-            if (slideshowControls) slideshowControls.hidden = true;
-          } else {
-            dotItems.slice(activeSlideCount).forEach(function (li) { li.remove(); });
-          }
-        });
-      }
     }
 
     // -----------------------------------------------------------------
@@ -405,13 +390,6 @@
       "visible_if": "{{ section.settings.icons_style != 'none' and section.settings.layout_type == 'carousel' or section.settings.carousel_on_mobile == true }}"
     },
     {
-      "type": "checkbox",
-      "id": "show_navigation_dots",
-      "label": "Navigation dots",
-      "default": false,
-      "visible_if": "{{ section.settings.layout_type == 'carousel' or section.settings.carousel_on_mobile == true }}"
-    },
-    {
       "type": "header",
       "content": "t:content.section_layout"
     },
@@ -506,7 +484,6 @@
         "rows_gap": 24,
         "icons_style": "arrow",
         "icons_shape": "none",
-        "show_navigation_dots": false,
         "section_width": "page-width",
         "gap": 28,
         "padding-block-start": 48,
@@ -676,7 +653,6 @@
         "rows_gap": 24,
         "icons_style": "arrow",
         "icons_shape": "circle",
-        "show_navigation_dots": false,
         "section_width": "page-width",
         "gap": 28,
         "padding-block-start": 48,
@@ -846,7 +822,6 @@
         "rows_gap": 24,
         "icons_style": "arrow",
         "icons_shape": "none",
-        "show_navigation_dots": false,
         "section_width": "page-width",
         "horizontal_alignment": "flex-start",
         "gap": 64,
