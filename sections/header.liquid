@@ -666,6 +666,14 @@
     transition: height var(--submenu-animation-speed) var(--ease-out-cubic);
   }
 
+  /* Prevent underlay from expanding for compact dropdowns */
+  #header-component:has(.menu-list__list-item--compact-parent .menu-list__link[aria-expanded='true']):not(
+      :has(.menu-list__list-item:not(.menu-list__list-item--compact-parent) .menu-list__link[aria-expanded='true'])
+    )
+    .header__underlay-open {
+    height: var(--header-height) !important;
+  }
+
   /* When top row has transparent background, swap underlay to merchant's chosen color at full opacity */
   [data-transparent-background='top']:hover,
   [data-transparent-background='top']:focus-within,
@@ -1269,6 +1277,16 @@
       "id": "customer_account_menu",
       "label": "t:settings.menu",
       "default": "customer-account-main-menu"
+    },
+    {
+      "type": "header",
+      "content": "t:content.compare"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_compare",
+      "label": "t:settings.compare_icon",
+      "default": true
     },
     {
       "type": "header",

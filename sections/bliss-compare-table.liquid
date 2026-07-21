@@ -10,11 +10,11 @@
 
 <section class="section {% if section.settings.background_color != blank or section.settings.text_color != blank %}color-custom-{{ section.id }}{% endif %}">
   <div class="compare-table-wrapper">
-    <h1 class="heading center" id="CompareHeading">Comparing Products</h1>
+    <h1 class="heading center" id="CompareHeading">{{ 'compare.compare_tabel.compare_table_heading' | t }}</h1>
 
     <div id="CompareTableContainer" class="compare-page__container">
       <div class="compare-page__loading center">
-        <p></p>
+        <p>{{ 'compare.compare_tabel.compare_table_loading' | t }}</p>
       </div>
     </div>
   </div>
@@ -37,7 +37,7 @@
       // Fetch data via Search API
       const query = ids.map((id) => `id:${id}`).join(' OR ');
 
-      fetch(`${window.Shopify.routes.root}search?q=${encodeURIComponent(query)}&view=compare`)
+      fetch(`${window.Shopify.routes.root}search?q=${encodeURIComponent(query)}&view=bliss-compare`)
         .then((response) => response.text())
         .then((html) => {
           container.innerHTML = html;
@@ -105,7 +105,7 @@
     });
   });
 </script>
-<script src="{{ 'compare.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'bliss-compare.js' | asset_url }}" defer="defer"></script>
 
 {% style %}
   .compare-page__container {

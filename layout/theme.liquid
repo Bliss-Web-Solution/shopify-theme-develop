@@ -140,5 +140,10 @@
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
     {% endif %}
+
+    {%- if request.page_type == 'product' -%}
+      {% render 'bliss-recently-viewed-save' %}
+    {%- endif -%}
+    {% render 'bliss-back-to-top' %}
   </body>
 </html>

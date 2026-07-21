@@ -60,7 +60,7 @@
       }
     },
     "compare_table_ayYB7e": {
-      "type": "compare-table",
+      "type": "bliss-compare-table",
       "name": "Compare Table",
       "settings": {}
     }

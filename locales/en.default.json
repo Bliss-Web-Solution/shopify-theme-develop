@@ -371,12 +371,10 @@
     }
   },
   "compare": {
+    "compare_label": "Compare",
     "compare_tabel": {
       "compare_table_heading": "Comparing Products",
       "compare_table_loading": "Loading comparison data..",
-    },
-    "compare_label": "Compare",
-    "compare_tabel": {
       "description": "Description",
       "availability": "Availability",
       "in_stock": "In Stock",
