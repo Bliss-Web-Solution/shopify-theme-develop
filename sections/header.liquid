@@ -667,7 +667,10 @@
   }
 
   /* Prevent underlay from expanding for compact dropdowns */
-  #header-component:has(.menu-list__list-item--compact-parent .menu-list__link[aria-expanded="true"]):not(:has(.menu-list__list-item:not(.menu-list__list-item--compact-parent) .menu-list__link[aria-expanded="true"])) .header__underlay-open {
+  #header-component:has(.menu-list__list-item--compact-parent .menu-list__link[aria-expanded='true']):not(
+      :has(.menu-list__list-item:not(.menu-list__list-item--compact-parent) .menu-list__link[aria-expanded='true'])
+    )
+    .header__underlay-open {
     height: var(--header-height) !important;
   }
 
@@ -1274,6 +1277,16 @@
       "id": "customer_account_menu",
       "label": "t:settings.menu",
       "default": "customer-account-main-menu"
+    },
+    {
+      "type": "header",
+      "content": "t:content.compare"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_compare",
+      "label": "t:settings.compare_icon",
+      "default": true
     },
     {
       "type": "header",
