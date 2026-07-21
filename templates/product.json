@@ -481,20 +481,11 @@
         "padding-block-start": 48,
         "padding-block-end": 48
       }
-    },
-    "compare_bar_y7LerU": {
-      "type": "compare-bar",
-      "name": "Compare Bar",
-      "settings": {
-        "background_color": "",
-        "text_color": ""
-      }
     }
   },
   "order": [
     "breadcrumbs",
     "main",
-    "product_recommendations_qggXJq",
-    "compare_bar_y7LerU"
+    "product_recommendations_qggXJq"
   ]
 }

@@ -43,7 +43,9 @@
           <td class="compareTable-item">
             <div class="rte">
               {% if product.description != blank %}
-                {{ product.description | strip_html | truncatewords: 30 }}
+                <div class="compareTable-description-scroll">
+                  {{ product.description }}
+                </div>
               {% else %}
                 {{ 'compare.compare_tabel.not_available' | t }}
               {% endif %}
@@ -113,10 +115,14 @@
       {% for product in search.results %}
         {% if product.object_type == 'product' %}
           <td class="compareTable-item">
-            {% if product.options.size > 0 %}
+            {% if product.has_only_default_variant %}
+              {{ 'compare.compare_tabel.not_available' | t }}
+            {% elsif product.options.size > 0 %}
               <ul style="margin: 0; padding-inline-start: 15px; list-style-type: disc;">
                 {% for option in product.options_with_values %}
-                  <li><strong>{{ option.name }}:</strong> {{ option.values | join: ', ' }}</li>
+                  {% if option.values.size > 0 and option.values.first != blank %}
+                    <li><strong>{{ option.name }}:</strong> {{ option.values | join: ', ' }}</li>
+                  {% endif %}
                 {% endfor %}
               </ul>
             {% else %}
@@ -162,12 +168,57 @@
       {% for product in search.results %}
         {% if product.object_type == 'product' %}
           <td class="compareTable-action">
-            <a href="{{ product.url }}" class="button button--primary">
-              {{ 'compare.compare_tabel.view_product' | t }}
-            </a>
-            <button type="button" class="compareTable-removeProduct" data-id="{{ product.id }}">
-              {{ 'compare.compare_tabel.remove_product_btn' | t }}
-            </button>
+            <div class="compareTable-action-buttons">
+              {%- assign product_form_id = 'product-form-' | append: section.id | append: '-' | append: product.id -%}
+              <product-form class="product-form" data-section-id="{{ section.id }}">
+                <div class="product-form__error-message-wrapper" role="alert" hidden>
+                  <span class="product-form__error-message"></span>
+                </div>
+
+                {%- form 'product', product, id: product_form_id, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+                  {%- if product.variants.size > 1 -%}
+                    <div class="select" style="margin-bottom: 10px;">
+                      <select name="id" class="select__select" style="width: 100%;">
+                        {%- for variant in product.variants -%}
+                          <option
+                            value="{{ variant.id }}"
+                            {% if variant == product.selected_or_first_available_variant %}selected="selected"{% endif %}
+                            {% if variant.available == false %}disabled{% endif %}
+                          >
+                            {{ variant.title }} - {{ variant.price | money }}
+                          </option>
+                        {%- endfor -%}
+                      </select>
+                    </div>
+                  {%- else -%}
+                    <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                  {%- endif -%}
+
+                  <button
+                    type="submit"
+                    name="add"
+                    class="button button--primary"
+                    style="width: 100%; margin-bottom: 10px;"
+                    {% if product.selected_or_first_available_variant.available == false %}disabled{% endif %}
+                  >
+                    <span>
+                      {%- if product.selected_or_first_available_variant.available -%}
+                        {{ 'products.product.add_to_cart' | t }}
+                      {%- else -%}
+                        {{ 'products.product.sold_out' | t }}
+                      {%- endif -%}
+                    </span>
+                  </button>
+                {%- endform -%}
+              </product-form>
+
+              <a href="{{ product.url }}" class="button button--secondary">
+                {{ 'compare.compare_tabel.view_product' | t }}
+              </a>
+              <button type="button" class="compareTable-removeProduct" data-id="{{ product.id }}">
+                {{ 'compare.compare_tabel.remove_product_btn' | t }}
+              </button>
+            </div>
           </td>
         {% endif %}
       {% endfor %}

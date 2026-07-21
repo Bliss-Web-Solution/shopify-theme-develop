@@ -37,6 +37,8 @@ if (typeof window.CompareManager === 'undefined') {
                 if (!(target instanceof HTMLElement)) return;
                 const removeBtn = target.closest('.compare-bar__remove, .compareTable-removeProduct');
                 if (removeBtn instanceof HTMLElement) {
+                    e.preventDefault();
+                    e.stopPropagation();
                     const id = removeBtn.dataset.id;
                     if (id) this.removeProduct(id);
                 }
@@ -249,6 +251,11 @@ if (typeof window.CompareManager === 'undefined') {
             });
             headerLinks.forEach(link => {
                 link.href = this.getCompareUrl();
+                if (count > 0) {
+                    link.style.display = '';
+                } else {
+                    link.style.display = 'none';
+                }
             });
         }
     };

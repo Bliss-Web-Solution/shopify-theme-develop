@@ -258,20 +258,11 @@
         "padding-block-start": 0,
         "padding-block-end": 32
       }
-    },
-    "compare_bar_xQ9pBY": {
-      "type": "compare-bar",
-      "name": "Compare Bar",
-      "settings": {
-        "background_color": "",
-        "text_color": ""
-      }
     }
   },
   "order": [
     "breadcrumbs",
     "section",
-    "main",
-    "compare_bar_xQ9pBY"
+    "main"
   ]
 }

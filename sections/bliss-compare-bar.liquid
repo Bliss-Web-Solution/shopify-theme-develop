@@ -19,7 +19,7 @@
     transform: translateX(-50%);
     width: 100%;
     max-width: 40%;
-    z-index: 1;
+    z-index: 2;
     background: var(--color-background);
     padding: 0;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
@@ -154,7 +154,7 @@
     }
   }
 
-  .compare-bar__actions .compare-bar__minimized-view {
+  .compare-bar__minimized-view {
     display: none;
     position: absolute;
     top: 0;
@@ -242,8 +242,6 @@
     }
   }
 {% endstyle %}
-
-<script src="{{ 'bliss-compare.js' | asset_url }}" defer="defer"></script>
 
 {% schema %}
 {
