@@ -59,14 +59,17 @@
         "padding-block-end": 80
       }
     },
-    "compare_table_ayYB7e": {
+    "bliss_compare_table_gdmD7j": {
       "type": "bliss-compare-table",
       "name": "Compare Table",
-      "settings": {}
+      "settings": {
+        "background_color": "",
+        "text_color": ""
+      }
     }
   },
   "order": [
     "main",
-    "compare_table_ayYB7e"
+    "bliss_compare_table_gdmD7j"
   ]
 }

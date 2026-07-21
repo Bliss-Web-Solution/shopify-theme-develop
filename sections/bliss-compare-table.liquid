@@ -105,7 +105,6 @@
     });
   });
 </script>
-<script src="{{ 'bliss-compare.js' | asset_url }}" defer="defer"></script>
 
 {% style %}
   .compare-page__container {
@@ -148,6 +147,7 @@
     left: 0;
     z-index: 1;
   }
+
   .compareTable-product {
     text-align: center;
   }
@@ -162,7 +162,7 @@
     width: 100%;
   }
 
-  .compare-table td .button + button {
+  .compare-table td .compareTable-removeProduct {
     width: auto;
     margin: 15px auto 0 auto;
     display: flex;
@@ -173,7 +173,7 @@
     transition: all 0.3s ease-in-out;
     cursor: pointer;
   }
-  .compare-table td .button + button:hover {
+  .compare-table td .compareTable-removeProduct:hover {
     opacity: 0.8;
     text-decoration: none;
   }
