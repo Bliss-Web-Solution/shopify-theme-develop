@@ -11,6 +11,7 @@
 {% endcapture %}
 
 {% render 'product-card', children: children, product: product, product_view_context: product_view_context %}
+{% render 'bliss-compare-toggle', product: product, product_view_context: product_view_context %}
 {% render 'buy-buttons-styles' %}
 {% render 'gift-card-recipient-form-styles' %}
 {% render 'quick-add-styles' %}

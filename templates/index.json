@@ -490,11 +490,17 @@
         "padding-block-start": 48,
         "padding-block-end": 48
       }
+    },
+    "compare_bar_KjmYAm": {
+      "type": "bliss-compare-bar",
+      "name": "Compare Bar",
+      "settings": {}
     }
   },
   "order": [
     "hero_jVaWmY",
     "product_list_fa6P9H",
+    "compare_bar_KjmYAm",
     "bliss_recently_viewed_products_r6pJr6"
   ]
 }
