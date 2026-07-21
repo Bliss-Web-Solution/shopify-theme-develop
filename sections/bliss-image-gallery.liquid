@@ -8,7 +8,7 @@
 <div class="image-gallery-section section section--{{ section.settings.section_width }} section-{{ section.id }}-padding{% if section.settings.background_color != blank %} color-custom-{{ section.id }}{% endif %}">
   <div class="image-gallery-inner">
     {% if section.settings.heading != blank %}
-      <h2 class="gallery-heading {{ section.settings.heading_preset }}" style="text-align: {{ section.settings.alignment }}; color: {{ section.settings.heading_color }};">{{ section.settings.heading | escape }}</h2>
+      <div class="gallery-heading {{ section.settings.heading_preset }}" style="text-align: {{ section.settings.alignment }}; color: {{ section.settings.heading_color }};">{{ section.settings.heading }}</div>
     {% endif %}
 
     <div class="gallery-grid" style="--grid-columns: {{ section.settings.columns_desktop }}; --gap: {{ section.settings.gap }}px;">
@@ -299,7 +299,7 @@
     "name": "Image Gallery Section",
     "settings": [
       {
-        "type": "text",
+        "type": "richtext",
         "id": "heading",
         "label": "Heading",
         "default": "Gallery Section"
