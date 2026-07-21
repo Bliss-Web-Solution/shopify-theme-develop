@@ -33,7 +33,7 @@
     {%- content_for 'block', type: '_product-list-content', id: 'static-header' -%}
   </div>
 
-  <tabbed-collection-component>
+  <tabbed-collection-component data-layout="{{ section.settings.responsive_layout }}">
     <!-- Custom Style Variables for Tabs -->
     {% style %}
       #shopify-section-{{ section.id }} {
@@ -93,7 +93,6 @@
     scrollbar-width: none; /* Hide scrollbar for clean look */
     -webkit-overflow-scrolling: touch;
     width: 100%;
-    justify-content: var(--horizontal-alignment, center);
   }
 
   .tabbed-collection__tabs::-webkit-scrollbar {
@@ -109,7 +108,6 @@
     color: var(--tab-text-color, var(--color-text-secondary, #666));
     cursor: pointer;
     position: relative;
-    white-space: nowrap;
     transition: color 0.2s ease-in-out;
   }
 
@@ -163,6 +161,93 @@
     background-color: var(--tab-active-bg-color, var(--color-text, #000));
     color: var(--color-background, #fff);
   }
+
+  /* Responsive Layouts */
+  @media (max-width: 767px) {
+    tabbed-collection-component[data-layout="tabs"] .tabbed-collection__tabs {
+      flex-wrap: wrap;
+      overflow-x: visible;
+      justify-content: flex-start;
+    }
+    
+    tabbed-collection-component[data-layout="accordion"] .tabbed-collection__tabs-wrapper {
+      display: none;
+    }
+    
+    tabbed-collection-component[data-layout="accordion"] .tabbed-collection__accordion-btn {
+      display: flex;
+    }
+  }
+
+  /* Accordion Styles */
+  .tabbed-collection__accordion-btn {
+    display: none; /* Hidden by default */
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    background: var(--color-background-secondary, #f5f5f5);
+    border: 1px solid var(--color-border, #e5e5e5);
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-text, #000);
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s ease, border-radius 0.2s ease;
+  }
+  
+  .tabbed-collection__accordion-btn:hover {
+    background: var(--color-background-tertiary, #ebebeb);
+  }
+
+  .tabbed-collection__accordion-icon {
+    display: inline-flex;
+    transition: transform 0.3s ease;
+  }
+
+  .tabbed-collection__accordion-btn[aria-expanded="true"] .tabbed-collection__accordion-icon {
+    transform: rotate(180deg);
+  }
+  
+  .tabbed-collection__accordion-btn[aria-expanded="true"] {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-bottom: 0;
+    border-bottom: none;
+  }
+  
+  @media (max-width: 767px) {
+    tabbed-collection-component[data-layout="accordion"] .tabbed-collection__panel {
+      display: grid !important; /* Override inline display block/none from JS for smooth animation */
+      grid-template-rows: 0fr;
+      visibility: hidden;
+      opacity: 0;
+      overflow: hidden;
+      padding: 0 1rem;
+      margin-bottom: 0;
+      margin-top: 0;
+      border: 1px solid transparent;
+      border-top: none;
+      transition: grid-template-rows .35s cubic-bezier(.4,0,.2,1), opacity .25s ease, padding-block .35s cubic-bezier(.4,0,.2,1), margin-block .35s cubic-bezier(.4,0,.2,1), visibility .35s allow-discrete, content-visibility .35s allow-discrete;
+    }
+    
+    tabbed-collection-component[data-layout="accordion"] .tabbed-collection__panel > * {
+      min-height: 0;
+    }
+
+    tabbed-collection-component[data-layout="accordion"] .tabbed-collection__panel.active {
+      grid-template-rows: 1fr;
+      visibility: visible;
+      opacity: 1;
+      border-color: var(--color-border, #e5e5e5);
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-bottom-left-radius: 0.5rem;
+      border-bottom-right-radius: 0.5rem;
+    }
+  }
 {% endstylesheet %}
 
 {% schema %}
@@ -187,6 +272,27 @@
     {
       "type": "header",
       "content": "Tab Settings"
+    },
+    {
+      "type": "select",
+      "id": "responsive_layout",
+      "label": "Responsive Tab Layout",
+      "options": [
+        {
+          "value": "tabs",
+          "label": "Tabs"
+        },
+        {
+          "value": "scroll",
+          "label": "Horizontal Scroll"
+        },
+        {
+          "value": "accordion",
+          "label": "Accordion"
+        }
+      ],
+      "default": "scroll",
+      "info": "Desktop will always show as tabs. This setting applies to mobile/tablet."
     },
     {
       "type": "select",
@@ -242,140 +348,6 @@
       "label": "Tab active background color (Pill style)",
       "placeholder": "Default",
       "visible_if": "{{ section.settings.tab_style == 'pill' }}"
-    },
-    {
-      "type": "header",
-      "content": "t:content.section_layout"
-    },
-    {
-      "type": "checkbox",
-      "id": "carousel_on_mobile",
-      "label": "t:settings.carousel_on_mobile",
-      "default": false
-    },
-    {
-      "type": "range",
-      "id": "max_products",
-      "label": "t:settings.product_count",
-      "min": 1,
-      "max": 16,
-      "step": 1,
-      "default": 4
-    },
-    {
-      "type": "range",
-      "id": "columns",
-      "label": "t:settings.columns",
-      "min": 1,
-      "max": 8,
-      "step": 1,
-      "default": 4
-    },
-    {
-      "type": "select",
-      "id": "mobile_columns",
-      "label": "t:settings.mobile_columns",
-      "options": [
-        {
-          "value": "1",
-          "label": "t:options.one_number"
-        },
-        {
-          "value": "2",
-          "label": "t:options.two_number"
-        }
-      ],
-      "default": "2",
-      "visible_if": "{{ section.settings.carousel_on_mobile == false }}"
-    },
-    {
-      "type": "select",
-      "id": "mobile_card_size",
-      "label": "t:settings.mobile_columns",
-      "options": [
-        {
-          "value": "60cqw",
-          "label": "t:options.one_number"
-        },
-        {
-          "value": "44cqw",
-          "label": "t:options.two_number"
-        }
-      ],
-      "default": "60cqw"
-    },
-    {
-      "type": "range",
-      "id": "columns_gap",
-      "label": "t:settings.horizontal_gap",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 8
-    },
-    {
-      "type": "range",
-      "id": "rows_gap",
-      "label": "t:settings.vertical_gap",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 8
-    },
-    {
-      "type": "header",
-      "content": "t:content.carousel_navigation"
-    },
-    {
-      "type": "select",
-      "id": "icons_style",
-      "label": "t:settings.icon",
-      "options": [
-        {
-          "value": "arrow",
-          "label": "t:options.arrows"
-        },
-        {
-          "value": "chevron",
-          "label": "t:options.chevrons"
-        },
-        {
-          "value": "arrows_large",
-          "label": "t:options.arrows_large"
-        },
-        {
-          "value": "chevron_large",
-          "label": "t:options.chevron_large"
-        },
-        {
-          "value": "none",
-          "label": "t:options.none"
-        }
-      ],
-      "default": "arrow"
-    },
-    {
-      "type": "select",
-      "id": "icons_shape",
-      "label": "t:settings.icon_background",
-      "options": [
-        {
-          "value": "none",
-          "label": "t:options.none"
-        },
-        {
-          "value": "circle",
-          "label": "t:options.circle"
-        },
-        {
-          "value": "square",
-          "label": "t:options.square"
-        }
-      ],
-      "default": "none",
-      "visible_if": "{{ section.settings.icons_style != 'none' }}"
     },
     {
       "type": "select",
@@ -458,14 +430,6 @@
     {
       "name": "Tabbed Collection",
       "settings": {
-        "max_products": 8,
-        "carousel_on_mobile": false,
-        "columns": 4,
-        "mobile_columns": "2",
-        "columns_gap": 8,
-        "rows_gap": 24,
-        "icons_style": "arrow",
-        "icons_shape": "none",
         "section_width": "page-width",
         "gap": 28,
         "padding-block-start": 48,

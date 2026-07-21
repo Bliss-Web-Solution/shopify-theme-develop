@@ -20,6 +20,12 @@ class TabbedCollectionComponent extends Component {
   /** @type {HTMLButtonElement[]} */
   tabButtons = [];
 
+  /** @type {HTMLButtonElement[]} */
+  accordionButtons = [];
+
+  /** @type {number} */
+  activeIndex = 0;
+
   connectedCallback() {
     super.connectedCallback();
 
@@ -34,6 +40,11 @@ class TabbedCollectionComponent extends Component {
     // Clear any existing buttons to avoid duplicate rendering (e.g. during Editor updates)
     tabsContainer.innerHTML = '';
     this.tabButtons = [];
+
+    // Clear any existing accordion buttons
+    panelsContainer.querySelectorAll('.tabbed-collection__accordion-btn').forEach(btn => btn.remove());
+    this.accordionButtons = [];
+    this.activeIndex = 0;
 
     // Create buttons dynamically based on panels metadata
     panels.forEach((panel, index) => {
@@ -64,6 +75,34 @@ class TabbedCollectionComponent extends Component {
 
       tabsContainer.appendChild(btn);
       this.tabButtons.push(btn);
+      
+      // Accordion Button (inserted before panel)
+      const accordionBtn = this.ownerDocument.createElement('button');
+      accordionBtn.type = 'button';
+      accordionBtn.className = 'tabbed-collection__accordion-btn';
+      accordionBtn.setAttribute('aria-expanded', String(index === 0));
+      accordionBtn.setAttribute('aria-controls', panel.id);
+      accordionBtn.id = `accordion-btn-${panel.id}`;
+      accordionBtn.innerHTML = `
+        <span class="tabbed-collection__accordion-title">${title}</span>
+        <span class="tabbed-collection__accordion-icon">
+          <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 1L7 7L13 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      `;
+
+      accordionBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (this.activeIndex === index) {
+          this.selectTab(-1); // Toggle off if already active
+        } else {
+          this.selectTab(index);
+        }
+      });
+
+      panel.parentNode.insertBefore(accordionBtn, panel);
+      this.accordionButtons.push(accordionBtn);
     });
 
     // Handle Theme Editor block selection
@@ -81,11 +120,19 @@ class TabbedCollectionComponent extends Component {
    * @param {number} targetIndex - The index of the tab to activate
    */
   selectTab(targetIndex) {
-    if (targetIndex < 0 || targetIndex >= this.panels.length) return;
+    if (targetIndex < -1 || targetIndex >= this.panels.length) return;
+
+    this.activeIndex = targetIndex;
 
     this.tabButtons.forEach((btn, index) => {
       const isActive = index === targetIndex;
       btn.setAttribute('aria-selected', String(isActive));
+      btn.classList.toggle('active', isActive);
+    });
+
+    this.accordionButtons.forEach((btn, index) => {
+      const isActive = index === targetIndex;
+      btn.setAttribute('aria-expanded', String(isActive));
       btn.classList.toggle('active', isActive);
     });
 
