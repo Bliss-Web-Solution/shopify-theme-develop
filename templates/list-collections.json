@@ -9,6 +9,18 @@
  */
 {
   "sections": {
+    "breadcrumbs": {
+      "type": "bliss-breadcrumbs",
+      "settings": {
+        "enabled": true,
+        "width": "page",
+        "separator": "slash",
+        "alignment": "left",
+        "item_spacing": 8,
+        "padding-block-start": 12,
+        "padding-block-end": 12
+      }
+    },
     "collection_list_Wfgh3m": {
       "type": "main-collection-list",
       "blocks": {
@@ -164,6 +176,7 @@
     }
   },
   "order": [
+    "breadcrumbs",
     "collection_list_Wfgh3m"
   ]
 }

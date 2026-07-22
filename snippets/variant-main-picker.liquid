@@ -57,9 +57,28 @@
         {%- liquid
           assign swatch_count = product_option.values | map: 'swatch' | compact | size
           assign variant_style = block_settings.variant_style
+          assign current_option_name = product_option.name | downcase
+
+          assign button_options_setting = block_settings.button_options | default: settings.button_options
+          assign button_options = button_options_setting | downcase | split: ','
+          for option in button_options
+            assign trimmed_option = option | strip
+            if trimmed_option == current_option_name
+              assign variant_style = 'buttons'
+            endif
+          endfor
+          
+          assign dropdown_options_setting = block_settings.dropdown_options | default: settings.dropdown_options
+          assign dropdown_options = dropdown_options_setting | downcase | split: ','
+          for option in dropdown_options
+            assign trimmed_option = option | strip
+            if trimmed_option == current_option_name
+              assign variant_style = 'dropdowns'
+            endif
+          endfor
 
           if swatch_count > 0 and block_settings.show_swatches
-            if block_settings.variant_style == 'dropdown'
+            if variant_style == 'dropdown' or variant_style == 'dropdowns'
               assign variant_style = 'swatch_dropdown'
             else
               assign variant_style = 'swatch'
@@ -86,7 +105,7 @@
               {{- product_option.selected_value -}}
             </span>
           </div>
-        {%- elsif variant_style == 'swatch' or block_settings.variant_style == 'buttons' -%}
+        {%- elsif variant_style == 'buttons' or variant_style == 'swatch' -%}
           <fieldset
             class="variant-option variant-option--buttons{% if variant_style == 'swatch' %} variant-option--swatches{% else %} variant-option--{{ settings.variant_button_width }}{% endif %}"
             data-fieldset-index="{{ fieldset_index }}"
@@ -174,7 +193,7 @@
             {% endif %}
           </fieldset>
           {%- assign fieldset_index = fieldset_index | plus: 1 -%}
-        {%- elsif block_settings.variant_style == 'dropdowns' -%}
+        {%- elsif variant_style == 'dropdowns' or variant_style == 'dropdown' or variant_style == 'swatch_dropdown' -%}
           {%
             # There is an opportunity to build a custom select component that will allow us to style the select element further (animation for dropdown, swatches shown in the dropdown options, etc)
             # It's too bad as it mean rebuilding baked in behaviours but I think we've already done that for the locale selectors

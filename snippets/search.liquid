@@ -1,5 +1,5 @@
 {%- doc -%}
-  Renders the search action button.
+  Renders the search action button or an inline search bar.
 
   @param {string} [style] - The style of the search action.
   @param {string} [class] - Additional classes for the search action.
@@ -10,31 +10,217 @@
 {%- enddoc -%}
 
 {% unless style == 'none' %}
-  <search-button
-    class="search-action{% if display_style == 'text' %} search-action--text{% endif %}{% if class != blank %} {{ class | strip }}{% endif %}"
-  >
-    <button
-      on:click="#search-modal/showDialog"
-      class="button-unstyled header-actions__action{% if display_style == 'text' %} header-actions__text-style{% endif %}"
+  {% if style == 'open' or style == 'always_open' %}
+    <!-- Desktop: inline always-visible search bar -->
+    {% render 'predictive-search-styles' %}
+    <predictive-search-component
+      class="predictive-search predictive-search--inline color-custom-popover{% if style == 'open' %} mobile:hidden{% endif %}{% if class != blank %} {{ class | strip }}{% endif %}"
+      style="--product-corner-radius: {{ settings.product_corner_radius | default: 8 | append: 'px' }}; --card-corner-radius: {{ settings.card_corner_radius | default: 8 | append: 'px' }};{% if settings.card_title_case == 'uppercase' %} --title-case: uppercase;{% endif %}"
+      data-section-id="predictive-search"
+      data-testid="search-component--inline"
+      role="search"
       aria-label="{{ 'content.search_input_label' | t }}"
-      aria-haspopup="dialog"
     >
-      <span class="{% if display_style == 'icon' %}hidden{% else %}mobile:hidden{% endif %}">
-        {{ 'content.search' | t }}
-      </span>
+      <form
+        action="{{ routes.search_url }}"
+        method="get"
+        role="search"
+        class="predictive-search-form"
+        ref="form"
+        on:keydown="/onSearchKeyDown"
+      >
+        <div class="predictive-search-form__header">
+          <div class="predictive-search-form__header-inner">
+            <label
+              for="Search-inline"
+              class="visually-hidden"
+            >
+              {{- 'content.search_input_label' | t -}}
+            </label>
+            <input
+              class="search-input"
+              id="Search-inline"
+              type="search"
+              name="q"
+              role="combobox"
+              aria-expanded="false"
+              aria-owns="predictive-search-results"
+              aria-controls="predictive-search-results"
+              aria-haspopup="listbox"
+              aria-autocomplete="list"
+              autocomplete="off"
+              placeholder="{{ 'content.search_input_placeholder' | t }}"
+              ref="searchInput"
+              on:input="/search"
+              on:keydown="/onSearchKeyDown"
+            >
+            <input
+              name="options[prefix]"
+              type="hidden"
+              value="last"
+            >
+            <span class="svg-wrapper predictive-search__icon">
+              {{ 'icon-search.svg' | inline_asset_content }}
+            </span>
+            <button
+              type="button"
+              class="button-unstyled predictive-search__reset-button"
+              ref="resetButton"
+              hidden
+              on:click="/resetSearch"
+            >
+              {{ 'actions.clear' | t }}
+            </button>
+          </div>
+        </div>
 
-      <span class="svg-wrapper {% if display_style != 'icon' %}desktop:hidden{% endif %}">
-        {{ 'icon-search.svg' | inline_asset_content }}
-      </span>
-    </button>
-  </search-button>
+        <div class="predictive-search-form__content-wrapper">
+          <div
+            class="predictive-search-form__content"
+            ref="predictiveSearchResults"
+          >
+            {% render 'predictive-search-empty-state',
+              load_empty_state: true,
+              shadow_opacity: 0.1,
+              products_test_id: 'products-list-default--inline'
+            %}
+          </div>
+
+          <div class="predictive-search-form__footer">
+            <button
+              class="button predictive-search__search-button"
+              ref="viewAllButton"
+            >
+              {{ 'content.search_results_view_all' | t }}
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <script>
+        (function() {
+          if (!window.__searchUserInteractionListenersAdded) {
+            window.__searchIsUserInteraction = false;
+            var timer = null;
+
+            function setUserInteraction(e) {
+              var isSearchTarget = e.target && e.target.closest && (
+                e.target.closest('.predictive-search-form__header-inner') ||
+                e.target.closest('.predictive-search-form__content-wrapper')
+              );
+              
+              if (e.type === 'keydown' && e.key === 'Tab') {
+                isSearchTarget = true;
+              }
+
+              if (isSearchTarget) {
+                window.__searchIsUserInteraction = true;
+                if (timer) clearTimeout(timer);
+                timer = setTimeout(function() {
+                  window.__searchIsUserInteraction = false;
+                }, 150);
+              } else {
+                window.__searchIsUserInteraction = false;
+              }
+            }
+
+            window.addEventListener('pointerdown', setUserInteraction, { capture: true, passive: true });
+            window.addEventListener('mousedown', setUserInteraction, { capture: true, passive: true });
+            window.addEventListener('keydown', setUserInteraction, { capture: true, passive: true });
+
+            // Global focus listener (capturing phase) to handle dynamic or morphed elements
+            document.addEventListener('focus', function(e) {
+              if (e.target && e.target.id === 'Search-inline') {
+                if (!window.__searchIsUserInteraction) {
+                  e.target.blur();
+                  // Defer checks to override browser async focus pipeline
+                  setTimeout(function() {
+                    if (document.activeElement === e.target && !window.__searchIsUserInteraction) {
+                      e.target.blur();
+                    }
+                  }, 0);
+                  setTimeout(function() {
+                    if (document.activeElement === e.target && !window.__searchIsUserInteraction) {
+                      e.target.blur();
+                    }
+                  }, 50);
+                }
+              }
+            }, true); // capture: true is mandatory since focus does not bubble
+
+            window.__searchUserInteractionListenersAdded = true;
+          }
+
+          var input = document.getElementById('Search-inline');
+          if (input) {
+            function checkAndBlur() {
+              if (document.activeElement === input && !window.__searchIsUserInteraction) {
+                input.blur();
+              }
+            }
+
+            // Perform immediate and deferred load checks
+            checkAndBlur();
+            setTimeout(checkAndBlur, 0);
+            setTimeout(checkAndBlur, 50);
+            setTimeout(checkAndBlur, 100);
+            setTimeout(checkAndBlur, 200);
+            requestAnimationFrame(checkAndBlur);
+
+            // Clean up focus during transition / pagehide
+            window.addEventListener('pagehide', function() {
+              input.blur();
+            });
+            window.addEventListener('beforeunload', function() {
+              input.blur();
+            });
+
+            // Also blur when any link inside the search component is clicked
+            var comp = input.closest('predictive-search-component');
+            if (comp) {
+              comp.addEventListener('click', function(e) {
+                var target = e.target;
+                if (target.closest('a') || target.closest('button:not(.predictive-search__reset-button)')) {
+                  setTimeout(function() {
+                    input.blur();
+                  }, 0);
+                }
+              }, { passive: true });
+            }
+          }
+        })();
+      </script>
+    </predictive-search-component>
+  {% endif %}
+
+  <!-- Default trigger (icon/text modal trigger) - hidden on desktop if style is open -->
+  {% unless style == 'always_open' %}
+    <search-button
+      class="search-action{% if display_style == 'text' %} search-action--text{% endif %}{% if class != blank %} {{ class | strip }}{% endif %}{% if style == 'open' or style == 'always_open' %} desktop:hidden{% endif %}"
+    >
+      <button
+        on:click="#search-modal/showDialog"
+        class="button-unstyled header-actions__action{% if display_style == 'text' %} header-actions__text-style{% endif %}"
+        aria-label="{{ 'content.search_input_label' | t }}"
+        aria-haspopup="dialog"
+      >
+        <span class="{% if display_style == 'icon' %}hidden{% else %}mobile:hidden{% endif %}">
+          {{ 'content.search' | t }}
+        </span>
+
+        <span class="svg-wrapper {% if display_style != 'icon' %}desktop:hidden{% endif %}">
+          {{ 'icon-search.svg' | inline_asset_content }}
+        </span>
+      </button>
+    </search-button>
+  {% endunless %}
 {% endunless %}
 
 {% stylesheet %}
   .search-action {
     --search-border-radius: var(--style-border-radius-inputs);
     --search-border-width: var(--style-border-width-inputs);
-
+ 
     display: flex;
   }
 
@@ -74,5 +260,93 @@
     [data-menu-style='menu'] .header__column--left .search-action--text {
       margin-inline: 0;
     }
+  }
+
+  /* Inline search styles */
+  .predictive-search--inline {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-width: 250px;
+    max-width: 320px;
+    z-index: var(--layer-raised);
+    background: transparent;
+  }
+
+  @media screen and (max-width: 749px) {
+    .predictive-search--inline {
+      min-width: 120px;
+      grid-column: 1 / -1;
+      max-width: none;
+      width: auto;
+      margin-inline: var(--padding-sm);
+      margin-block: var(--padding-xs);
+    }
+
+    .predictive-search--inline .predictive-search-form__content-wrapper {
+      left: 0 !important;
+      right: 0 !important;
+      width: 100% !important;
+      transform: none !important;
+      max-width: none !important;
+    }
+  }
+
+  .predictive-search--inline .predictive-search-form {
+    margin: 0;
+    width: 100%;
+  }
+
+  .predictive-search--inline .predictive-search-form__header {
+    border: none;
+    background-color: transparent;
+    padding: 0;
+  }
+
+  .predictive-search--inline .predictive-search-form__header-inner {
+    border-radius: var(--style-border-radius-inputs);
+    border: var(--style-border-width-inputs) solid var(--color-input-border, var(--color-border));
+    background-color: var(--color-input-background, var(--color-background));
+    color: var(--color-input-text, var(--color-foreground));
+    transition: box-shadow var(--animation-speed) ease, border-color var(--animation-speed) ease;
+  }
+
+  .predictive-search--inline .predictive-search-form__header-inner:focus-within {
+    outline: none;
+    border-color: var(--color-input-border, var(--color-border));
+    box-shadow: var(--input-box-shadow-focus, 0 0 0 calc(var(--style-border-width-inputs) + 0.5px) var(--color-input-border));
+  }
+
+  .predictive-search--inline .predictive-search-form__content-wrapper {
+    position: absolute;
+    top: calc(100% + 8px);
+    width: 480px;
+    max-width: 90vw;
+    right: 0;
+    left: auto;
+    z-index: var(--layer-window-overlay);
+    background-color: var(--color-background);
+    border: var(--style-border-popover);
+    border-radius: var(--style-border-radius-popover);
+    box-shadow: var(--shadow-popover);
+    display: none;
+    flex-direction: column;
+  }
+
+  .header__column--left .predictive-search--inline .predictive-search-form__content-wrapper {
+    left: 0;
+    right: auto;
+  }
+
+  .header__column--center .predictive-search--inline .predictive-search-form__content-wrapper {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+  }
+
+  .predictive-search--inline:focus-within .predictive-search-form__content-wrapper,
+  .predictive-search--inline .predictive-search-form__content-wrapper:focus-within {
+    display: flex;
   }
 {% endstylesheet %}

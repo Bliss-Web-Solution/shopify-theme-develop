@@ -283,6 +283,13 @@
   defer="defer"
 ></script>
 
+{% if settings.product_compare_toggle %}
+  <script
+    src="{{ 'bliss-compare.js' | asset_url }}"
+    defer="defer"
+  ></script>
+{% endif %}
+
 <script>
   const Theme = {
     translations: {

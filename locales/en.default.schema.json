@@ -135,6 +135,7 @@
     "resource_reference_product_title": "Displays title from parent product",
     "resource_reference_product_variant_picker": "Displays variants from parent product",
     "resource_reference_product_custom_property": "Add customizable input fields to collect custom information that will be added to this order line item, later visible in the order details.",
+    "compare": "Compare",
     "search": "Search",
     "section_layout": "Section layout",
     "section_link": "Section link",
@@ -1038,6 +1039,9 @@
       "input_preset": "Input",
       "checkbox_preset": "Checkbox label"
     },
+    // Enable Compare toggle on collection pages
+    "product_compare": "Product compare",
+    // End
     // Checkbox setting to enable quick add to cart from product cards
     "quick_add": "Quick add",
     // Color scheme for quick add buttons on product cards
@@ -1054,6 +1058,7 @@
     "scroll_speed": "Time to next announcement",
     "search": "Search",
     "search_icon": "Search icon",
+    "compare_icon": "Compare icon",
     // Setting for search bar placement in header
     "search_position": "Position",
     "search_row": "Row",
