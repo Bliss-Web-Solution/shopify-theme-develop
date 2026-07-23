@@ -240,6 +240,27 @@
       ],
       "default": "none",
       "visible_if": "{{ block.settings.icons_style != 'none' and block.settings.layout_type == 'carousel' or block.settings.carousel_on_mobile == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dots",
+      "label": "Show pagination dots",
+      "default": false,
+      "visible_if": "{{ block.settings.layout_type == 'carousel' or block.settings.carousel_on_mobile == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_peek",
+      "label": "Peek next slide (Desktop)",
+      "default": true,
+      "visible_if": "{{ block.settings.layout_type == 'carousel' or block.settings.carousel_on_mobile == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_peek_mobile",
+      "label": "Peek next slide (Mobile)",
+      "default": true,
+      "visible_if": "{{ block.settings.layout_type == 'carousel' or block.settings.carousel_on_mobile == true }}"
     }
   ],
   "presets": [
