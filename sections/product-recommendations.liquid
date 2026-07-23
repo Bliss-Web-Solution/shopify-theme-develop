@@ -126,7 +126,12 @@
         class="
           resource-list
           {% if section.settings.layout_type == 'carousel' %}
-            force-full-width
+            {% if section.settings.enable_peek != false %}
+              force-full-width-desktop
+            {% endif %}
+            {% if section.settings.enable_peek_mobile != false %}
+              force-full-width-mobile
+            {% endif %}
           {% endif %}
           {% if section.settings.carousel_on_mobile and section.settings.layout_type != 'carousel' %}
             hidden--mobile
@@ -138,6 +143,12 @@
         {% endif %}
         data-has-recommendations="{{ has_recommendations }}"
       >
+        {% liquid
+          assign rec_slide_count = slides.size
+          if rec_slide_count == 0
+            assign rec_slide_count = section.settings.max_products
+          endif
+        %}
         {% case section.settings.layout_type %}
           {% when 'grid' %}
             {{ list_items }}
@@ -145,7 +156,7 @@
             {% render 'resource-list-carousel',
               ref: 'resourceListCarousel',
               slides: slides,
-              slide_count: recommendations.products.size,
+              slide_count: rec_slide_count,
               settings: section.settings
             %}
         {% endcase %}
@@ -159,7 +170,9 @@
           class="
             resource-list
             hidden--desktop
-            force-full-width
+            {% if section.settings.enable_peek_mobile != false %}
+              force-full-width-mobile
+            {% endif %}
           "
           style="
             --resource-list-gap: {{ mobile_carousel_gap }}px;
@@ -169,7 +182,7 @@
           {% render 'resource-list-carousel',
             ref: 'resourceListCarouselMobile',
             slides: slides,
-            slide_count: recommendations.products.size,
+            slide_count: rec_slide_count,
             settings: section.settings
           %}
         </div>
@@ -392,6 +405,28 @@
       "default": "none",
       "visible_if": "{{ section.settings.icons_style != 'none' and section.settings.layout_type == 'carousel' or section.settings.carousel_on_mobile == true }}"
     },
+    {
+      "type": "checkbox",
+      "id": "show_dots",
+      "label": "Show pagination dots",
+      "default": false,
+      "visible_if": "{{ section.settings.layout_type == 'carousel' or section.settings.carousel_on_mobile == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_peek",
+      "label": "Peek next slide (Desktop)",
+      "default": true,
+      "visible_if": "{{ section.settings.layout_type == 'carousel' or section.settings.carousel_on_mobile == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_peek_mobile",
+      "label": "Peek next slide (Mobile)",
+      "default": true,
+      "visible_if": "{{ section.settings.layout_type == 'carousel' or section.settings.carousel_on_mobile == true }}"
+    },
+
     {
       "type": "header",
       "content": "t:content.section_layout"

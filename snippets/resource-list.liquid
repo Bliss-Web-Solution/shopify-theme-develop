@@ -77,10 +77,21 @@
 
     when 'carousel'
       assign resource_list_classes = 'resource-list__carousel'
+      assign carousel_mobile_columns = 1
+      if mobile_card_size != blank
+        if mobile_card_size == '44cqw'
+          assign carousel_mobile_columns = 2
+        else
+          assign carousel_mobile_columns = 1
+        endif
+      elsif settings.mobile_columns != blank
+        assign carousel_mobile_columns = settings.mobile_columns
+      endif
+
       capture resource_list_styles
         echo '--resource-list-column-gap-desktop: ' | append: columns_gap | append: 'px;'
         echo '--column-count: ' | append: columns | append: ';'
-        echo '--column-count-mobile: 1;'
+        echo '--column-count-mobile: ' | append: carousel_mobile_columns | append: ';'
         echo '--mobile-card-size: ' | append: mobile_card_size | append: ';'
       endcapture
 
@@ -101,7 +112,13 @@
   class="
     resource-list
     {% if layout_type == 'carousel' %}
-      force-full-width
+      {% if settings.enable_peek != false %}
+        force-full-width-desktop
+      {% endif %}
+      {% if settings.enable_peek_mobile != false %}
+        force-full-width-mobile
+      {% endif %}
+
     {% endif %}
     {% if settings.carousel_on_mobile and layout_type != 'carousel' %}
       hidden--mobile

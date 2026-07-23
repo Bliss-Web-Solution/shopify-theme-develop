@@ -179,6 +179,23 @@
           slide.setAttribute('on:click', '/select/' + idx);
         });
         slideshow.style.setProperty('--slideshow-timeline', slides.map(function (_, i) { return '--slide-' + i; }).join(','));
+
+        const dotsContainer = frag.querySelector('.slideshow-controls__dots');
+        if (dotsContainer) {
+          if (slides.length <= 1) {
+            dotsContainer.innerHTML = '';
+            dotsContainer.hidden = true;
+            dotsContainer.style.display = 'none';
+          } else {
+            let newDotsHtml = '';
+            slides.forEach(function (_, idx) {
+              newDotsHtml += '<li><button class="slideshow-control button button-unstyled" style="animation-timeline: --slide-' + idx + '" aria-label="Go to slide ' + (idx + 1) + '" on:click="/select/' + idx + '" ref="dots[]" data-target-index="' + idx + '" ' + (idx === 0 ? 'aria-selected="true"' : 'aria-selected="false"') + '>' + (idx + 1) + '</button></li>';
+            });
+            dotsContainer.innerHTML = newDotsHtml;
+            dotsContainer.hidden = false;
+            dotsContainer.style.removeProperty('display');
+          }
+        }
       }
 
       // Remove any previously injected resource-list elements
@@ -388,6 +405,27 @@
       ],
       "default": "none",
       "visible_if": "{{ section.settings.icons_style != 'none' and section.settings.layout_type == 'carousel' or section.settings.carousel_on_mobile == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dots",
+      "label": "Show pagination dots",
+      "default": false,
+      "visible_if": "{{ section.settings.layout_type == 'carousel' or section.settings.carousel_on_mobile == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_peek",
+      "label": "Peek next slide (Desktop)",
+      "default": true,
+      "visible_if": "{{ section.settings.layout_type == 'carousel' or section.settings.carousel_on_mobile == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_peek_mobile",
+      "label": "Peek next slide (Mobile)",
+      "default": true,
+      "visible_if": "{{ section.settings.layout_type == 'carousel' or section.settings.carousel_on_mobile == true }}"
     },
     {
       "type": "header",
