@@ -75,7 +75,7 @@ class ProductRecommendations extends Component {
     const { productId, recommendationsPerformed, sectionId, intent } = this.dataset;
 
     if (!productId || !sectionId) {
-      return;
+      throw new Error('Product ID and a section ID are required');
     }
 
     // If the recommendations have already been loaded, accounts for the case where the Theme Editor
