@@ -83,6 +83,7 @@ class StickyAddToCartComponent extends Component {
     document.addEventListener(ThemeEvents.quantitySelectorUpdate, this.#handleQuantityUpdate, { signal });
 
     this.#getInitialQuantity();
+    this.#updateWishlistButton();
 
     // IntersectionObserver callbacks gate visibility on #isChatActive(), but
     // if the shopper scrolls before the Inbox bundle has upgraded
@@ -257,6 +258,15 @@ class StickyAddToCartComponent extends Component {
         if (variant == null) {
           this.#handleVariantUnavailable();
         }
+
+        // Read the morphed quantity input's value to keep internal quantity state accurate
+        const stickyQuantityInput = this.querySelector('.sticky-add-to-cart__bar input[name="quantity"]');
+        if (stickyQuantityInput) {
+          this.#currentQuantity = parseInt(stickyQuantityInput.value, 10) || 1;
+        }
+        this.#syncQuantityInputs(this.#currentQuantity);
+        this.#updateWishlistButton();
+
         // Restore the current quantity display if needed
         this.#updateButtonText();
       })
@@ -264,6 +274,36 @@ class StickyAddToCartComponent extends Component {
         if (error?.name !== 'AbortError') console.warn('[sticky-add-to-cart] Event promise rejected:', error);
       });
   };
+
+  /**
+   * Updates the xb-product-id and xb-variant-id attributes on the sticky wishlist button,
+   * hiding the button if the wishlist app is not installed or has no content.
+   */
+  #updateWishlistButton() {
+    const wishlistButton = this.querySelector('xb-wishlist-button');
+    if (!wishlistButton) return;
+
+    if (!customElements.get('xb-wishlist-button') && wishlistButton.children.length === 0) {
+      wishlistButton.style.display = 'none';
+      customElements.whenDefined('xb-wishlist-button').then(() => {
+        if (!this.contains(wishlistButton)) return;
+        wishlistButton.style.removeProperty('display');
+        this.#updateWishlistButton();
+      });
+      return;
+    }
+
+    wishlistButton.style.removeProperty('display');
+    const productId = this.dataset.productId;
+    if (productId) {
+      wishlistButton.setAttribute('xb-product-id', productId);
+    }
+
+    const currentVariantId = this.dataset.currentVariantId;
+    if (currentVariantId) {
+      wishlistButton.setAttribute('xb-variant-id', currentVariantId);
+    }
+  }
 
   /**
    * Updates the variant title based on selected options when the variant is unavailable
@@ -313,8 +353,36 @@ class StickyAddToCartComponent extends Component {
     if (event.detail.cartLine) return;
 
     this.#currentQuantity = event.detail.quantity;
+    this.#syncQuantityInputs(this.#currentQuantity);
     this.#updateButtonText();
   };
+
+  /**
+   * Synchronizes quantity input values across all quantity selectors for current variant
+   * @param {number} newQuantity - The new quantity value to synchronize
+   */
+  #syncQuantityInputs(newQuantity) {
+    const currentVariantId = this.dataset.currentVariantId;
+    const targetSection = this.closest('.shopify-section') ?? document;
+    const quantitySelectors = targetSection.querySelectorAll('quantity-selector-component');
+
+    quantitySelectors.forEach((selector) => {
+      if (
+        selector.dataset.variantId &&
+        currentVariantId &&
+        selector.dataset.variantId !== currentVariantId.toString()
+      ) {
+        return;
+      }
+      const input = selector.querySelector('input[ref="quantityInput"], input[name="quantity"]');
+      if (input && parseInt(input.value, 10) !== newQuantity) {
+        input.value = newQuantity.toString();
+        if ('updateButtonStates' in selector && typeof selector.updateButtonStates === 'function') {
+          /** @type {any} */ (selector).updateButtonStates();
+        }
+      }
+    });
+  }
 
   /**
    * Shows the sticky bar with animation
