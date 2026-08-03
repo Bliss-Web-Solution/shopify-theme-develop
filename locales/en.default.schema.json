@@ -857,6 +857,7 @@
     "error_color": "Error",
     "expand_first_group": "Expand first group",
     "extend_media_to_screen_edge": "Extend media to screen edge",
+    "align_content_to_container": "Align content to container width",
     "extend_summary": "Extend to screen edge",
     "extra_large": "Extra large",
     "extra_small": "Extra small",

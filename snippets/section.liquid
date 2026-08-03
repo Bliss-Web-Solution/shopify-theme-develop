@@ -21,7 +21,7 @@
 
 <div class="section-background color-custom-{{ section_id }}"></div>
 <div
-  class="section section--{{ section.settings.section_width }} color-custom-{{ section_id }}"
+  class="section section--{{ section.settings.section_width }} color-custom-{{ section_id }}{% if section.settings.align_content_to_container %} section--align-container{% endif %}"
   data-testid="ui-test-section"
 
   {% if request.visual_preview_mode %}
@@ -107,5 +107,18 @@
 
   .custom-section-content {
     z-index: var(--layer-flat);
+  }
+
+  .section--full-width.section--align-container {
+    .group-block:first-child {
+      @media screen and (min-width: 750px) {
+        --padding-inline-start: var(--util-page-margin-offset) !important;
+      }
+    }
+    .group-block:last-child {
+      @media screen and (min-width: 750px) {
+        --padding-inline-end: var(--util-page-margin-offset) !important;
+      }
+    }
   }
 {% endstylesheet %}
