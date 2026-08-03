@@ -1,0 +1,714 @@
+{% liquid
+  if section.settings.background_color != blank
+    render 'contrast-override', background_color: section.settings.background_color, section_id: section.id
+  endif
+%}
+
+<script
+  src="{{ 'bliss-tabbed-collection.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+
+{%- if section.blocks.size > 0 -%}
+<div
+  class="section-background{% if section.settings.background_color != blank %} color-custom-{{ section.id }}{% endif %}"
+></div>
+<div
+  data-testid="tabbed-collection"
+  class="
+    section
+    section--{{ section.settings.section_width }}
+    {% if section.settings.background_color != blank %}color-custom-{{ section.id }}{% endif %}
+    section-resource-list
+    spacing-style
+    gap-style
+  "
+  style="
+    {% render 'spacing-style', settings: section.settings %}
+    {% render 'gap-style', value: section.settings.gap %}
+  "
+>
+  <div class="section-resource-list__header">
+    {%- content_for 'block', type: '_product-list-content', id: 'static-header' -%}
+  </div>
+
+  <tabbed-collection-component data-layout="{{ section.settings.responsive_layout }}">
+    <!-- Custom Style Variables for Tabs -->
+    {% style %}
+      #shopify-section-{{ section.id }} {
+        {% if section.settings.tab_text_color != blank %}
+          --tab-text-color: {{ section.settings.tab_text_color }};
+        {% endif %}
+        {% if section.settings.tab_active_color != blank %}
+          --tab-active-color: {{ section.settings.tab_active_color }};
+        {% endif %}
+        {% if section.settings.tab_active_bg_color != blank %}
+          --tab-active-bg-color: {{ section.settings.tab_active_bg_color }};
+        {% endif %}
+        {% if section.settings.accordion_bg_color != blank %}
+          --accordion-bg-color: {{ section.settings.accordion_bg_color }};
+        {% endif %}
+        {% if section.settings.accordion_active_bg_color != blank %}
+          --accordion-active-bg-color: {{ section.settings.accordion_active_bg_color }};
+        {% endif %}
+      }
+    {% endstyle %}
+
+    <!-- Tabs Navigation Wrapper (populated dynamically by JS) -->
+    <div class="tabbed-collection__tabs-wrapper" style="--horizontal-alignment: {{ section.settings.tab_alignment }};">
+      <div
+        class="tabbed-collection__tabs"
+        role="tablist"
+        data-style="{{ section.settings.tab_style | default: 'underline' }}"
+        ref="tabsContainer"
+      ></div>
+    </div>
+
+    <!-- Tab Panels Wrapper -->
+    <div class="tabbed-collection__panels" ref="panelsContainer">
+      {%- content_for 'blocks' -%}
+    </div>
+
+    {%- if section.blocks.size == 0 -%}
+      <div class="tabbed-collection__empty">
+        <p style="text-align: center; padding: 2rem;">Please add Tab blocks inside the section settings to display collections.</p>
+      </div>
+    {%- endif -%}
+  </tabbed-collection-component>
+</div>
+{%- endif -%}
+
+{% stylesheet %}
+  tabbed-collection-component {
+    display: block;
+    width: 100%;
+  }
+
+  .tabbed-collection__tabs-wrapper:has(.tabbed-collection__tabs[data-style="pill"]) {
+    border-bottom: none;
+  }
+
+  .tabbed-collection__tabs-wrapper {
+    display: flex;
+    justify-content: var(--horizontal-alignment, center);
+    border-bottom: 1px solid var(--color-border, #e5e5e5);
+    margin-bottom: 2rem;
+  }
+
+  .tabbed-collection__tabs {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    scrollbar-width: none; /* Hide scrollbar for clean look */
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    justify-content: var(--horizontal-alignment);
+  }
+
+  .tabbed-collection__tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tabbed-collection__tab-btn {
+    background: none;
+    border: none;
+    padding: 0.75rem 0.25rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    white-space: nowrap;
+    color: var(--tab-text-color, var(--color-text-secondary, #666));
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s ease-in-out;
+  }
+
+  .tabbed-collection__tab-btn::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--tab-active-color, var(--color-text, #000));
+    transform: scaleX(0);
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .tabbed-collection__tab-btn.active {
+    color: var(--tab-active-color, var(--color-text, #000));
+    font-weight: 600;
+  }
+
+  .tabbed-collection__tab-btn.active::after {
+    transform: scaleX(1);
+  }
+
+  .tabbed-collection__tab-btn:hover {
+    color: var(--tab-active-color, var(--color-text, #000));
+  }
+
+  /* Pill Style */
+  .tabbed-collection__tabs[data-style="pill"] {
+    background: var(--color-background-secondary, #f5f5f5);
+    padding: 0.25rem;
+    border-radius: 2rem;
+    border: none;
+    gap: 0.5rem;
+    width: auto;
+    display: inline-flex;
+    margin-bottom: -1px;
+  }
+
+  .tabbed-collection__tabs[data-style="pill"] .tabbed-collection__tab-btn {
+    padding: 0.5rem 1.5rem;
+    border-radius: 1.5rem;
+    transition: background-color 0.25s ease-in-out, color 0.25s ease-in-out;
+  }
+
+  .tabbed-collection__tabs[data-style="pill"] .tabbed-collection__tab-btn::after {
+    display: none;
+  }
+
+  .tabbed-collection__tabs[data-style="pill"] .tabbed-collection__tab-btn.active {
+    background-color: var(--tab-active-bg-color, var(--color-text, #000));
+    color: var(--tab-active-color, #fff);
+  }
+
+  /* Responsive Layouts */
+  @media (max-width: 767px) {
+    tabbed-collection-component[data-layout="tabs"] .tabbed-collection__tabs {
+      flex-wrap: wrap;
+      overflow-x: visible;
+      justify-content: flex-start;
+    }
+    
+    tabbed-collection-component[data-layout="accordion"] .tabbed-collection__tabs-wrapper {
+      display: none;
+    }
+    
+    tabbed-collection-component[data-layout="accordion"] .tabbed-collection__accordion-btn {
+      display: flex;
+    }
+  }
+
+  /* Accordion Styles */
+  .tabbed-collection__accordion-btn {
+    display: none; /* Hidden by default */
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    background: var(--accordion-bg-color, var(--color-background-secondary, #f5f5f5));
+    border: 1px solid var(--color-border, #e5e5e5);
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--tab-text-color, var(--color-text, #000));
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s ease, border-radius 0.2s ease;
+  }
+  
+  .tabbed-collection__accordion-btn:hover {
+    background: var(--accordion-bg-color, var(--color-background-tertiary, #ebebeb));
+    opacity: 0.9;
+  }
+
+  .tabbed-collection__accordion-icon {
+    display: inline-flex;
+    transition: transform 0.3s ease;
+  }
+
+  .tabbed-collection__accordion-btn[aria-expanded="true"] .tabbed-collection__accordion-icon {
+    transform: rotate(180deg);
+  }
+  
+  .tabbed-collection__accordion-btn[aria-expanded="true"] {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-bottom: 0;
+    border-bottom: none;
+    background: var(--accordion-active-bg-color, var(--tab-active-bg-color, var(--tab-active-color, #000)));
+    color: var(--tab-active-color, #fff);
+  }
+  
+  @media (max-width: 767px) {
+    tabbed-collection-component[data-layout="accordion"] .tabbed-collection__panel {
+      display: grid !important; /* Override inline display block/none from JS for smooth animation */
+      grid-template-rows: 0fr;
+      visibility: hidden;
+      opacity: 0;
+      overflow: hidden;
+      padding: 0 1rem;
+      margin-block: 0;
+      border: 1px solid transparent;
+      border-top: none;
+      transition: grid-template-rows .35s cubic-bezier(.4,0,.2,1), opacity .25s ease, padding-block .35s cubic-bezier(.4,0,.2,1), margin-block .35s cubic-bezier(.4,0,.2,1), visibility .35s allow-discrete, content-visibility .35s allow-discrete;
+    }
+    
+    tabbed-collection-component[data-layout="accordion"] .tabbed-collection__panel > * {
+      min-height: 0;
+    }
+
+    tabbed-collection-component[data-layout="accordion"] .tabbed-collection__panel.active {
+      grid-template-rows: 1fr;
+      visibility: visible;
+      opacity: 1;
+      border-color: var(--color-border, #e5e5e5);
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-bottom-left-radius: 0.5rem;
+      border-bottom-right-radius: 0.5rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product Tabbed Section",
+  "class": "ui-test-tabbed-collection",
+  "blocks": [
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "@app"
+    },
+    {
+      "type": "_divider"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Tab Settings"
+    },
+    {
+      "type": "select",
+      "id": "responsive_layout",
+      "label": "Responsive Tab Layout",
+      "options": [
+        {
+          "value": "tabs",
+          "label": "Tabs"
+        },
+        {
+          "value": "scroll",
+          "label": "Horizontal Scroll"
+        },
+        {
+          "value": "accordion",
+          "label": "Accordion"
+        }
+      ],
+      "default": "scroll",
+      "info": "Desktop will always show as tabs. This setting applies to mobile/tablet."
+    },
+    {
+      "type": "select",
+      "id": "tab_style",
+      "label": "Tab style",
+      "options": [
+        {
+          "value": "underline",
+          "label": "Underline"
+        },
+        {
+          "value": "pill",
+          "label": "Pill"
+        }
+      ],
+      "default": "underline"
+    },
+    {
+      "type": "select",
+      "id": "tab_alignment",
+      "label": "Tab alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "color",
+      "id": "tab_text_color",
+      "label": "Tab text color (Inactive)",
+      "placeholder": "Default"
+    },
+    {
+      "type": "color",
+      "id": "tab_active_color",
+      "label": "Tab active text color",
+      "placeholder": "Default"
+    },
+    {
+      "type": "color",
+      "id": "tab_active_bg_color",
+      "label": "Tab active background color (Pill style)",
+      "placeholder": "Default",
+      "visible_if": "{{ section.settings.tab_style == 'pill' }}"
+    },
+    {
+      "type": "color",
+      "id": "accordion_bg_color",
+      "label": "Accordion background color (Inactive)",
+      "placeholder": "Default",
+      "visible_if": "{{ section.settings.responsive_layout == 'accordion' }}"
+    },
+    {
+      "type": "color",
+      "id": "accordion_active_bg_color",
+      "label": "Accordion background color (Active)",
+      "placeholder": "Default",
+      "visible_if": "{{ section.settings.responsive_layout == 'accordion' }}"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "t:options.page"
+        },
+        {
+          "value": "full-width",
+          "label": "t:options.full"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "select",
+      "id": "horizontal_alignment",
+      "label": "t:settings.alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "t:options.left"
+        },
+        {
+          "value": "center",
+          "label": "t:options.center"
+        },
+        {
+          "value": "flex-end",
+          "label": "t:options.right"
+        }
+      ],
+      "default": "flex-start"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "t:settings.gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "t:settings.background_color",
+      "placeholder": "t:settings.default"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Tabbed Section",
+      "settings": {
+        "section_width": "page-width",
+        "gap": 28,
+        "padding-block-start": 48,
+        "padding-block-end": 48,
+        "tab_style": "underline",
+        "tab_alignment": "center"
+      },
+      "blocks": {
+        "static-header": {
+          "type": "_product-list-content",
+          "name": "t:names.header",
+          "static": true,
+          "settings": {
+            "content_direction": "row",
+            "vertical_on_mobile": false,
+            "horizontal_alignment": "space-between",
+            "vertical_alignment": "flex-end",
+            "align_baseline": true,
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 12,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "custom_height": 100,
+            "background_media": "none",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "product_list_text": {
+              "type": "_product-list-text",
+              "name": "t:names.collection_title",
+              "settings": {
+                "text": "<h2>Products Collections</h2>",
+                "type_preset": "h3",
+                "font": "var(--font-body--family)",
+                "font_size": "h4",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              }
+            }
+          },
+          "block_order": ["product_list_text"]
+        },
+        "tab_1": {
+          "type": "bliss-product-tab",
+          "settings": {
+            "title": "Tab 1"
+          },
+          "blocks": {
+            "static-product-card": {
+              "type": "_product-card",
+              "name": "Product Card",
+              "static": true,
+              "settings": {
+                "product_card_gap": 4,
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "product-card-gallery": {
+                  "type": "_product-card-gallery",
+                  "name": "Product Card Media",
+                  "settings": {
+                    "image_ratio": "adapt",
+                    "border": "none",
+                    "border_width": 1,
+                    "border_opacity": 100,
+                    "border_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  }
+                },
+                "product_title": {
+                  "type": "product-title",
+                  "name": "Product Title",
+                  "settings": {
+                    "width": "fit-content",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "paragraph",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 4,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  }
+                },
+                "price": {
+                  "type": "price",
+                  "name": "Product Price",
+                  "settings": {
+                    "show_sale_price_first": true,
+                    "show_installments": false,
+                    "show_tax_info": false,
+                    "type_preset": "h6",
+                    "width": "100%",
+                    "alignment": "left",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  }
+                }
+              },
+              "block_order": [
+                "product-card-gallery",
+                "product_title",
+                "price"
+              ]
+            }
+          }
+        },
+        "tab_2": {
+          "type": "bliss-product-tab",
+          "settings": {
+            "title": "Tab 2"
+          },
+          "blocks": {
+            "static-product-card": {
+              "type": "_product-card",
+              "name": "Product Card",
+              "static": true,
+              "settings": {
+                "product_card_gap": 4,
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "product-card-gallery": {
+                  "type": "_product-card-gallery",
+                  "name": "Product Card Media",
+                  "settings": {
+                    "image_ratio": "adapt",
+                    "border": "none",
+                    "border_width": 1,
+                    "border_opacity": 100,
+                    "border_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  }
+                },
+                "product_title": {
+                  "type": "product-title",
+                  "name": "Product Title",
+                  "settings": {
+                    "width": "fit-content",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "paragraph",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 4,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  }
+                },
+                "price": {
+                  "type": "price",
+                  "name": "Product Price",
+                  "settings": {
+                    "show_sale_price_first": true,
+                    "show_installments": false,
+                    "show_tax_info": false,
+                    "type_preset": "h6",
+                    "width": "100%",
+                    "alignment": "left",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  }
+                }
+              },
+              "block_order": [
+                "product-card-gallery",
+                "product_title",
+                "price"
+              ]
+            }
+          }
+        }
+      },
+      "block_order": [
+        "tab_1",
+        "tab_2"
+      ]
+    }
+  ]
+}
+{% endschema %}

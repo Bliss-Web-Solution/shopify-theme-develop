@@ -16,7 +16,7 @@
     when 'grid'
       assign classes = 'resource-list--grid'
     when 'carousel'
-      assign classes = 'resource-list--carousel'
+      assign classes = 'resource-list__carousel'
   endcase
 
   if block_settings.background_color != blank
@@ -30,9 +30,12 @@
 
 {% render 'quick-add-styles' %}
 {% render 'quick-add-modal-styles' %}
+{% render 'swatch-styles' %}
+{% render 'quantity-selector-styles' %}
 {% render 'variant-picker-styles' %}
 {% render 'product-badges-styles' %}
 {% render 'resource-list-styles' %}
+{% render 'product-recommendations-styles' %}
 <product-recommendations
   id="product-recommendations-{{ block.id }}"
   class="product-recommendations"
@@ -122,6 +125,14 @@
       <div
         class="
           resource-list
+          {% if block_settings.layout_type == 'carousel' %}
+            {% if block_settings.enable_peek != false %}
+              force-full-width-desktop
+            {% endif %}
+            {% if block_settings.enable_peek_mobile != false %}
+              force-full-width-mobile
+            {% endif %}
+          {% endif %}
           {% if block_settings.carousel_on_mobile and block_settings.layout_type != 'carousel' %}
             hidden--mobile
           {% endif %}
@@ -132,6 +143,12 @@
         {% endif %}
         data-has-recommendations="{{ has_recommendations }}"
       >
+        {% liquid
+          assign rec_slide_count = slides.size
+          if rec_slide_count == 0
+            assign rec_slide_count = block_settings.max_products
+          endif
+        %}
         {% case block_settings.layout_type %}
           {% when 'grid' %}
             {{ list_items }}
@@ -139,7 +156,7 @@
             {% render 'resource-list-carousel',
               ref: 'resourceListCarousel',
               slides: slides,
-              slide_count: recommendations.products.size,
+              slide_count: rec_slide_count,
               settings: block_settings
             %}
         {% endcase %}
@@ -153,14 +170,16 @@
           class="
             resource-list
             hidden--desktop
-            force-full-width
+            {% if block_settings.enable_peek_mobile != false %}
+              force-full-width-mobile
+            {% endif %}
           "
           style="--resource-list-gap: {{ mobile_carousel_gap }}px;"
         >
           {% render 'resource-list-carousel',
             ref: 'resourceListCarouselMobile',
             slides: slides,
-            slide_count: recommendations.products.size,
+            slide_count: rec_slide_count,
             settings: block_settings
           %}
         </div>
@@ -349,6 +368,28 @@
       "default": "none",
       "visible_if": "{{ block.settings.icons_style != 'none' and block.settings.layout_type == 'carousel' or block.settings.carousel_on_mobile == true }}"
     },
+    {
+      "type": "checkbox",
+      "id": "show_dots",
+      "label": "Show pagination dots",
+      "default": false,
+      "visible_if": "{{ block.settings.layout_type == 'carousel' or block.settings.carousel_on_mobile == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_peek",
+      "label": "Peek next slide (Desktop)",
+      "default": true,
+      "visible_if": "{{ block.settings.layout_type == 'carousel' or block.settings.carousel_on_mobile == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_peek_mobile",
+      "label": "Peek next slide (Mobile)",
+      "default": true,
+      "visible_if": "{{ block.settings.layout_type == 'carousel' or block.settings.carousel_on_mobile == true }}"
+    },
+
     {
       "type": "header",
       "content": "t:content.layout"
