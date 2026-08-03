@@ -173,10 +173,7 @@
   /* Lightbox Styles */
   .gallery-lightbox {
     position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    inset: 0;
     z-index: 9999;
     display: flex;
     justify-content: center;
@@ -266,128 +263,86 @@
 {% endstyle %}
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', () => {
     const sectionId = '{{ section.id }}';
     const sectionEl = document.querySelector('#shopify-section-' + sectionId) || document.body;
-    
-    const triggers = sectionEl.querySelectorAll('.gallery-media-trigger');
     const lightbox = document.getElementById(`GalleryLightbox-${sectionId}`);
-    
-    if (!lightbox || triggers.length === 0) return;
+    if (!lightbox) return;
+
+    const triggers = sectionEl.querySelectorAll('.gallery-media-trigger');
+    if (!triggers.length) return;
 
     const lightboxImage = document.getElementById(`GalleryLightboxImage-${sectionId}`);
     const lightboxVideo = document.getElementById(`GalleryLightboxVideo-${sectionId}`);
-    const prevBtn = lightbox.querySelector('.gallery-prev');
-    const nextBtn = lightbox.querySelector('.gallery-next');
-    const closeBtn = lightbox.querySelector('.gallery-close');
     
-    let currentIndex = 0;
-
-    // Build media items array from triggers
     const mediaItems = Array.from(triggers).map(trigger => {
-      const type = trigger.getAttribute('data-media-type');
-      if (type === 'video') {
-        const sourcesRaw = trigger.getAttribute('data-video-sources') || '';
-        const sources = sourcesRaw.split(',,').map(s => {
-          const parts = s.split('||');
-          return { url: parts[0], mime: parts[1] || 'video/mp4' };
-        }).filter(s => s.url);
-        return { type: 'video', sources: sources };
-      } else {
-        return {
-          type: 'image',
-          src: trigger.getAttribute('data-full-image'),
-          alt: trigger.getAttribute('alt') || ''
-        };
+      if (trigger.dataset.mediaType === 'video') {
+        const html = (trigger.dataset.videoSources || '').split(',,')
+          .map(s => s ? `<source src="${s.split('||')[0]}" type="${s.split('||')[1] || 'video/mp4'}">` : '')
+          .join('');
+        return { type: 'video', html };
       }
+      return { type: 'image', src: trigger.dataset.fullImage, alt: trigger.getAttribute('alt') || '' };
     });
 
-    function updateLightboxMedia() {
-      const item = mediaItems[currentIndex];
-      if (item.type === 'video') {
-        lightboxImage.style.display = 'none';
+    let currentIndex = 0;
+    const totalItems = mediaItems.length;
+
+    const updateMedia = () => {
+      const { type, html, src, alt } = mediaItems[currentIndex];
+      const isVideo = type === 'video';
+      
+      lightboxImage.style.display = isVideo ? 'none' : 'block';
+      lightboxVideo.style.display = isVideo ? 'block' : 'none';
+
+      if (isVideo) {
         lightboxImage.src = '';
-        lightboxVideo.innerHTML = '';
-        item.sources.forEach(s => {
-          const source = document.createElement('source');
-          source.src = s.url;
-          source.type = s.mime;
-          lightboxVideo.appendChild(source);
-        });
-        lightboxVideo.style.display = 'block';
+        lightboxVideo.innerHTML = html;
         lightboxVideo.load();
         lightboxVideo.play().catch(() => {});
       } else {
-        lightboxVideo.style.display = 'none';
         lightboxVideo.pause();
         lightboxVideo.innerHTML = '';
-        lightboxImage.src = item.src;
-        lightboxImage.alt = item.alt;
-        lightboxImage.style.display = 'block';
+        lightboxImage.src = src;
+        lightboxImage.alt = alt;
       }
-    }
+    };
 
-    function openLightbox(index) {
-      if (mediaItems.length === 0) return;
-      currentIndex = index;
-      updateLightboxMedia();
-      lightbox.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
+    const toggleLightbox = (show) => {
+      lightbox.classList.toggle('active', show);
+      document.body.style.overflow = show ? 'hidden' : '';
+      if (!show) {
+        lightboxVideo.pause();
+        lightboxVideo.innerHTML = '';
+      }
+    };
 
-    function closeLightbox() {
-      lightbox.classList.remove('active');
-      document.body.style.overflow = '';
-      lightboxVideo.pause();
-      lightboxVideo.innerHTML = '';
-      lightboxVideo.style.display = 'none';
-    }
+    const navigate = (dir) => {
+      currentIndex = (currentIndex + dir + totalItems) % totalItems;
+      updateMedia();
+    };
 
-    function showNext() {
-      currentIndex = (currentIndex + 1) % mediaItems.length;
-      updateLightboxMedia();
-    }
-
-    function showPrev() {
-      currentIndex = (currentIndex - 1 + mediaItems.length) % mediaItems.length;
-      updateLightboxMedia();
-    }
-
-    triggers.forEach((trigger) => {
-      const index = parseInt(trigger.getAttribute('data-index'));
-      trigger.addEventListener('click', () => openLightbox(index));
+    sectionEl.addEventListener('click', (e) => {
+      const trigger = e.target.closest('.gallery-media-trigger');
+      if (trigger) {
+        currentIndex = parseInt(trigger.dataset.index, 10);
+        updateMedia();
+        toggleLightbox(true);
+      }
     });
 
-    closeBtn.addEventListener('click', closeLightbox);
-    
-    if (nextBtn) {
-      nextBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        showNext();
-      });
-    }
-    
-    if (prevBtn) {
-      prevBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        showPrev();
-      });
-    }
-
-    // Close when clicking outside media
     lightbox.addEventListener('click', (e) => {
-      if (e.target === lightbox || e.target.classList.contains('gallery-lightbox__wrapper')) {
-        closeLightbox();
-      }
+      if (e.target.closest('.gallery-close') || e.target === lightbox || e.target.classList.contains('gallery-lightbox__wrapper')) {
+        toggleLightbox(false);
+      } else if (e.target.closest('.gallery-next')) navigate(1);
+      else if (e.target.closest('.gallery-prev')) navigate(-1);
     });
 
-    // Keyboard navigation
     document.addEventListener('keydown', (e) => {
       if (!lightbox.classList.contains('active')) return;
-      
-      if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowRight') showNext();
-      if (e.key === 'ArrowLeft') showPrev();
+      if (e.key === 'Escape') toggleLightbox(false);
+      else if (e.key === 'ArrowRight') navigate(1);
+      else if (e.key === 'ArrowLeft') navigate(-1);
     });
   });
 </script>
@@ -400,13 +355,21 @@
         "type": "richtext",
         "id": "heading",
         "label": "Heading",
-        "default": "<p>Image Gallery</p>"
+        "default": "<h3>Image Gallery</h3>"
       },
       {
         "type": "select",
         "id": "heading_preset",
         "label": "Preset",
         "options": [
+          { 
+            "value": "default", 
+            "label": "Default" 
+          },
+          { 
+            "value": "paragraph", 
+            "label": "Paragraph" 
+          },
           { 
             "value": "h1", 
             "label": "Heading 1" 
@@ -430,9 +393,13 @@
           { 
             "value": "h6", 
             "label": "Heading 6" 
+          },
+          { 
+            "value": "custom", 
+            "label": "Custom" 
           }
         ],
-        "default": "h2"
+        "default": "default"
       },
       {
         "type": "color",
@@ -477,7 +444,7 @@
             "label": "Right" 
           }
         ],
-        "default": "center"
+        "default": "left"
       },
       {
         "type": "range",
