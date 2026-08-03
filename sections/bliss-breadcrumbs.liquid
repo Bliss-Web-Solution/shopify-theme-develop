@@ -72,6 +72,8 @@
       --breadcrumbs-padding-block-start: {{ section.settings.padding-block-start }}px;
       --breadcrumbs-padding-block-end: {{ section.settings.padding-block-end }}px;
       --breadcrumbs-gap: {{ section.settings.item_spacing }}px;
+      {% if section.settings.background_color != blank %}background-color: {{ section.settings.background_color }};{% endif %}
+      {% if section.settings.text_color != blank %}--breadcrumbs-text-color: {{ section.settings.text_color }};{% endif %}
     "
   >
     <nav
@@ -143,7 +145,7 @@
   .breadcrumbs {
     width: 100%;
     font-size: var(--font-paragraph-small--size);
-    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+    color: var(--breadcrumbs-text-color, rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text)));
   }
 
   .breadcrumbs__list {
@@ -166,7 +168,7 @@
   }
 
   .breadcrumbs__link:hover {
-    color: var(--color-foreground);
+    color: var(--breadcrumbs-text-color, var(--color-foreground));
     text-decoration: underline;
     text-underline-offset: 0.2em;
   }
@@ -176,7 +178,7 @@
   }
 
   .breadcrumbs__item--current {
-    color: var(--color-foreground);
+    color: var(--breadcrumbs-text-color, var(--color-foreground));
   }
 {% endstylesheet %}
 
@@ -196,13 +198,13 @@
         "type": "checkbox", 
         "id": "enabled", 
         "label": "Enable breadcrumbs", 
-        "default": true 
+        "default": false 
     },
     { 
         "type": "checkbox", 
         "id": "show_product_collection", 
         "label": "Show collection on product pages", 
-        "default": true 
+        "default": false 
     },
     {
       "type": "select",
@@ -285,6 +287,20 @@
         "step": 1, 
         "unit": "px", 
         "default": 8 
+    },
+    { 
+        "type": "header", 
+        "content": "Colors" 
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color"
     },
     { 
         "type": "header", 

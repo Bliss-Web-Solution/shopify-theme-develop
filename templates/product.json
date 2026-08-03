@@ -12,7 +12,7 @@
     "breadcrumbs": {
       "type": "bliss-breadcrumbs",
       "settings": {
-        "enabled": true,
+        "enabled": false,
         "show_product_collection": true,
         "product_collection_source": "current",
         "width": "page",

@@ -12,7 +12,7 @@
     "breadcrumbs": {
       "type": "bliss-breadcrumbs",
       "settings": {
-        "enabled": true,
+        "enabled": false,
         "width": "page",
         "separator": "slash",
         "alignment": "left",
