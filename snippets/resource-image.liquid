@@ -181,9 +181,11 @@
 
     <div class="resource-image__image">
       {% if content_type == 'articles' %}
-        {{ placeholder_name | placeholder_svg_tag: 'blog-placeholder-svg' }}
+        {% assign resource_alt = closest.article.title | default: article.title %}
+        {% render 'placeholder-image', placeholder_name: placeholder_name, alt: resource_alt, class_name: 'blog-placeholder-svg' %}
       {% else %}
-        {{ placeholder_name | placeholder_svg_tag }}
+        {% assign resource_alt = collection_obj.title | default: closest.collection.title %}
+        {% render 'placeholder-image', placeholder_name: placeholder_name, alt: resource_alt %}
       {% endif %}
     </div>
   </div>

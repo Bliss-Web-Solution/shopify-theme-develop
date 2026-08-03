@@ -44,16 +44,11 @@
 
   # Check if product has media
   assign product_has_media = true
-  if product.media.size == 0
-    assign product_has_media = false
-  endif
 
   # Build product grid class
   assign product_grid_class = 'product-information__grid'
 
-  if product_has_media == false
-    assign product_grid_class = product_grid_class | append: ' product-information--media-none'
-  elsif settings.desktop_media_position == 'right'
+  if settings.desktop_media_position == 'right'
     assign product_grid_class = product_grid_class | append: ' product-information--media-right'
   else
     assign product_grid_class = product_grid_class | append: ' product-information--media-left'
@@ -147,9 +142,11 @@
     min-width: 100%;
   }
 
-  .product-information__media .product-media-gallery__placeholder-image {
+  .product-information__media .product-media-gallery__placeholder-image,
+  .product-information__media .custom-placeholder-svg-wrapper {
     width: 100%;
     height: 100%;
+    min-height: 400px;
   }
 
   /* Mobile styles */

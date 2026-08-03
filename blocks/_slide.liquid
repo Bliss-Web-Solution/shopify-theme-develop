@@ -96,7 +96,7 @@
         assign placeholder_variant = 2 | minus: modulo_result
         assign placeholder_name = 'hero-apparel-' | append: placeholder_variant
       -%}
-      {{ placeholder_name | placeholder_svg_tag: 'slide__image' }}
+      {% render 'placeholder-image', placeholder_name: placeholder_name, class_name: 'slide__image' %}
     {%- endif -%}
   </div>
   <div

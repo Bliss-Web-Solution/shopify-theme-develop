@@ -53,6 +53,44 @@
         "type": "image_picker",
         "id": "favicon",
         "label": "t:settings.favicon"
+      },
+      {
+        "type": "header",
+        "content": "Custom Placeholder"
+      },
+      {
+        "type": "select",
+        "id": "custom_placeholder_type",
+        "label": "Placeholder Source Type",
+        "options": [
+          {
+            "value": "default",
+            "label": "Shopify Default SVG Placeholder"
+          },
+          {
+            "value": "svg_code",
+            "label": "Inline SVG Code"
+          },
+          {
+            "value": "image",
+            "label": "Uploaded Image / SVG File"
+          }
+        ],
+        "default": "default"
+      },
+      {
+        "type": "textarea",
+        "id": "custom_placeholder_svg_code",
+        "label": "Custom Inline SVG Code",
+        "info": "Paste raw <svg>...</svg> code here to display inline SVG directly.",
+        "visible_if": "{{ settings.custom_placeholder_type == 'svg_code' }}"
+      },
+      {
+        "type": "image_picker",
+        "id": "custom_placeholder_svg",
+        "label": "Custom Placeholder Image / SVG File",
+        "info": "Upload an image or SVG file to use as the placeholder.",
+        "visible_if": "{{ settings.custom_placeholder_type == 'image' }}"
       }
     ]
   },
