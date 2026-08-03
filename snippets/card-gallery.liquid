@@ -86,7 +86,11 @@
     <a
       class="contents"
       ref="cardGalleryLink"
-      href="{{ product.url }}"
+       {% if collection.url == '/collections/all' %}
+      href="{{ product.selected_or_first_available_variant.url }}"
+      {% else %}
+      href="{{ product.selected_or_first_available_variant.url | within: collection }}"
+      {% endif %}
       aria-label="{{- product.title -}}"
     >
       {% liquid
@@ -208,7 +212,7 @@
       <a
         class="contents"
         ref="cardGalleryLink"
-        href="{{ product.url }}"
+         href="{{ product.selected_or_first_available_variant.url | within: collection }}"
       >
         <span class="title-text">{{- product.title -}}</span>
       </a>

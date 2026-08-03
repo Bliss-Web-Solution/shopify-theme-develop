@@ -12,8 +12,8 @@
     "breadcrumbs": {
       "type": "bliss-breadcrumbs",
       "settings": {
-        "enabled": true,
-        "show_product_collection": true,
+        "enabled": false,
+        "show_product_collection": false,
         "product_collection_source": "current",
         "width": "page",
         "separator": "slash",
