@@ -1,14 +1,12 @@
-{% liquid
-  if section.settings.background_color != blank
-    render 'contrast-override', background_color: section.settings.background_color, section_id: section.id
-  endif
-%}
-
-<div class="section-background{% if section.settings.background_color != blank %} color-custom-{{ section.id }}{% endif %}"></div>
-<div class="image-gallery-section section section--{{ section.settings.section_width }} spacing-style{% if section.settings.background_color != blank %} color-custom-{{ section.id }}{% endif %}" style="{% render 'spacing-style', settings: section.settings %}">
+<div class="image-gallery-section section section--{{ section.settings.section_width }} spacing-style" 
+  style="
+    {% render 'spacing-style', settings: section.settings %}
+    {% if section.settings.background_color != blank %}background-color: {{ section.settings.background_color }};{% endif %}
+    {% if section.settings.heading_color != blank %}--heading-color: {{ section.settings.heading_color }};{% endif %}
+  ">
   <div class="image-gallery-inner">
     {% if section.settings.heading != blank %}
-      <div class="gallery-heading {{ section.settings.heading_preset }}" style="text-align: {{ section.settings.alignment }}; color: {{ section.settings.heading_color }};">{{ section.settings.heading }}</div>
+      <div class="gallery-heading {{ section.settings.heading_preset }}" style="text-align: {{ section.settings.alignment }}; {% if section.settings.heading_color != blank %}color: var(--heading-color);{% endif %}">{{ section.settings.heading }}</div>
     {% endif %}
 
     {%- liquid
@@ -120,7 +118,6 @@
   }
 
   .image-gallery-section .gallery-item {
-    cursor: zoom-in;
     overflow: hidden;
     aspect-ratio: var(--gallery-aspect-ratio, 1); 
   }
@@ -129,6 +126,7 @@
     width: 100%;
     height: 100%;
     position: relative;
+    cursor: zoom-in;
   }
 
   .gallery-play-icon {
