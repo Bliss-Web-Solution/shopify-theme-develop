@@ -2130,7 +2130,7 @@
         "type": "checkbox",
         "id": "back_to_top_enabled",
         "label": "Enable back to top button",
-        "default": true
+        "default": false
       },
       {
         "type": "select",
