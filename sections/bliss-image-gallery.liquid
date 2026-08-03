@@ -5,7 +5,7 @@
 %}
 
 <div class="section-background{% if section.settings.background_color != blank %} color-custom-{{ section.id }}{% endif %}"></div>
-<div class="image-gallery-section section section--{{ section.settings.section_width }} section-{{ section.id }}-padding{% if section.settings.background_color != blank %} color-custom-{{ section.id }}{% endif %}">
+<div class="image-gallery-section section section--{{ section.settings.section_width }} spacing-style{% if section.settings.background_color != blank %} color-custom-{{ section.id }}{% endif %}" style="{% render 'spacing-style', settings: section.settings %}">
   <div class="image-gallery-inner">
     {% if section.settings.heading != blank %}
       <div class="gallery-heading {{ section.settings.heading_preset }}" style="text-align: {{ section.settings.alignment }}; color: {{ section.settings.heading_color }};">{{ section.settings.heading }}</div>
@@ -29,19 +29,46 @@
         {%- case block.type -%}
           {%- when 'image' -%}
             <div class="gallery-item border-style" style="{% render 'border-override', settings: section.settings %}padding: {{ section.settings.image_padding }}px; --gallery-aspect-ratio: {{ ratio }};" {{ block.shopify_attributes }}>
-              {%- if block.settings.image != blank -%}
-                <img 
-                  src="{{ block.settings.image | image_url: width: 800 }}" 
-                  alt="{{ block.settings.image.alt | escape }}" 
-                  loading="lazy" 
-                  width="{{ block.settings.image.width }}" 
-                  height="{{ block.settings.image.height }}"
-                  class="gallery-image-trigger"
-                  data-index="{{ forloop.index0 }}"
-                  data-full-image="{{ block.settings.image | image_url: width: 2000 }}"
-                >
+              {%- if block.settings.media_type == 'video' -%}
+                {%- if block.settings.video != blank -%}
+                  <div class="gallery-media-trigger" 
+                    data-index="{{ forloop.index0 }}" 
+                    data-media-type="video"
+                    data-video-sources="{% for source in block.settings.video.sources %}{{ source.url }}||{{ source.mime_type }}{% unless forloop.last %},,{% endunless %}{% endfor %}"
+                  >
+                    {{
+                      block.settings.video
+                      | video_tag:
+                        poster: nil,
+                        autoplay: false,
+                        loop: true,
+                        controls: false,
+                        muted: true,
+                        class: 'gallery-video'
+                    }}
+                    <span class="gallery-play-icon">
+                      {{- 'icon-play.svg' | inline_asset_content -}}
+                    </span>
+                  </div>
+                {%- else -%}
+                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
               {%- else -%}
-                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- if block.settings.image != blank -%}
+                  <img 
+                    src="{{ block.settings.image | image_url: width: 800 }}" 
+                    alt="{{ block.settings.image.alt | escape }}" 
+                    loading="lazy" 
+                    width="{{ block.settings.image.width }}" 
+                    height="{{ block.settings.image.height }}"
+                    class="gallery-media-trigger"
+                    data-index="{{ forloop.index0 }}"
+                    data-media-type="image"
+                    data-full-image="{{ block.settings.image | image_url: width: 2000 }}"
+                  >
+                {%- else -%}
+                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                {%- endif -%}
               {%- endif -%}
             </div>
         {%- endcase -%}
@@ -53,15 +80,16 @@
 <!-- Lightbox structure -->
 <div class="gallery-lightbox" id="GalleryLightbox-{{ section.id }}">
   <div class="gallery-lightbox__wrapper">
-    <button class="gallery-prev" aria-label="Previous Image">
+    <button class="gallery-prev" aria-label="Previous">
       {{- 'icon-chevron-left.svg' | inline_asset_content -}}
     </button>
     
-    <div class="gallery-lightbox__image-container">
-      <img id="GalleryLightboxImage-{{ section.id }}" src="" alt="" width="" height="">
+    <div class="gallery-lightbox__media-container">
+      <img id="GalleryLightboxImage-{{ section.id }}" src="" alt="" style="display:none;">
+      <video id="GalleryLightboxVideo-{{ section.id }}" controls playsinline style="display:none;"></video>
     </div>
     
-    <button class="gallery-next" aria-label="Next Image">
+    <button class="gallery-next" aria-label="Next">
       {{- 'icon-chevron-right.svg' | inline_asset_content -}}
     </button>
     <button class="gallery-close" aria-label="Close Gallery">
@@ -71,18 +99,6 @@
 </div>
 
 {% style %}
-  .section-{{ section.id }}-padding {
-    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
-  }
-
-  @media screen and (min-width: 750px) {
-    .section-{{ section.id }}-padding {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
-    }
-  }
-
   .image-gallery-section .image-gallery-inner {
     width: 100%;
   }
@@ -109,7 +125,37 @@
     aspect-ratio: var(--gallery-aspect-ratio, 1); 
   }
 
-  .image-gallery-section .gallery-item img {
+  .image-gallery-section .gallery-media-trigger {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  .gallery-play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
+    background: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .gallery-play-icon svg {
+    width: 24px;
+    height: 24px;
+    margin-left: 4px;
+  }
+
+  .image-gallery-section .gallery-item img,
+  .image-gallery-section .gallery-item video {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -122,10 +168,6 @@
     width: 100%;
     height: 100%;
     background-color: #f3f3f3;
-  }
-
-  .image-gallery-section .gallery-item:hover img {
-    transform: scale(1.05);
   }
 
   /* Lightbox Styles */
@@ -144,6 +186,7 @@
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
   }
+
   .gallery-lightbox.active {
     opacity: 1;
     visibility: visible;
@@ -160,7 +203,7 @@
     padding: 20px;
   }
 
-  .gallery-lightbox__image-container {
+  .gallery-lightbox__media-container {
     max-width: 80%;
     max-height: 90vh;
     display: flex;
@@ -168,7 +211,8 @@
     align-items: center;
   }
 
-  .gallery-lightbox__image-container img {
+  .gallery-lightbox__media-container img,
+  .gallery-lightbox__media-container video {
     max-width: 100%;
     max-height: 90vh;
     object-fit: contain;
@@ -197,6 +241,7 @@
   .gallery-prev {
     left: 20px;
   }
+
   .gallery-next {
     right: 20px;
   }
@@ -208,7 +253,7 @@
   }
   
   @media screen and (max-width: 749px) {
-    .gallery-lightbox__image-container {
+    .gallery-lightbox__media-container {
       max-width: 100%;
     }
     .gallery-prev {
@@ -223,52 +268,93 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const sectionId = '{{ section.id }}';
-    // Use closest section element to scope
     const sectionEl = document.querySelector('#shopify-section-' + sectionId) || document.body;
     
-    const triggers = sectionEl.querySelectorAll('.gallery-image-trigger');
+    const triggers = sectionEl.querySelectorAll('.gallery-media-trigger');
     const lightbox = document.getElementById(`GalleryLightbox-${sectionId}`);
     
     if (!lightbox || triggers.length === 0) return;
 
     const lightboxImage = document.getElementById(`GalleryLightboxImage-${sectionId}`);
+    const lightboxVideo = document.getElementById(`GalleryLightboxVideo-${sectionId}`);
     const prevBtn = lightbox.querySelector('.gallery-prev');
     const nextBtn = lightbox.querySelector('.gallery-next');
     const closeBtn = lightbox.querySelector('.gallery-close');
     
     let currentIndex = 0;
-    const images = Array.from(triggers).map(trigger => trigger.getAttribute('data-full-image'));
-    const alts = Array.from(triggers).map(trigger => trigger.getAttribute('alt'));
+
+    // Build media items array from triggers
+    const mediaItems = Array.from(triggers).map(trigger => {
+      const type = trigger.getAttribute('data-media-type');
+      if (type === 'video') {
+        const sourcesRaw = trigger.getAttribute('data-video-sources') || '';
+        const sources = sourcesRaw.split(',,').map(s => {
+          const parts = s.split('||');
+          return { url: parts[0], mime: parts[1] || 'video/mp4' };
+        }).filter(s => s.url);
+        return { type: 'video', sources: sources };
+      } else {
+        return {
+          type: 'image',
+          src: trigger.getAttribute('data-full-image'),
+          alt: trigger.getAttribute('alt') || ''
+        };
+      }
+    });
+
+    function updateLightboxMedia() {
+      const item = mediaItems[currentIndex];
+      if (item.type === 'video') {
+        lightboxImage.style.display = 'none';
+        lightboxImage.src = '';
+        lightboxVideo.innerHTML = '';
+        item.sources.forEach(s => {
+          const source = document.createElement('source');
+          source.src = s.url;
+          source.type = s.mime;
+          lightboxVideo.appendChild(source);
+        });
+        lightboxVideo.style.display = 'block';
+        lightboxVideo.load();
+        lightboxVideo.play().catch(() => {});
+      } else {
+        lightboxVideo.style.display = 'none';
+        lightboxVideo.pause();
+        lightboxVideo.innerHTML = '';
+        lightboxImage.src = item.src;
+        lightboxImage.alt = item.alt;
+        lightboxImage.style.display = 'block';
+      }
+    }
 
     function openLightbox(index) {
-      if (images.length === 0) return;
+      if (mediaItems.length === 0) return;
       currentIndex = index;
-      updateLightboxImage();
+      updateLightboxMedia();
       lightbox.classList.add('active');
-      document.body.style.overflow = 'hidden'; // Prevent background scrolling
+      document.body.style.overflow = 'hidden';
     }
 
     function closeLightbox() {
       lightbox.classList.remove('active');
       document.body.style.overflow = '';
-    }
-
-    function updateLightboxImage() {
-      lightboxImage.src = images[currentIndex];
-      lightboxImage.alt = alts[currentIndex];
+      lightboxVideo.pause();
+      lightboxVideo.innerHTML = '';
+      lightboxVideo.style.display = 'none';
     }
 
     function showNext() {
-      currentIndex = (currentIndex + 1) % images.length;
-      updateLightboxImage();
+      currentIndex = (currentIndex + 1) % mediaItems.length;
+      updateLightboxMedia();
     }
 
     function showPrev() {
-      currentIndex = (currentIndex - 1 + images.length) % images.length;
-      updateLightboxImage();
+      currentIndex = (currentIndex - 1 + mediaItems.length) % mediaItems.length;
+      updateLightboxMedia();
     }
 
-    triggers.forEach((trigger, index) => {
+    triggers.forEach((trigger) => {
+      const index = parseInt(trigger.getAttribute('data-index'));
       trigger.addEventListener('click', () => openLightbox(index));
     });
 
@@ -276,7 +362,7 @@
     
     if (nextBtn) {
       nextBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // prevent closing if clicking button
+        e.stopPropagation();
         showNext();
       });
     }
@@ -288,7 +374,7 @@
       });
     }
 
-    // Close when clicking outside image
+    // Close when clicking outside media
     lightbox.addEventListener('click', (e) => {
       if (e.target === lightbox || e.target.classList.contains('gallery-lightbox__wrapper')) {
         closeLightbox();
@@ -308,12 +394,13 @@
 
 {% schema %}
   {
-    "name": "Image Gallery Section",
+    "name": "Bliss Image Gallery",
     "settings": [
       {
         "type": "richtext",
         "id": "heading",
-        "label": "Heading"
+        "label": "Heading",
+        "default": "<p>Image Gallery</p>"
       },
       {
         "type": "select",
@@ -534,22 +621,22 @@
       },
       {
         "type": "range",
-        "id": "padding_top",
+        "id": "padding-block-start",
+        "label": "Top padding",
         "min": 0,
         "max": 100,
         "step": 1,
         "unit": "px",
-        "label": "Top padding",
         "default": 48
       },
       {
         "type": "range",
-        "id": "padding_bottom",
+        "id": "padding-block-end",
+        "label": "Bottom padding",
         "min": 0,
         "max": 100,
         "step": 1,
-        "unit": "px", 
-        "label": "Bottom padding",
+        "unit": "px",
         "default": 48
       }
     ],
@@ -559,16 +646,39 @@
         "name": "Image",
         "settings": [
           {
+            "type": "select",
+            "id": "media_type",
+            "label": "Type",
+            "options": [
+              {
+                "value": "image",
+                "label": "Image"
+              },
+              {
+                "value": "video",
+                "label": "Video"
+              }
+            ],
+            "default": "image"
+          },
+          {
             "type": "image_picker",
             "id": "image",
-            "label": "Image"
+            "label": "Image",
+            "visible_if": "{{ block.settings.media_type == 'image' }}"
+          },
+          {
+            "type": "video",
+            "id": "video",
+            "label": "Video",
+            "visible_if": "{{ block.settings.media_type == 'video' }}"
           }
         ]
       }
     ],
     "presets": [
       {
-        "name": "Image Gallery Section",
+        "name": "Bliss Image Gallery",
         "blocks": [
           {
             "type": "image"
