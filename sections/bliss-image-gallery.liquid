@@ -51,7 +51,7 @@
                     </span>
                   </div>
                 {%- else -%}
-                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                  {% render 'placeholder-image', placeholder_name: 'image', class_name: 'placeholder-svg' %}
                 {%- endif -%}
               {%- else -%}
                 {%- if block.settings.image != blank -%}
@@ -67,7 +67,7 @@
                     data-full-image="{{ block.settings.image | image_url: width: 2000 }}"
                   >
                 {%- else -%}
-                  {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                  {% render 'placeholder-image', placeholder_name: 'image', class_name: 'placeholder-svg' %}
                 {%- endif -%}
               {%- endif -%}
             </div>

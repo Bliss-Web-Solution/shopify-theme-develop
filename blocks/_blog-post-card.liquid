@@ -18,9 +18,7 @@
   class="blog-post-card{% if block_settings.background_color != blank %} color-custom-{{ block.id }}{% endif %}"
   style="--text-align: {{ block_settings.alignment }}"
 >
-  {% if article.image %}
-    {% content_for 'block', id: 'image', type: '_blog-post-image', article: article %}
-  {% endif %}
+  {% content_for 'block', id: 'image', type: '_blog-post-image', article: article %}
 
   <div class="blog-post-card__content">
     <a

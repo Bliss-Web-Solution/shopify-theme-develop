@@ -179,6 +179,20 @@
                         echo item.image | image_url: width: 250 | image_tag: class: 'cart-items__media-image border-style', style: border_override
                       -%}
                     </a>
+                  {%- else -%}
+                    {% liquid
+                      assign ratio = 1
+                      if block_settings.image_ratio == 'portrait'
+                        assign ratio = 0.8
+                      endif
+                    %}
+                    <a
+                      href="{{ item.url }}"
+                      class="cart-items__media-container"
+                      style="--ratio:{{ ratio }};"
+                    >
+                      {% render 'placeholder-image', placeholder_name: 'product-apparel-1', alt: item.product.title, class_name: 'cart-items__media-image border-style' %}
+                    </a>
                   {%- endif %}
                 </td>
                 <td

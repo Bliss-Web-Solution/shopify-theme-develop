@@ -1,0 +1,73 @@
+{%- comment -%}
+  snippets/placeholder-image.liquid
+
+  Renders placeholder according to Theme Settings selection:
+  - 'svg_code': Inline SVG markup
+  - 'image': Uploaded image / SVG file
+  - 'default' (or empty): Shopify default SVG placeholder tag
+
+  Accepts:
+  - placeholder_name: {String} Standard Shopify placeholder name (e.g., 'hero-apparel-1', 'product-1')
+  - class_name: {String} CSS class for the SVG/image tag
+  - alt: {String} Optional custom alt text (defaults to product/article/collection title)
+{%- endcomment -%}
+
+{%- liquid
+  assign effective_class = class_name | default: 'placeholder-svg'
+  assign resolved_alt = alt | default: alt_text
+
+  if resolved_alt == blank
+    if product.title != blank
+      assign resolved_alt = product.title
+    elsif article.title != blank
+      assign resolved_alt = article.title
+    elsif collection.title != blank
+      assign resolved_alt = collection.title
+    elsif closest.product.title != blank
+      assign resolved_alt = closest.product.title
+    elsif closest.article.title != blank
+      assign resolved_alt = closest.article.title
+    elsif closest.collection.title != blank
+      assign resolved_alt = closest.collection.title
+    else
+      assign resolved_alt = 'Placeholder'
+    endif
+  endif
+
+  assign resolved_alt = resolved_alt | escape
+-%}
+
+{%- case settings.custom_placeholder_type -%}
+  {%- when 'svg_code' -%}
+    {%- if settings.custom_placeholder_svg_code != blank -%}
+      <div class="custom-placeholder-svg-wrapper{% if effective_class != blank %} {{ effective_class }}{% endif %}">
+        {{ settings.custom_placeholder_svg_code }}
+      </div>
+    {%- else -%}
+      {%- assign default_placeholder = placeholder_name | default: 'hero-apparel-1' -%}
+      {{ default_placeholder | placeholder_svg_tag: effective_class }}
+    {%- endif -%}
+
+  {%- when 'image' -%}
+    {%- if settings.custom_placeholder_svg != blank -%}
+      {{
+        settings.custom_placeholder_svg
+        | image_url: width: 1200
+        | image_tag: class: effective_class, loading: 'lazy', alt: resolved_alt
+      }}
+    {%- else -%}
+      {%- assign default_placeholder = placeholder_name | default: 'hero-apparel-1' -%}
+      {{ default_placeholder | placeholder_svg_tag: effective_class }}
+    {%- endif -%}
+
+  {%- else -%}
+    {%- assign default_placeholder = placeholder_name | default: 'hero-apparel-1' -%}
+    {{ default_placeholder | placeholder_svg_tag: effective_class }}
+{%- endcase -%}
+
+{% stylesheet %}
+  .custom-placeholder-svg-wrapper {
+    height: 100%;
+    width: 100%;
+  }
+{% endstylesheet %}
