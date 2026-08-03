@@ -11,11 +11,24 @@
       <div class="gallery-heading {{ section.settings.heading_preset }}" style="text-align: {{ section.settings.alignment }}; color: {{ section.settings.heading_color }};">{{ section.settings.heading }}</div>
     {% endif %}
 
-    <div class="gallery-grid" style="--grid-columns: {{ section.settings.columns_desktop }}; --gap: {{ section.settings.gap }}px;">
+    {%- liquid
+      assign ratio = '1'
+      case section.settings.image_ratio
+        when 'landscape'
+          assign ratio = '16 / 9'
+        when 'portrait'
+          assign ratio = '4 / 5'
+        when 'square'
+          assign ratio = '1'
+        when 'adapt'
+          assign ratio = 'auto'
+      endcase
+    -%}
+    <div class="gallery-grid" style="--grid-columns: {{ section.settings.columns_desktop }}; --grid-columns-mobile: {{ section.settings.columns_mobile }}; --gap: {{ section.settings.gap }}px;">
       {%- for block in section.blocks -%}
         {%- case block.type -%}
           {%- when 'image' -%}
-            <div class="gallery-item" {{ block.shopify_attributes }}>
+            <div class="gallery-item border-style" style="{% render 'border-override', settings: section.settings %}padding: {{ section.settings.image_padding }}px; --gallery-aspect-ratio: {{ ratio }};" {{ block.shopify_attributes }}>
               {%- if block.settings.image != blank -%}
                 <img 
                   src="{{ block.settings.image | image_url: width: 800 }}" 
@@ -76,7 +89,7 @@
 
   .image-gallery-section .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); 
+    grid-template-columns: repeat(var(--grid-columns-mobile, 2), 1fr);
     gap: calc(var(--gap, 30px) / 2);
     margin-top: 2rem;
 
@@ -87,15 +100,13 @@
   }
 
   .image-gallery-section .gallery-heading {
-    text-align: center;
     margin-bottom: 2rem;
   }
 
   .image-gallery-section .gallery-item {
     cursor: zoom-in;
     overflow: hidden;
-    border-radius: 8px; 
-    aspect-ratio: 1; 
+    aspect-ratio: var(--gallery-aspect-ratio, 1); 
   }
 
   .image-gallery-section .gallery-item img {
@@ -104,6 +115,7 @@
     object-fit: cover;
     display: block;
     transition: transform 0.3s ease;
+    border-radius: var(--border-radius, 0);
   }
   
   .image-gallery-section .gallery-item svg.placeholder-svg {
@@ -399,10 +411,122 @@
         "type": "range",
         "id": "columns_desktop",
         "min": 1,
-        "max": 6,
+        "max": 10,
         "step": 1,
         "default": 4,
         "label": "Number of columns on desktop"
+      },
+      {
+        "type": "select",
+        "id": "columns_mobile",
+        "label": "Number of columns on mobile",
+        "options": [
+          {
+            "value": "1",
+            "label": "1"
+          },
+          {
+            "value": "2",
+            "label": "2"
+          }
+        ],
+        "default": "2"
+      },
+      {
+        "type": "header",
+        "content": "Image settings"
+      },
+      {
+        "type": "select",
+        "id": "image_ratio",
+        "label": "Aspect ratio",
+        "options": [
+          {
+            "value": "adapt",
+            "label": "Auto"
+          },
+          {
+            "value": "portrait",
+            "label": "Portrait"
+          },
+          {
+            "value": "square",
+            "label": "Square"
+          },
+          {
+            "value": "landscape",
+            "label": "Landscape"
+          }
+        ],
+        "default": "square"
+      },
+      {
+        "type": "range",
+        "id": "image_padding",
+        "label": "Image padding",
+        "min": 0,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Image borders"
+      },
+      {
+        "type": "select",
+        "id": "border",
+        "label": "Style",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "solid",
+            "label": "Solid"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "range",
+        "id": "border_width",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "unit": "px",
+        "label": "Thickness",
+        "default": 1,
+        "visible_if": "{{ section.settings.border != 'none' }}"
+      },
+      {
+        "type": "range",
+        "id": "border_opacity",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "%",
+        "label": "Opacity",
+        "default": 100,
+        "visible_if": "{{ section.settings.border != 'none' }}"
+      },
+      {
+        "type": "color",
+        "id": "border_color",
+        "label": "Border color",
+        "visible_if": "{{ section.settings.border != 'none' }}"
+      },
+      {
+        "type": "range",
+        "id": "border_radius",
+        "label": "Corner radius",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "default": 0
       },
       {
         "type": "header",
@@ -446,6 +570,27 @@
       {
         "name": "Image Gallery Section",
         "blocks": [
+          {
+            "type": "image"
+          },
+          {
+            "type": "image"
+          },
+          {
+            "type": "image"
+          },
+          {
+            "type": "image"
+          },
+          {
+            "type": "image"
+          },
+          {
+            "type": "image"
+          },
+          {
+            "type": "image"
+          },
           {
             "type": "image"
           }
