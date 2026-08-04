@@ -1,0 +1,152 @@
+{%- assign block_settings = block.settings -%}
+
+{%- liquid
+  assign tab_content = ''
+  case block_settings.content_source
+    when 'description'
+      assign tab_content = closest.product.description
+    when 'metafields'
+      # Resolve product metafield via Dynamic Source picker or manual namespace.key string
+      if block_settings.metafield_key != blank
+        assign mf_target = block_settings.metafield_key
+
+        # 1. Check if mf_target is a Metafield Drop object directly (from Dynamic Source)
+        if mf_target.type != blank
+          if mf_target.type == 'richtext'
+            assign tab_content = mf_target | metafield_tag
+          elsif mf_target.type == 'page_reference'
+            assign tab_content = mf_target.value.content | default: mf_target.value
+          elsif mf_target.value != blank
+            assign tab_content = mf_target.value
+          else
+            assign tab_content = mf_target
+          endif
+
+          # 2. If it's a string, check if it's a manual namespace.key reference (e.g. custom.specifications)
+        else
+          assign raw_key = mf_target | strip | remove: 'product.metafields.'
+          if raw_key contains '.'
+            assign key_parts = raw_key | split: '.'
+            assign ns = key_parts[0]
+            assign key = key_parts[1]
+            assign resolved_mf = closest.product.metafields[ns][key] | default: product.metafields[ns][key]
+            if resolved_mf != blank
+              if resolved_mf.type == 'richtext'
+                assign tab_content = resolved_mf | metafield_tag
+              elsif resolved_mf.type == 'page_reference'
+                assign tab_content = resolved_mf.value.content | default: resolved_mf.value
+              elsif resolved_mf.value != blank
+                assign tab_content = resolved_mf.value
+              else
+                assign tab_content = resolved_mf
+              endif
+            endif
+          else
+            # 3. Dynamic source content directly (e.g. dynamic text/richtext string)
+            assign tab_content = raw_key
+          endif
+        endif
+      endif
+    when 'richtext'
+      assign tab_content = block_settings.custom_richtext
+    when 'page'
+      if block_settings.custom_page != blank
+        assign tab_content = block_settings.custom_page.content
+      endif
+  endcase
+-%}
+
+{%- if tab_content != blank -%}
+  {%- capture accordion_row_children -%}
+    <details
+      class="details"
+      data-testid="accordion-details"
+    >
+      <summary class="details__header">
+        {{ block_settings.heading | escape }}
+        <span class="svg-wrapper icon-caret icon-animated">
+          {{- 'icon-caret.svg' | inline_asset_content -}}
+        </span>
+        <span class="svg-wrapper icon-plus">
+          {{- 'icon-plus.svg' | inline_asset_content -}}
+        </span>
+      </summary>
+
+      <div class="details-content rte">
+        {{ tab_content }}
+      </div>
+    </details>
+  {%- endcapture -%}
+
+  <div class="product-tabs__accordion-item" data-block-id="{{ block.id }}" {{ block.shopify_attributes }}>
+    {%- render 'accordion-custom-component', children: accordion_row_children -%}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Bliss Tab",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Tab Title",
+      "default": "Tab Title"
+    },
+    {
+      "type": "select",
+      "id": "content_source",
+      "label": "Content Source",
+      "options": [
+        {
+          "value": "description",
+          "label": "Product Description"
+        },
+        {
+          "value": "metafields",
+          "label": "Product Metafields"
+        },
+        {
+          "value": "richtext",
+          "label": "Rich Text"
+        },
+        {
+          "value": "page",
+          "label": "Page Content"
+        }
+      ],
+      "default": "description"
+    },
+    {
+      "type": "richtext",
+      "id": "custom_richtext",
+      "label": "Rich Text Content",
+      "info": "Used when Content Source is set to 'Rich Text'",
+      "visible_if": "{{ block.settings.content_source == 'richtext' }}"
+    },
+    {
+      "type": "page",
+      "id": "custom_page",
+      "label": "Page Content",
+      "info": "Used when Content Source is set to 'Page Content'"
+    },
+    {
+      "type": "text",
+      "id": "metafield_key",
+      "label": "Metafield Key",
+      "info": "Format: namespace.key (e.g. custom.specifications). Used when Content Source is set to 'Product Metafields'.",
+      "visible_if": "{{ block.settings.content_source == 'metafields' }}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bliss Tab",
+      "settings": {
+        "heading": "Tab Title",
+        "content_source": "description"
+      }
+    }
+  ]
+}
+{% endschema %}
