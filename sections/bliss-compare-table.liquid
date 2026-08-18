@@ -1,0 +1,213 @@
+{% comment %}
+  Compare Table Section
+{% endcomment %}
+
+{% liquid
+  if section.settings.background_color != blank or section.settings.text_color != blank
+    render 'contrast-override', background_color: section.settings.background_color, text_color: section.settings.text_color, section_id: section.id
+  endif
+%}
+
+<section class="section {% if section.settings.background_color != blank or section.settings.text_color != blank %}color-custom-{{ section.id }}{% endif %}">
+  <div class="compare-table-wrapper">
+    <h1 class="heading center" id="CompareHeading">{{ 'compare.compare_tabel.compare_table_heading' | t }}</h1>
+
+    <div id="CompareTableContainer" class="compare-page__container">
+      <div class="compare-page__loading center">
+        <p>{{ 'compare.compare_tabel.compare_table_loading' | t }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('CompareTableContainer');
+    const heading = document.getElementById('CompareHeading');
+
+    function renderTable(ids) {
+      if (!ids || ids.length === 0) {
+        container.innerHTML = '<p class="center">No products selected for comparison. <a href="/">Go shopping</a></p>';
+        heading.innerText = 'Comparison Table';
+        return;
+      }
+
+      heading.innerText = `Comparing ${ids.length} Product${ids.length > 1 ? 's' : ''}`;
+
+      // Fetch data via Search API
+      const query = ids.map((id) => `id:${id}`).join(' OR ');
+
+      fetch(`${window.Shopify.routes.root}search?q=${encodeURIComponent(query)}&view=bliss-compare`)
+        .then((response) => response.text())
+        .then((html) => {
+          container.innerHTML = html;
+
+          // Handle Single Product Case: Add Placeholder
+          if (ids.length === 1) {
+            const headingRow = container.querySelector('thead tr');
+            const bodyRows = container.querySelectorAll('tbody tr');
+
+            if (headingRow) {
+              const th = document.createElement('th');
+              th.className = 'compareTable-product';
+              th.style.verticalAlign = 'middle';
+              th.innerHTML = `
+                        <div class="card card--placeholder" style="
+                          border: 2px dashed var(--color-border);
+                          padding: 20px;
+                          height: 100%;
+                          min-height: 300px;
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                          background: var(--color-background);
+                          border-radius: 0;
+                          gap: 20px;
+                        ">
+                            <p style="margin: 0; font-size: 14px; color: var(--color-foreground);">
+                                Select another product to compare.
+                            </p>
+                            <a href="/collections/all" class="button button--secondary">Browse Products</a>
+                        </div>
+                    `;
+              headingRow.appendChild(th);
+            }
+
+            bodyRows.forEach((row) => {
+              const td = document.createElement('td');
+              td.className = 'compareTable-item';
+              td.innerHTML = '<span style="opacity: 0.3;">-</span>';
+              row.appendChild(td);
+            });
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching comparison data:', error);
+          container.innerHTML = '<p class="center">Error loading comparison data. Please try again later.</p>';
+        });
+    }
+
+    // Initial Load
+    const urlParams = new URLSearchParams(window.location.search);
+    const idsString = urlParams.get('ids');
+    if (idsString) {
+      const ids = idsString.split(',').filter((id) => id.trim() !== '');
+      renderTable(ids);
+    } else {
+      renderTable([]);
+    }
+
+    // Listen for updates from compare.js
+    document.addEventListener('compare:updated', (e) => {
+      const products = e.detail || [];
+      const ids = products.map((p) => p.id);
+      renderTable(ids);
+    });
+  });
+</script>
+
+{% style %}
+  .compare-page__container {
+    margin-top: 40px;
+    overflow-x: auto;
+    width: 100%;
+  }
+  .compare-table {
+    border-top: 1px solid var(--color-border);
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .compare-table th,
+  .compare-table td {
+    border: 1px solid var(--color-border);
+    padding: 25px 15px 15px 15px;
+    text-align: left;
+    vertical-align: top;
+    width: 250px;
+  }
+
+  .compare-table .compareTable-product .card .card-figure {
+    margin: 0 0 15px 0;
+  }
+
+  .compare-table .compareTable-product .card .card-body p a {
+    text-decoration: none;
+    font-size: 20px;
+    line-height: normal;
+    font-weight: 700;
+  }
+
+  .compare-table th.compareTable-heading {
+    background: var(--color-background);
+    width: 200px;
+    font-weight: bold;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+  }
+
+  .compareTable-product {
+    text-align: center;
+  }
+  .card-img-container img {
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+  }
+
+  .compare-table td .button {
+    width: 100%;
+  }
+
+  .compare-table td .compareTable-removeProduct {
+    width: auto;
+    margin: 15px auto 0 auto;
+    display: flex;
+    background: transparent;
+    border: none;
+    color: var(--color-foreground);
+    text-decoration: underline;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+  }
+  .compare-table td .compareTable-removeProduct:hover {
+    opacity: 0.8;
+    text-decoration: none;
+  }
+  .compare-page__loading {
+    padding: 100px 0;
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Compare Table",
+  "class": "compare-table-section",
+  "blocks": [{ "type": "@theme" }],
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:content.appearance"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "t:settings.background_color"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "t:settings.text_color"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Compare Table",
+      "category": "Page"
+    }
+  ]
+}
+{% endschema %}

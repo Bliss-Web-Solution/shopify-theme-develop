@@ -13,18 +13,94 @@
 
 {% liquid
   assign slideshow_ref = ref | default: 'resourceListCarousel'
+  assign slideshow_gutters = 'start end'
 
-  if settings.section_width == 'page-width'
-    assign slideshow_gutters = 'start end'
-    assign gutter_style = '--gutter-slide-width: var(--util-page-margin-offset);'
+  # Desktop peek settings
+  assign enable_peek_setting = settings.enable_peek
+  if enable_peek_setting == null and section.settings.enable_peek != null
+    assign enable_peek_setting = section.settings.enable_peek
+  endif
+
+  if enable_peek_setting != false
+    assign peek_desktop = true
   else
-    assign slideshow_gutters = null
-    assign gutter_style = '--gutter-slide-width: 0px;'
+    assign peek_desktop = false
+  endif
+
+  if settings.section_width == 'page-width' and peek_desktop
+    assign gutter_desktop = 'var(--util-page-margin-offset)'
+  else
+    assign gutter_desktop = '0px'
+  endif
+
+  if peek_desktop
+    assign container_width_desktop = 'min(var(--page-content-width, 1400px), 100vw - (2 * var(--page-margin, 40px)))'
+    if settings.section_width == 'page-width'
+      assign peek_size_desktop = '0px'
+    else
+      assign peek_size_desktop = '3rem'
+    endif
+  else
+    assign container_width_desktop = '100%'
+    assign peek_size_desktop = '0px'
+  endif
+
+  # Mobile peek settings
+  assign enable_peek_mobile_setting = settings.enable_peek_mobile
+  if enable_peek_mobile_setting == null and section.settings.enable_peek_mobile != null
+    assign enable_peek_mobile_setting = section.settings.enable_peek_mobile
+  endif
+
+  if enable_peek_mobile_setting != false
+    assign peek_mobile = true
+  else
+    assign peek_mobile = false
+  endif
+
+  if settings.section_width == 'page-width' and peek_mobile
+    assign gutter_mobile = 'var(--util-page-margin-offset)'
+  else
+    assign gutter_mobile = '0px'
+  endif
+
+  if peek_mobile
+    assign container_width_mobile = 'min(var(--page-content-width, 1400px), 100vw - (2 * var(--page-margin, 40px)))'
+    if settings.section_width == 'page-width'
+      assign peek_size_mobile = '0px'
+    else
+      assign peek_size_mobile = '3rem'
+    endif
+  else
+    assign container_width_mobile = '100%'
+    assign peek_size_mobile = '0px'
   endif
 
   assign show_arrows = false
   if settings.icons_style != 'none'
     assign show_arrows = true
+  endif
+
+  assign show_dots_setting = settings.show_dots
+  if show_dots_setting == null and section.settings.show_dots != null
+    assign show_dots_setting = section.settings.show_dots
+  endif
+
+  assign slideshow_controls = null
+  if show_dots_setting == true
+    capture slideshow_controls
+      render 'slideshow-controls', style: 'dots', item_count: slide_count
+    endcapture
+  endif
+
+  assign mobile_columns = 1
+  if settings.mobile_card_size != blank
+    if settings.mobile_card_size == '44cqw'
+      assign mobile_columns = 2
+    else
+      assign mobile_columns = 1
+    endif
+  elsif settings.mobile_columns != blank
+    assign mobile_columns = settings.mobile_columns
   endif
 %}
 
@@ -38,7 +114,10 @@
   {% endfor %}
 {% endcapture %}
 
-<div style="{{ gutter_style }} --slide-width-max: {{ slide_width_max | default: '300px' }};">
+<div
+  class="bliss-carousel"
+  style="--slide-width-max: {{ slide_width_max | default: '300px' }}; --column-count: {{ settings.columns | default: 3 }}; --column-count-mobile: {{ mobile_columns }}; --gutter-slide-width-desktop: {{ gutter_desktop }}; --gutter-slide-width-mobile: {{ gutter_mobile }}; --slideshow-container-width-desktop: {{ container_width_desktop }}; --slideshow-container-width-mobile: {{ container_width_mobile }}; --peek-next-slide-size-desktop: {{ peek_size_desktop }}; --peek-next-slide-size-mobile: {{ peek_size_mobile }};"
+>
   {% render 'slideshow',
     ref: slideshow_ref,
     class: 'resource-list__carousel',
@@ -50,7 +129,8 @@
     infinite: false,
     initial_slide: 0,
     slide_count: slide_count,
-    slideshow_gutters: slideshow_gutters
+    slideshow_gutters: slideshow_gutters,
+    controls: slideshow_controls
   %}
 </div>
 
@@ -59,8 +139,6 @@
     --slide-width: 60vw;
     width: 100%;
     position: relative;
-    container-type: inline-size;
-    container-name: resource-list-carousel;
 
     .slideshow-control[disabled] {
       display: none;
@@ -71,20 +149,38 @@
     }
   }
 
-  @container resource-list-carousel (max-width: 749px) {
+  @media screen and (max-width: 749px) {
+    .resource-list__carousel {
+      --slideshow-container-width: var(--slideshow-container-width-mobile);
+      --peek-next-slide-size: var(--peek-next-slide-size-mobile);
+      --column-count: var(--column-count-mobile);
+    }
+    .resource-list__carousel slideshow-slides {
+      --gutter-slide-width: var(--gutter-slide-width-mobile);
+    }
     .resource-list__carousel .resource-list__slide {
-      --slide-width: clamp(150px, var(--mobile-card-size, 60cqw), var(--slide-width-max));
+      --section-slide-width: calc(
+        (var(--slideshow-container-width, 100%) - (var(--resource-list-column-gap) * (var(--column-count-mobile) - 1))) /
+          var(--column-count-mobile)
+      );
+      --slide-width: calc(var(--section-slide-width) - (var(--peek-next-slide-size) / var(--column-count-mobile)));
     }
   }
 
-  @container resource-list-carousel (min-width: 750px) {
+  @media screen and (min-width: 750px) {
+    .resource-list__carousel {
+      --slideshow-container-width: var(--slideshow-container-width-desktop);
+      --peek-next-slide-size: var(--peek-next-slide-size-desktop);
+    }
+    .resource-list__carousel slideshow-slides {
+      --gutter-slide-width: var(--gutter-slide-width-desktop);
+    }
     .resource-list__carousel .resource-list__slide {
       --section-slide-width: calc(
-        (100% - (var(--resource-list-column-gap) * (var(--column-count) - 1)) - var(--peek-next-slide-size)) /
+        (var(--slideshow-container-width, 100%) - (var(--resource-list-column-gap) * (var(--column-count) - 1))) /
           var(--column-count)
       );
-      --fallback-slide-width: clamp(150px, var(--mobile-card-size, 60cqw), var(--slide-width-max));
-      --slide-width: var(--section-slide-width, var(--fallback-slide-width));
+      --slide-width: calc(var(--section-slide-width) - (var(--peek-next-slide-size) / var(--column-count)));
     }
   }
 

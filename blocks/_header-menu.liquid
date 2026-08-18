@@ -92,8 +92,25 @@
 
     {% capture children %}
       {% for link in block_settings.menu.links %}
+        {%- liquid
+          assign is_compact = false
+          if block_settings.dynamic_dropdown_layout and link.links != blank
+            assign item_count = 0
+            for child_link in link.links
+              assign item_count = item_count | plus: 1
+              for grandchild_link in child_link.links
+                assign item_count = item_count | plus: 1
+              endfor
+            endfor
+            if item_count <= block_settings.submenu_item_threshold
+              assign is_compact = true
+            endif
+          endif
+        -%}
         <li
-          class="menu-list__list-item"
+          role="presentation"
+          class="menu-list__list-item{% if is_compact %} menu-list__list-item--compact-parent{% endif %}"
+          on:focus="/activate"
           on:blur="/deactivate"
           on:pointerenter="/activate"
           on:pointerleave="/deactivate"
@@ -113,54 +130,50 @@
             <span class="menu-list__link-title">{{- link.title -}}</span>
           </a>
           {%- if link.links != blank -%}
-            <button
-              type="button"
-              class="menu-list__disclosure button-unstyled"
-              aria-controls="submenu-{{ forloop.index }}"
-              aria-expanded="false"
-              ref="disclosure[]"
-              on:click="/toggle"
-            >
-              <span class="visually-hidden">{{ 'accessibility.show_submenu' | t: title: link.title }}</span>
-              <svg
-                class="menu-list__disclosure-icon"
-                aria-hidden="true"
-                focusable="false"
-                viewBox="0 0 10 6"
-              >
-                {%- render 'icon', icon: 'caret' -%}
-              </svg>
-            </button>
-            </span>
-            {%- comment -%}
-              Collapsed by default via `inert`: keeps the submenu out of the tab order
-              and the accessibility tree until it is opened. Toggled in header-menu.js.
-            {%- endcomment -%}
-            <div class="menu-list__submenu{{ background_color_classes }}" ref="submenu[]" inert>
+            <div class="menu-list__submenu{% if is_compact %} menu-list__submenu--compact{% endif %}{{ background_color_classes }}" ref="submenu[]">
               <div
                 id="submenu-{{ forloop.index }}"
                 class="menu-list__submenu-inner"
                 style="{% render 'submenu-font-styles', settings: block_settings %}"
               >
-                {% assign list_id = 'MegaMenuList-' | append: forloop.index %}
-                <div class="mega-menu section section--full-width-margin section--{{ section.settings.section_width }}">
-                  <div
-                    class="mega-menu__grid"
-                    data-menu-grid-id="{{ list_id }}"
-                  >
-                    {% render 'mega-menu-list',
-                      parent_link: link,
-                      id: list_id,
-                      section: section,
-                      grid_columns_count: 6,
-                      grid_columns_count_tablet: 4,
-                      grid_columns_count_collection_images: 8,
-                      menu_content_type: menu_content_type,
-                      content_aspect_ratio: ratio,
-                      image_border_radius: image_border_radius
-                    %}
+                {%- if is_compact -%}
+                  <ul class="compact-dropdown__list list-unstyled" role="list">
+                    {%- for child_link in link.links -%}
+                      <li>
+                        <a href="{{ child_link.url }}" class="compact-dropdown__link{% if child_link.current %} compact-dropdown__link--active{% endif %}"{% if child_link.current %} aria-current="page"{% endif %}>
+                          {{ child_link.title | escape }}
+                        </a>
+                      </li>
+                      {%- for grandchild_link in child_link.links -%}
+                        <li>
+                          <a href="{{ grandchild_link.url }}" class="compact-dropdown__link compact-dropdown__link--grandchild{% if grandchild_link.current %} compact-dropdown__link--active{% endif %}"{% if grandchild_link.current %} aria-current="page"{% endif %}>
+                            {{ grandchild_link.title | escape }}
+                          </a>
+                        </li>
+                      {%- endfor -%}
+                    {%- endfor -%}
+                  </ul>
+                {%- else -%}
+                  {% assign list_id = 'MegaMenuList-' | append: forloop.index %}
+                  <div class="mega-menu section section--full-width-margin section--{{ section.settings.section_width }}">
+                    <div
+                      class="mega-menu__grid"
+                      data-menu-grid-id="{{ list_id }}"
+                    >
+                      {% render 'mega-menu-list',
+                        parent_link: link,
+                        id: list_id,
+                        section: section,
+                        grid_columns_count: 6,
+                        grid_columns_count_tablet: 4,
+                        grid_columns_count_collection_images: 8,
+                        menu_content_type: menu_content_type,
+                        content_aspect_ratio: ratio,
+                        image_border_radius: image_border_radius
+                      %}
+                    </div>
                   </div>
-                </div>
+                {%- endif -%}
               </div>
             </div>
           {%- endif -%}
@@ -205,7 +218,7 @@
             children: children,
             minimum-items: 2,
             data-testid: 'header-menu-overflow-list',
-            attributes: 'data-skip-node-update'
+            attributes: 'data-skip-node-update disabled="true"'
           %}
         </nav>
       </div>
@@ -288,6 +301,7 @@
     --menu-vertical-gap: var(--gap-xl);
 
     display: flex;
+    align-items: center;
     height: 100%;
   }
 
@@ -809,6 +823,62 @@
   .menu-list__list-item:not(:has([aria-expanded='true'])) > .menu-list__submenu product-component {
     display: none;
   }
+
+  /* Compact Dropdown Styles */
+  .menu-list__list-item--compact-parent {
+    position: relative;
+  }
+
+  .menu-list__list-item:where(:not([slot='overflow'])) > .menu-list__submenu--compact {
+    --submenu-content-opacity: 0;
+    --submenu-content-animation: opacity calc(var(--submenu-animation-speed) * 0.75) var(--animation-easing);
+    visibility: hidden;
+
+    width: max-content;
+    min-width: 200px;
+    left: 0;
+    top: -22px;
+    z-index: var(--layer-header-menu);
+    padding-inline: 0;
+
+    background-color: #ffffff;
+    clip-path: rect(var(--header-height) 200vw var(--full-open-header-height) -50px);
+    transition: clip-path var(--submenu-animation-speed) var(--ease-out-cubic);
+  }
+
+  .menu-list__link:is(:hover, [aria-expanded='true']) + .menu-list__submenu--compact,
+  .menu-list__submenu--compact:hover {
+    --submenu-content-opacity: 1;
+    visibility: visible;
+  }
+
+  .menu-list__submenu--compact .menu-list__submenu-inner {
+    padding: 1rem;
+    transform: none;
+    margin-top: var(--header-height);
+    opacity: var(--submenu-content-opacity);
+    transition: var(--submenu-content-animation);
+  }
+
+  .compact-dropdown__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .compact-dropdown__link {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: var(--color-foreground);
+    text-decoration: none;
+    font-family: var(--menu-child-font-family);
+    font-size: var(--menu-child-font-size);
+  }
+
+  .compact-dropdown__link--grandchild {
+    padding-left: 2rem;
+    font-size: calc(var(--menu-child-font-size) * 0.9);
+  }
 {% endstylesheet %}
 
 {% schema %}
@@ -937,6 +1007,19 @@
     {
       "type": "header",
       "content": "t:content.submenu_feature"
+    },
+    {
+      "type": "checkbox",
+      "id": "dynamic_dropdown_layout",
+      "label": "Enable dynamic dropdown layout",
+      "default": false
+    },
+    {
+      "type": "number",
+      "id": "submenu_item_threshold",
+      "label": "Submenu item threshold",
+      "default": 5,
+      "visible_if": "{{ block.settings.dynamic_dropdown_layout == true }}"
     },
     {
       "type": "select",

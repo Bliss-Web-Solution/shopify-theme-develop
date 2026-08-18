@@ -185,6 +185,14 @@
       "default": "page-width"
     },
     {
+      "type": "checkbox",
+      "id": "align_content_to_container",
+      "label": "t:settings.align_content_to_container",
+      "default": false,
+      "visible_if": "{{ section.settings.section_width == 'full-width' and section.settings.content_direction == 'row' }}"
+    },
+
+    {
       "type": "select",
       "id": "section_height",
       "label": "t:settings.height",

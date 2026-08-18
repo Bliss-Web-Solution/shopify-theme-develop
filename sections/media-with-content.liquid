@@ -8,6 +8,10 @@
   if section.settings.media_position == 'right'
     assign media_class_modifier = media_class_modifier | append: ' media-with-content--media-right'
   endif
+
+  if section.settings.section_width == 'full-width' and section.settings.align_content_to_container
+    assign media_class_modifier = media_class_modifier | append: ' media-with-content--align-container'
+  endif
 %}
 
 {% liquid
@@ -58,7 +62,7 @@
       grid-template-areas: 'margin-left media margin-right' 'margin-left content margin-right';
 
       @media screen and (min-width: 750px) {
-        /* Wide proportion is media 3.5 parts, content 2.5 parts. Which equals 7|5. So divide the central column by 7+5 and multiply accordingly */
+        /* Wide proportion is media 3.5 parts, content 2.5 parts. Which equals 7|5. So divide the central column by 75 and multiply accordingly */
         --media-with-content-grid-columns: var(--full-page-grid-margin)
           calc((var(--full-page-grid-central-column-width) / 12) * 7)
           calc((var(--full-page-grid-central-column-width) / 12) * 5) var(--full-page-grid-margin);
@@ -194,6 +198,24 @@
       padding-inline-end: var(--page-margin);
       padding-inline-start: 0;
     }
+
+    &.section--full-width.media-with-content--align-container {
+      .media-with-content__content > .group-block-content {
+        @media screen and (min-width: 750px) {
+          padding-inline-start: var(--page-margin);
+          padding-inline-end: var(--util-page-margin-offset);
+        }
+      }
+
+      &.media-with-content--media-right {
+        .media-with-content__content > .group-block-content {
+          @media screen and (min-width: 750px) {
+            padding-inline-start: var(--util-page-margin-offset);
+            padding-inline-end: var(--page-margin);
+          }
+        }
+      }
+    }
   }
 
   .media-with-content[data-shopify-visual-preview] {
@@ -296,6 +318,13 @@
       "label": "t:settings.extend_media_to_screen_edge",
       "default": true,
       "visible_if": "{{ section.settings.section_width == 'page-width' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "align_content_to_container",
+      "label": "t:settings.align_content_to_container",
+      "default": false,
+      "visible_if": "{{ section.settings.section_width == 'full-width' }}"
     },
     {
       "type": "color",

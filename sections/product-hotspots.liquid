@@ -60,7 +60,7 @@
       {% if section.settings.image != blank %}
         {% render 'image', image: section.settings.image, class: 'hotspots__background-image' %}
       {% else %}
-        {{ 'hero-apparel-1' | placeholder_svg_tag: 'hotspots__background-image' }}
+        {% render 'placeholder-image', placeholder_name: 'hero-apparel-1', class_name: 'hotspots__background-image' %}
       {% endif %}
 
       <div class="hotspots-container">
