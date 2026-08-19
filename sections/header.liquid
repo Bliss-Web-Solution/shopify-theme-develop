@@ -668,8 +668,8 @@
   }
 
   /* Prevent underlay from expanding for compact dropdowns */
-  #header-component:has(.menu-list__list-item--compact-parent .menu-list__link[aria-expanded='true']):not(
-      :has(.menu-list__list-item:not(.menu-list__list-item--compact-parent) .menu-list__link[aria-expanded='true'])
+  #header-component:has(.menu-list__list-item--compact-parent:is(:hover, :has([aria-expanded='true']))):not(
+      :has(.menu-list__list-item:not(.menu-list__list-item--compact-parent):is(:hover, :has([aria-expanded='true'])))
     )
     .header__underlay-open {
     height: var(--header-height) !important;
