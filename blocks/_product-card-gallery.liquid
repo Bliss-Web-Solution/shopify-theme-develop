@@ -2,7 +2,19 @@
 
 {% capture children %}
   {% unless product == blank %}
-    {%- if product.available == false or product.compare_at_price > product.price -%}
+    {%- liquid
+      assign is_new_product = false
+      if settings.badge_new_enable and product.published_at != blank
+        assign published_at_timestamp = product.published_at | date: '%s' | plus: 0
+        assign now_timestamp = 'now' | date: '%s' | plus: 0
+        assign age_in_seconds = now_timestamp | minus: published_at_timestamp
+        assign days_in_seconds = settings.badge_new_days | default: 30 | times: 86400
+        if age_in_seconds >= 0 and age_in_seconds <= days_in_seconds
+          assign is_new_product = true
+        endif
+      endif
+    -%}
+    {%- if product.available == false or product.compare_at_price > product.price or is_new_product -%}
       <div
         class="product-badges product-badges--{{ settings.badge_position }}"
         style="
@@ -13,7 +25,7 @@
         <div
           class="
             product-badges__badge product-badges__badge--rectangle
-            {% if product.available == false %} color-custom-badge-sold-out{% elsif product.compare_at_price > product.price %} color-custom-badge-sale{% endif %}
+            {% if product.available == false %} color-custom-badge-sold-out{% elsif product.compare_at_price > product.price %} color-custom-badge-sale{% elsif is_new_product %} color-custom-badge-new{% endif %}
           "
         >
           {%- if product.available == false -%}
