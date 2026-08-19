@@ -130,6 +130,25 @@
             <span class="menu-list__link-title">{{- link.title -}}</span>
           </a>
           {%- if link.links != blank -%}
+            <button
+              class="menu-list__disclosure button-unstyled"
+              aria-expanded="false"
+              aria-controls="submenu-{{ forloop.index }}"
+              ref="disclosure[]"
+              on:click="/toggle"
+            >
+              <svg
+                class="menu-list__disclosure-icon"
+                viewBox="0 0 10 6"
+                aria-hidden="true"
+                focusable="false"
+              >
+                {%- render 'icon', icon: 'caret' -%}
+              </svg>
+            </button>
+            </span>
+          {%- endif -%}
+          {%- if link.links != blank -%}
             <div class="menu-list__submenu{% if is_compact %} menu-list__submenu--compact{% endif %}{{ background_color_classes }}" ref="submenu[]">
               <div
                 id="submenu-{{ forloop.index }}"
@@ -840,13 +859,11 @@
     top: -22px;
     z-index: var(--layer-header-menu);
     padding-inline: 0;
-
     background-color: #ffffff;
-    clip-path: rect(var(--header-height) 200vw var(--full-open-header-height) -50px);
-    transition: clip-path var(--submenu-animation-speed) var(--ease-out-cubic);
   }
 
-  .menu-list__link:is(:hover, [aria-expanded='true']) + .menu-list__submenu--compact,
+  .menu-list__list-item--compact-parent:is(:hover, :focus-within) > .menu-list__submenu--compact,
+  .menu-list__list-item--compact-parent:has([aria-expanded='true']) > .menu-list__submenu--compact,
   .menu-list__submenu--compact:hover {
     --submenu-content-opacity: 1;
     visibility: visible;
@@ -873,11 +890,8 @@
     text-decoration: none;
     font-family: var(--menu-child-font-family);
     font-size: var(--menu-child-font-size);
-  }
-
-  .compact-dropdown__link--grandchild {
-    padding-left: 2rem;
-    font-size: calc(var(--menu-child-font-size) * 0.9);
+    border-radius: 2px;
+    transition: background-color var(--animation-speed-fast) var(--animation-easing);
   }
 {% endstylesheet %}
 
