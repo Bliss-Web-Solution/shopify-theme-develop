@@ -142,6 +142,7 @@
       {% if block_settings.background_color != blank %} color-custom-{{ parent_block_id }}{% endif %}
     "
     style="
+      --ratio: {{ ratio }};
       {%- render 'spacing-style', settings: block_settings -%}
       {%- render 'border-override', settings: block_settings -%}
     "
@@ -170,6 +171,7 @@
       {% if block_settings.background_color != blank %} color-custom-{{ parent_block_id }}{% endif %}
     "
     style="
+      --ratio: {{ ratio }};
       {%- render 'spacing-style', settings: block_settings -%}
       {%- render 'border-override', settings: block_settings -%}
     "

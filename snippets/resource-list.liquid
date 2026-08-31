@@ -129,6 +129,10 @@
   {% if test_id %}
     data-testid="{{ test_id }}"
   {% endif %}
+  {% if paginate %}
+    ref="grid"
+    data-last-page="{{ paginate.pages }}"
+  {% endif %}
 >
   {% case layout_type %}
     {% when 'grid' %}
