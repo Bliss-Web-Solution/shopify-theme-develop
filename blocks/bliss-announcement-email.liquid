@@ -1,0 +1,134 @@
+{%- assign email_text = block.settings.text | strip_html | strip -%}
+
+{% if email_text != blank %}
+  <div 
+    class="announcement-contact-item" 
+    data-block-type="_announcement-email" 
+    {{ block.shopify_attributes }}
+    style="
+      margin-top: {{ block.settings.margin_top }}px;
+      margin-bottom: {{ block.settings.margin_bottom }}px;
+      margin-left: {{ block.settings.margin_left }}px;
+      margin-right: {{ block.settings.margin_right }}px;
+    "
+  >
+    <a href="mailto:{{ email_text }}" class="announcement-contact-link" aria-label="Email us at {{ email_text }}">
+      
+      {%- if block.settings.icon != blank -%}
+        {{ block.settings.icon 
+          | image_url: width: block.settings.icon_width 
+          | image_tag: 
+            width: block.settings.icon_width, 
+            height: block.settings.icon_height, 
+            class: 'announcement-contact-icon' }}
+      {%- else -%}
+        <svg 
+          aria-hidden="true" 
+          focusable="false" 
+          class="icon icon-envelope announcement-contact-icon" 
+          viewBox="0 0 20 20" 
+          fill="currentColor"
+          width="{{ block.settings.icon_width }}"
+          height="{{ block.settings.icon_height }}"
+        >
+          <path d="M2.5 5.5A1.5 1.5 0 014 4h12a1.5 1.5 0 011.5 1.5v9A1.5 1.5 0 0116 16H4a1.5 1.5 0 01-1.5-1.5v-9zm1.32.7l5.63 4a1 1 0 001.1 0l5.63-4A.5.5 0 0015.86 5H4.14a.5.5 0 00-.32.8z"/>
+        </svg>
+      {%- endif -%}
+
+      {% if block.settings.show_email %}
+        <span class="announcement-contact-text">{{ email_text }}</span>
+      {% endif %}
+    </a>
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Email",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Email Address"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_email",
+      "label": "Email Address Visible",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Icon Size Settings"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon",
+      "label": "Custom icon"
+    },
+    {
+      "type": "range",
+      "id": "icon_width",
+      "label": "Icon Width",
+      "min": 10,
+      "max": 50,
+      "step": 1,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "icon_height",
+      "label": "Icon Height",
+      "min": 10,
+      "max": 50,
+      "step": 1,
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Margin Settings"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Margin Top",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Margin Bottom",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_left",
+      "label": "Margin Left",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_right",
+      "label": "Margin Right",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Email"
+    }
+  ]
+}
+{% endschema %}

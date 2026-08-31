@@ -10,55 +10,190 @@
 
 <div class="section-background color-custom-{{ section.id }}"></div>
 <aside
-  class="announcement-bar spacing-style section section--{{ section.settings.section_width }} color-custom-{{ section.id }}"
+  id="shopify-section-{{ section.id }}" class="announcement-bar spacing-style section section--{{ section.settings.section_width }} color-custom-{{ section.id }}"
   style="{% render 'spacing-padding', settings: section.settings %}; --border-bottom-width: {{ section.settings.divider_width }}px;{% if section.settings.divider_color != blank %} --color-border: {{ section.settings.divider_color }};{% endif %}"
 >
-  {% liquid
-    assign autoplay = false
-    assign show_arrows = false
-    if section.blocks.size > 1
-      assign autoplay = true
-      assign show_arrows = true
-    endif
-  %}
+   {% assign autoplay = false %}
+    {% assign show_arrows = false %}
+    {% for block in section.blocks %}
+      {% if block.type == '_announcement-phone' or block.type == '_announcement-email' or block.type == '_announcement-group' %}
+      {% endif %}
+    {% endfor %}
 
-  <announcement-bar-component
-    class="announcement-bar__slider"
-    {% if autoplay == true %}
-      autoplay="{{ section.settings.speed }}" aria-live="polite"
-    {% endif %}
-  >
-    {% if show_arrows %}
-      {% render 'slideshow-arrows', icon_style: 'chevron' %}
+    {% if section.blocks.size > 1 %}
+      {% assign autoplay = true %}
+      {% if section.settings.show_arrows %}
+        {% assign show_arrows = true %}
+      {% endif %}
     {% endif %}
 
-    <div class="announcement-bar__slides">
-      {% content_for 'blocks' %}
-    </div>
-  </announcement-bar-component>
+  <div class="announcement-bar-wrapper">
+    <announcement-bar-component
+      class="announcement-bar__slider"
+      {% if autoplay == true %}
+        autoplay="{{ section.settings.speed }}" aria-live="polite"
+      {% endif %}
+    >
+      <div class="announcement-bar__left-content">
+        {% if show_arrows %}
+          {% render 'slideshow-arrows', icon_style: 'chevron' %}
+        {% endif %}
+        
+        <div class="announcement-bar__slides">
+          {% content_for 'blocks' %}
+        </div>
+      </div>
+    </announcement-bar-component>
+
+    <div class="announcement-bar__right-content"></div>
+  </div>
+
+  <script>
+    const updateAnnouncementRightContent = (sectionId) => {
+    const sectionEl = document.getElementById(sectionId);
+    if (!sectionEl) return;
+
+    const wrapper = sectionEl.querySelector('.announcement-bar-wrapper');
+    const rightContainer = sectionEl.querySelector('.announcement-bar__right-content');
+    const slides = sectionEl.querySelector('.announcement-bar__slides');
+
+    if (!wrapper || !rightContainer || !slides) return;
+
+    const selectors = [
+      '[data-block-type="_announcement-phone"]',
+      '[data-block-type="_announcement-email"]',
+      '[data-block-type="_announcement-group"]'
+    ].join(', ');
+
+    const existingRightBlocks = rightContainer.querySelectorAll(selectors);
+    existingRightBlocks.forEach(el => slides.appendChild(el));
+
+    const blocksToMove = slides.querySelectorAll(selectors);
+    blocksToMove.forEach(block => {
+      rightContainer.appendChild(block);
+    });
+
+    if (rightContainer.children.length === 0) {
+      wrapper.classList.remove('announcement-bar-wrapper--has-right');
+    } else {
+      wrapper.classList.add('announcement-bar-wrapper--has-right');
+    }
+
+    wrapper.classList.add('is-ready');
+  };
+
+  const initAnnouncementBar = () => {
+    const sectionId = 'shopify-section-{{ section.id }}';
+
+    updateAnnouncementRightContent(sectionId);
+
+    document.addEventListener('shopify:section:load', () => {
+      updateAnnouncementRightContent(sectionId);
+    });
+
+    document.addEventListener('shopify:block:select', () => {
+      updateAnnouncementRightContent(sectionId);
+    });
+
+    document.addEventListener('shopify:block:deselect', () => {
+      updateAnnouncementRightContent(sectionId);
+    });
+  };
+
+  document.addEventListener('DOMContentLoaded', initAnnouncementBar);
+  </script>
 </aside>
 
 {% stylesheet %}
   .announcement-bar {
     border-block-end: var(--border-bottom-width) solid var(--color-border);
+    width: 100%;
+  }
+
+  .announcement-bar-wrapper {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 1rem;
+    visibility: hidden;
+  }
+
+  .announcement-bar-wrapper.is-ready {
+    display: flex;
+    visibility: visible;
+  }
+
+  .announcement-bar-wrapper--has-right .announcement-bar__slider {
+    width: 63%;
+    flex: 0 0 63%;
+  }
+
+  .announcement-bar-wrapper--has-right .announcement-bar__right-content {
+    display: flex;
+    width: 35%;
+    flex: 0 0 35%;
+    visibility: visible;
+    opacity: 1;
+    position: relative;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1.5rem;
+    font-size: 0.9em;
+    flex-direction: row-reverse;
+    transition: visibility 0.2s ease, opacity 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .announcement-bar-wrapper:not(.announcement-bar-wrapper--has-right) .announcement-bar__slider {
+    width: 100%;
+    flex: 0 0 100%;
+  }
+
+  .announcement-bar__right-content:not(:empty) {
+    display: flex;
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .announcement-bar__right-content [data-block-type] {
+    display: none;
+  }
+
+  .announcement-bar__right-content:not(:empty) [data-block-type] {
+    display: block;
+  }
+
+  .announcement-bar__slides [data-block-type="_announcement-phone"],
+  .announcement-bar__slides [data-block-type="_announcement-email"],
+  .announcement-bar__slides [data-block-type="_announcement-group"] {
+    display: block;
   }
 
   .announcement-bar__slider {
+    position: relative;
     display: flex;
     flex-direction: row;
     align-items: center;
-    position: relative;
+    flex: 63%;
+    min-width: 0;
+    width: 100%;
+    flex: 0 0 100%;
+  }
 
-    @media screen and (max-width: 749px) {
-      grid-column: 1 / -1;
-    }
+  .announcement-bar__left-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
   }
 
   .announcement-bar__slides {
     display: grid;
     grid: [stack] auto / [stack] auto;
-    width: calc(100% - var(--button-size) * 2);
-    max-width: 680px;
+    width: 100%;
     margin-inline: auto;
   }
 
@@ -66,26 +201,38 @@
     grid-area: stack;
   }
 
+  .announcement-bar__right-content:empty {
+    display: none;
+  }
+
   .announcement-bar__slide {
     transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
     content-visibility: visible;
-
-    &[aria-hidden='true'] {
-      opacity: 0;
-      visibility: hidden;
-    }
   }
 
-  .announcement-bar__slider slideshow-arrows {
+  .announcement-bar__slide[aria-hidden='true'] {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .announcement-bar__text:first-child {
+    margin: 0;
+  }
+
+  .announcement-bar__link {
+    position: relative;
+  }
+
+  .announcement-bar-wrapper .announcement-bar__slider slideshow-arrows .slideshow-control{
+    opacity: 1;
+  }
+
+  slideshow-arrows {
     padding: 0;
-    mix-blend-mode: normal;
   }
 
-  .announcement-bar__slider slideshow-arrows .slideshow-control {
+  slideshow-arrows .slideshow-control {
     color: var(--color-foreground);
-  }
-
-  .announcement-bar__slider .slideshow-control {
     display: flex;
     padding: 0;
     width: var(--button-size);
@@ -94,32 +241,111 @@
     justify-content: center;
     opacity: 1;
     animation: none;
-
-    @media screen and (min-width: 750px) {
-      --slideshow-control-offset: calc((var(--button-size) - var(--icon-size-xs)) / 2);
-
-      .section--page-width &.slideshow-control--previous {
-        transform: translateX(var(--slideshow-control-offset));
-      }
-    }
   }
 
-  .announcement-bar__slider .slideshow-control .svg-wrapper {
+  slideshow-arrows .slideshow-control .svg-wrapper {
     width: var(--icon-size-xs);
     height: var(--icon-size-xs);
   }
 
-  .announcement-bar__slide {
-    place-content: center;
+  /* Announcement bar contact blocks (phone, email, group) shared styles start */
+  .announcement-contact-item {
+    display: flex;
+    align-items: center;
   }
 
-  .announcement-bar__text:first-child {
-    margin: 0;
+  .announcement-contact-link {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: inherit;
+    text-decoration: none;
+    font-size: inherit;
+    transition: opacity 0.2s ease;
+    white-space: nowrap;
   }
 
-  .announcement-bar__link {
-    position: absolute;
-    inset: 0;
+  .announcement-contact-link:hover {
+    opacity: 0.8;
+  }
+
+  .announcement-contact-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    display: block;
+  }
+
+  .announcement-contact-text {
+    display: inline;
+  } 
+
+  .announcement-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  /* Announcement bar contact blocks (phone, email, group) shared styles end */   
+
+  @media screen and (max-width: 1200px) {
+    .announcement-bar-wrapper--has-right .announcement-bar__slider {
+      width: 55%;
+      flex: 0 0 55%;
+    }
+
+    .announcement-bar-wrapper--has-right .announcement-bar__right-content {
+      width: 43%;
+      flex: 0 0 43%;
+    }
+  }
+  
+  @media screen and (max-width: 1024px) {
+    .announcement-bar .announcement-bar__right-content .announcement-contact-link .announcement-contact-text {
+      display: none;
+    }
+
+    .announcement-contact-link {
+        padding: 0px;
+    }
+
+    .announcement-bar-wrapper--has-right .announcement-bar__slider {
+      width: 65%;
+      flex: 0 0 65%;
+    }
+
+    .announcement-bar-wrapper--has-right .announcement-bar__right-content {
+      width: 33%;
+      flex: 0 0 33%;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .announcement-bar__left-content, .announcement-bar__right-content {
+      flex: 0 0 100%;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .announcement-bar-wrapper--has-right .announcement-bar__slider {
+      width: 100%;
+      flex: 0 0 100%;
+    }
+
+    .announcement-bar-wrapper--has-right .announcement-bar__right-content {
+      width: 100%;
+      flex: 0 0 100%;
+      display: none;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .announcement-group {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+      width: 100%;
+    }
   }
 {% endstylesheet %}
 
@@ -128,9 +354,21 @@
   "name": "t:names.announcement_bar",
   "blocks": [
     {
+      "type": "@app"
+    },
+    {
       "type": "_announcement"
+    },
+    {
+      "type": "bliss-announcement-phone"
+    },
+    {
+      "type": "bliss-announcement-email"
+    },
+    {
+      "type": "bliss-announcement-group"
     }
-  ],
+  ],  
   "enabled_on": {
     "groups": ["header"]
   },
@@ -143,6 +381,12 @@
       "max": 10,
       "default": 5,
       "unit": "sec"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Show navigation arrows",
+      "default": true
     },
     {
       "type": "header",
@@ -215,12 +459,11 @@
   "presets": [
     {
       "name": "t:names.announcement_bar",
-      "blocks": {
-        "announcement_1": {
+      "blocks": [
+        {
           "type": "_announcement"
         }
-      },
-      "block_order": ["announcement_1"]
+      ]
     }
   ]
 }
