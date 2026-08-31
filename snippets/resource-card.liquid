@@ -246,9 +246,14 @@
     line-height: var(--line-height--display-loose);
     word-break: break-word;
     background-color: rgb(var(--color-foreground-rgb) / var(--opacity-5));
-    aspect-ratio: var(--resource-card-aspect-ratio, auto);
     border-radius: var(--resource-card-corner-radius);
     color: var(--color-foreground);
+
+    .resource-card__image {
+      aspect-ratio: unset;
+      height: 100%;
+      width: 100%;
+    }
   }
 
   .resource-card__title {

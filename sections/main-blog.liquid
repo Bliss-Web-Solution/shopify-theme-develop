@@ -27,91 +27,40 @@
   >
     {% content_for 'blocks' %}
 
-    <div
-      ref="grid"
-      class="blog-posts-container"
-    >
-      {% liquid
-        assign items_on_page = blog.articles.size
-      %}
-      {% for article in blog.articles %}
-        {% liquid
-          # Defaults for compact layout
-          assign col_span = 2
-          assign scale = 0.6
-          assign is_horizontal = false
+    {% assign articles_per_page = section.settings.articles_per_page | default: 12 %}
 
-          case items_on_page
-            when 1
-              # Single post: full width hero
-              assign col_span = 6
-              assign scale = 1
-              assign is_horizontal = true
-            when 2
-              # Two posts: both standard side by side
-              assign col_span = 3
-              assign scale = 0.8
-            when 3
-              # Three posts: hero + 2 standard
-              if forloop.index == 1
-                assign col_span = 6
-                assign scale = 1
-                assign is_horizontal = true
-              else
-                assign col_span = 3
-                assign scale = 0.8
-              endif
-            when 4
-              # Four posts: all standard in 2x2 grid
-              assign col_span = 3
-              assign scale = 0.8
-            when 5
-              # Five posts: hero + 4 standard
-              if forloop.index == 1
-                assign col_span = 6
-                assign scale = 1
-                assign is_horizontal = true
-              else
-                assign col_span = 3
-                assign scale = 0.8
-              endif
-            else
-              # 6+ posts: hero, 2 standard, rest compact
-              if forloop.index == 1
-                assign col_span = 6
-                assign scale = 1
-                assign is_horizontal = true
-              elsif forloop.index <= 3
-                assign col_span = 3
-                assign scale = 0.8
-              else
-                assign col_span = 2
-                assign scale = 0.6
-              endif
-          endcase
-        %}
-        {% style %}
-          [data-blog-index="{{ section.id }}-{{ forloop.index }}"] {
-            --col-span: {{ col_span }};
-            --blog-post-card-scale: {{ scale }};
-          }
+    {% paginate blog.articles by articles_per_page %}
+      <div
+        ref="grid"
+        class="blog-posts-container"
+        data-last-page="{{ paginate.pages }}"
+      >
+        {% for article in blog.articles %}
+          <div
+            id="{{ section.id }}-{{ article.id }}"
+            class="blog-post-item"
+            data-testid="blog-post-item"
+            data-article-id="{{ article.id }}"
+            data-page="{{ paginate.current_page }}"
+            ref="cards[]"
+          >
+            {% content_for 'block', id: 'static-blog-post-card', type: '_blog-post-card', article: article %}
+          </div>
+        {% endfor %}
+      </div>
 
-          @media screen and (max-width: 749px) {
-            [data-blog-index="{{ section.id }}-{{ forloop.index }}"] {
-              --col-span: 6;
-              --blog-post-card-scale: 0.5;
-            }
-          }
-        {% endstyle %}
-        <div
-          class="blog-post-item{% if is_horizontal %} blog-post-item--horizontal{% endif %}"
-          data-testid="blog-post-item"
-          data-blog-index="{{ section.id }}-{{ forloop.index }}"
-        >
-          {% content_for 'block', id: 'static-blog-post-card', type: '_blog-post-card', article: article %}
-        </div>
-      {% endfor %}
-    </div>
+      {% if section.settings.enable_infinite_scroll != false %}
+        <span ref="viewMoreNext"></span>
+      {% elsif section.settings.pagination_type == 'load_more' %}
+        {% if paginate.next %}
+          <div class="blog-posts__load-more">
+            <button ref="loadMoreButton" type="button" class="button button--secondary">Load More</button>
+          </div>
+        {% endif %}
+      {% else %}
+        {% render 'pagination-controls', paginate: paginate %}
+      {% endif %}
+    {% endpaginate %}
   </div>
 </blog-posts-list>
 
@@ -128,27 +77,22 @@
 
   .blog-posts-container {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(1, 1fr);
     gap: 1rem;
     width: 100%;
     column-gap: var(--columns-gap);
     row-gap: var(--rows-gap);
   }
 
-  /**
-   * Blog post item grid positioning and scaling.
-   * Layout is calculated in Liquid based on total article count.
-   * Mobile overrides are applied per-item in inline styles for proper specificity.
-   */
-  .blog-post-item {
-    grid-column: span var(--col-span);
-    background-color: var(--color-background);
+  @media screen and (min-width: 750px) {
+    .blog-posts-container {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 
-  /**
-   * When there's no image, the blog post item has a border.
-   */
   .blog-post-item {
+    --blog-post-card-scale: 1;
+    background-color: var(--color-background);
     border: 1px solid rgb(var(--color-foreground-rgb) / var(--opacity-20));
     padding: 0 1rem 1rem;
   }
@@ -156,6 +100,15 @@
   .blog-post-item:has(.blog-post-card__image-container) {
     border: none;
     padding: 0;
+  }
+
+  .blog-posts__load-more {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 32px;
+    text-align: center;
   }
 {% endstylesheet %}
 
@@ -198,6 +151,38 @@
     "groups": ["header"]
   },
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_infinite_scroll",
+      "label": "t:settings.auto_load_products",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "pagination_type",
+      "label": "t:settings.pagination_style",
+      "options": [
+        {
+          "value": "numbers",
+          "label": "t:options.numbered_pagination"
+        },
+        {
+          "value": "load_more",
+          "label": "t:options.load_more_button"
+        }
+      ],
+      "default": "numbers",
+      "visible_if": "{{ section.settings.enable_infinite_scroll == false }}"
+    },
+    {
+      "type": "range",
+      "id": "articles_per_page",
+      "label": "t:settings.articles_per_page",
+      "min": 1,
+      "max": 36,
+      "step": 1,
+      "default": 12
+    },
     {
       "type": "color",
       "id": "background_color",
