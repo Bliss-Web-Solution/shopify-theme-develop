@@ -15,7 +15,7 @@
 %}
 
 <div
-  class="card{% if block_settings.background_color != blank %} color-custom-{{ block.id }}{% endif %}"
+  class="card{% if block_settings.background_color != blank %} color-custom-{{ block.id }}{% endif %}{% if block_settings.custom_class != blank %} {{ block_settings.custom_class }}{% endif %}"
   ref="slides[]"
   data-carousel-card
   {{ block.shopify_attributes }}
@@ -557,6 +557,16 @@
       "step": 1,
       "unit": "px",
       "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Custom Class"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom Class",
+      "placeholder": "my-custom-class"
     }
   ],
   "presets": [
