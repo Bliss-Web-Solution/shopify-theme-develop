@@ -1515,6 +1515,46 @@ product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) .volume-pricing-note {
     margin-block: clamp(1.5rem, 1em * 3.3, 2.5rem) var(--font-heading--spacing);
   }
 
+  h1 {
+    font-size: var(--font-h1--size);
+    line-height: var(--font-h1--line-height);
+    letter-spacing: var(--font-h1--letter-spacing);
+  }
+
+  h2 {
+    font-size: var(--font-h2--size);
+    line-height: var(--font-h2--line-height);
+    letter-spacing: var(--font-h2--letter-spacing);
+  }
+
+  h3 {
+    font-size: var(--font-h3--size);
+    line-height: var(--font-h3--line-height);
+    letter-spacing: var(--font-h3--letter-spacing);
+  }
+
+  h4 {
+    font-size: var(--font-h4--size);
+    line-height: var(--font-h4--line-height);
+    letter-spacing: var(--font-h4--letter-spacing);
+  }
+
+  h5 {
+    font-size: var(--font-h5--size);
+    line-height: var(--font-h5--line-height);
+    letter-spacing: var(--font-h5--letter-spacing);
+  }
+
+  h6 {
+    font-size: var(--font-h6--size);
+    line-height: var(--font-h6--line-height);
+    letter-spacing: var(--font-h6--letter-spacing);
+  }
+
+  p {
+    margin-block-end: 25px;
+  }
+
   :first-child:is(p, h1, h2, h3, h4, h5, h6),
   :first-child:empty+ :is(p, h1, h2, h3, h4, h5, h6) {
     margin-block-start: 0;
