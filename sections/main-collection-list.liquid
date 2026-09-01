@@ -1,67 +1,105 @@
+<script
+  src="{{ 'results-list.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+
 {% liquid
   assign section_collections = collections
-  assign max_items = 20
   if section.settings.background_color != blank
     render 'contrast-override', background_color: section.settings.background_color, section_id: section.id
   endif
 %}
 
-<div
-  class="section-background{% if section.settings.background_color != blank %} color-custom-{{ section.id }}{% endif %}"
-></div>
+<results-list section-id="{{ section.id }}">
+  <div
+    class="section-background{% if section.settings.background_color != blank %} color-custom-{{ section.id }}{% endif %}"
+  ></div>
 
-<div
-  class="
-    section
-    section--{{ section.settings.section_width }}
-    {% if section.settings.background_color != blank %}color-custom-{{ section.id }}{% endif %}
-    section-resource-list
-    spacing-style
-    gap-style
-  "
-  style="
-    {% render 'spacing-style', settings: section.settings %}
-    {% render 'gap-style', value: section.settings.gap %}
-  "
->
-  <div class="section-resource-list__content">
-    {%- content_for 'blocks' -%}
+  <div
+    class="
+      section
+      section--{{ section.settings.section_width }}
+      {% if section.settings.background_color != blank %}color-custom-{{ section.id }}{% endif %}
+      section-resource-list
+      spacing-style
+      gap-style
+    "
+    style="
+      {% render 'spacing-style', settings: section.settings %}
+      {% render 'gap-style', value: section.settings.gap %}
+    "
+  >
+    <div class="section-resource-list__content">
+      {%- content_for 'blocks' -%}
+    </div>
+
+    {% assign collections_per_page = 50 %}
+    {% if section.settings.layout_type == 'grid' %}
+      {% assign collections_per_page = section.settings.collections_per_page | default: 12 %}
+    {% endif %}
+
+    {% paginate collections by collections_per_page %}
+      {% capture list_items %}
+        {% for collection in collections %}
+          <div
+            id="{{ section.id }}-{{ collection.id }}"
+            class="resource-list__item"
+            data-collection-id="{{ collection.id }}"
+            data-page="{{ paginate.current_page }}"
+            ref="cards[]"
+          >
+            {% content_for 'block', type: '_collection-card', id: 'static-collection-card', closest.collection: collection %}
+          </div>
+          {% unless forloop.last %}
+            <!--@list/split-->
+          {% endunless %}
+        {% endfor %}
+      {% endcapture %}
+
+      {% liquid
+        # Create an array from the list items to be used for different layout types
+        assign list_items_array = list_items | strip | split: '<!--@list/split-->'
+      %}
+
+      {% render 'resource-list',
+        list_items: list_items,
+        list_items_array: list_items_array,
+        settings: section.settings,
+        carousel_ref: 'mainCollectionList',
+        slide_count: paginate.items,
+        content_type: 'collections',
+        test_id: 'collections-list-grid',
+        paginate: paginate
+      %}
+
+      {% if section.settings.layout_type == 'grid' %}
+        {% if section.settings.enable_infinite_scroll != false %}
+          <span ref="viewMoreNext"></span>
+        {% elsif section.settings.pagination_type == 'load_more' %}
+          {% if paginate.next %}
+            <div class="collection-list__load-more">
+              <button ref="loadMoreButton" type="button" class="button button--secondary">Load More</button>
+            </div>
+          {% endif %}
+        {% else %}
+          {% render 'pagination-controls', paginate: paginate %}
+        {% endif %}
+      {% endif %}
+    {% endpaginate %}
   </div>
+</results-list>
 
-  {% if section_collections == null %}
-    {% for i in (1..max_items) %}
-      {% assign section_collections = section_collections | append: ', ' %}
-    {% endfor %}
-
-    {% assign section_collections = section_collections | split: ',' %}
-  {% endif %}
-
-  {% capture list_items %}
-    {% for collection in section_collections limit: max_items %}
-      <div class="resource-list__item">
-        {% content_for 'block', type: '_collection-card', id: 'static-collection-card', closest.collection: collection %}
-      </div>
-      {% unless forloop.last %}
-        <!--@list/split-->
-      {% endunless %}
-    {% endfor %}
-  {% endcapture %}
-
-  {% liquid
-    # Create an array from the list items to be used for different layout types
-    assign list_items_array = list_items | strip | split: '<!--@list/split-->'
-  %}
-
-  {% render 'resource-list',
-    list_items: list_items,
-    list_items_array: list_items_array,
-    settings: section.settings,
-    carousel_ref: 'mainCollectionList',
-    slide_count: max_items,
-    content_type: 'collections',
-    test_id: 'collections-list-grid'
-  %}
-</div>
+{% stylesheet %}
+  .collection-list__load-more {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 32px;
+    text-align: center;
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
@@ -103,6 +141,40 @@
     "groups": ["header", "footer"]
   },
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_infinite_scroll",
+      "label": "t:settings.auto_load_products",
+      "default": true,
+      "visible_if": "{{ section.settings.layout_type == 'grid' }}"
+    },
+    {
+      "type": "select",
+      "id": "pagination_type",
+      "label": "t:settings.pagination_style",
+      "options": [
+        {
+          "value": "numbers",
+          "label": "t:options.numbered_pagination"
+        },
+        {
+          "value": "load_more",
+          "label": "t:options.load_more_button"
+        }
+      ],
+      "default": "numbers",
+      "visible_if": "{{ section.settings.layout_type == 'grid' and section.settings.enable_infinite_scroll == false }}"
+    },
+    {
+      "type": "range",
+      "id": "collections_per_page",
+      "label": "t:settings.collections_per_page",
+      "min": 1,
+      "max": 36,
+      "step": 1,
+      "default": 12,
+      "visible_if": "{{ section.settings.layout_type == 'grid' }}"
+    },
     {
       "type": "header",
       "content": "t:content.cards_layout"
