@@ -339,6 +339,8 @@
     {% render 'placeholder-image', placeholder_name: 'product-apparel-1', class_name: 'product-media-gallery__placeholder-image' %}
   </div>
 {% else %}
+{% render 'product-badges-styles' %}
+
   <media-gallery
     class="
       spacing-style
@@ -369,6 +371,9 @@
                 assign media_sizes = sizes
               endif
           -%}
+          {% if forloop.first and selected_product != blank %}
+            {% render 'bliss-product-badges', product: selected_product, style: 'z-index: 2;' %}
+          {% endif %}
           {% if block_settings.aspect_ratio != 'adapt' and block_settings.constrain_to_viewport %}
             <div
               class="product-media-constraint-wrapper">

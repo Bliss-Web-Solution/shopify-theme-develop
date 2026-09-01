@@ -17,7 +17,18 @@
   assign has_badges = false
   assign badge_position = null
   if product != blank
-    if product.available == false or product.compare_at_price > product.price
+    assign is_new_product = false
+    if settings.badge_new_enable and product.published_at != blank
+      assign published_at_timestamp = product.published_at | date: '%s' | plus: 0
+      assign now_timestamp = 'now' | date: '%s' | plus: 0
+      assign age_in_seconds = now_timestamp | minus: published_at_timestamp
+      assign days_in_seconds = settings.badge_new_days | default: 30 | times: 86400
+      if age_in_seconds >= 0 and age_in_seconds <= days_in_seconds
+        assign is_new_product = true
+      endif
+    endif
+
+    if product.available == false or product.compare_at_price > product.price or is_new_product
       assign has_badges = true
       assign badge_position = settings.badge_position
     endif

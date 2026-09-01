@@ -1276,6 +1276,64 @@
       },
       {
         "type": "header",
+        "content": "Recently added products badge"
+      },
+      {
+        "type": "checkbox",
+        "id": "badge_new_enable",
+        "label": "Enable Recently Added badge",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "badge_new_days",
+        "min": 1,
+        "max": 90,
+        "step": 1,
+        "unit": "day",
+        "label": "New product duration (days)",
+        "default": 30
+      },
+      {
+        "type": "text",
+        "id": "badge_new_text",
+        "label": "Badge text",
+        "default": "New"
+      },
+      {
+        "type": "checkbox",
+        "id": "badge_new_stacking",
+        "label": "Allow showing alongside Sale badge",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "badge_new_tag_trigger",
+        "label": "Tag to force show badge",
+        "default": "new",
+        "info": "Products with this tag will always display the New badge regardless of publish date."
+      },
+      {
+        "type": "text",
+        "id": "badge_new_tag_hide",
+        "label": "Tag to force hide badge",
+        "default": "hide-new-badge",
+        "info": "Products with this tag will never display the New badge."
+      },
+      {
+        "type": "color",
+        "id": "badge_new_background_color",
+        "label": "New badge background",
+        "default": "{{ settings.color_palette.color1 }}"
+      },
+      {
+        "type": "color",
+        "id": "badge_new_text_color",
+        "label": "New badge text",
+        "default": "{{ settings.color_palette.background }}"
+      },
+      {
+        "type": "header",
         "content": "t:names.typography"
       },
       {
