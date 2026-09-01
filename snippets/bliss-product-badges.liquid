@@ -1,0 +1,111 @@
+{%- doc -%}
+  Renders advanced product badges (Sold Out, Sale, Recently Added / New).
+
+  Features:
+  - Date calculation based on product.published_at
+  - Merchant tag overrides (force show with trigger tag, force hide with hide tag)
+  - Style presets: Standard Rectangle, Rounded Pill, Sleek Outline
+  - Attention-grabbing pulse animation option
+  - Multi-badge stacking support (Sale + New)
+
+  @param {object} [product] - The Shopify product object (defaults to closest.product)
+  @param {string} [class] - Optional additional CSS classes
+  @param {string} [style] - Optional inline CSS styles
+{%- enddoc -%}
+
+{%- liquid
+  assign product_resource = product | default: closest.product
+-%}
+
+{%- if product_resource != blank -%}
+  {%- liquid
+    # Evaluate Sold Out & Sale status
+    assign is_sold_out = false
+    assign is_on_sale = false
+    if product_resource.available == false
+      assign is_sold_out = true
+    elsif product_resource.compare_at_price > product_resource.price
+      assign is_on_sale = true
+    endif
+
+    # Evaluate Recently Added / New status with tag overrides
+    assign is_new_product = false
+    if settings.badge_new_enable
+      assign trigger_tag = settings.badge_new_tag_trigger | default: 'new' | strip | downcase
+      assign hide_tag = settings.badge_new_tag_hide | default: 'hide-new-badge' | strip | downcase
+
+      assign has_trigger_tag = false
+      assign has_hide_tag = false
+
+      for tag in product_resource.tags
+        assign tag_down = tag | strip | downcase
+        if hide_tag != blank and tag_down == hide_tag
+          assign has_hide_tag = true
+        endif
+        if trigger_tag != blank and tag_down == trigger_tag
+          assign has_trigger_tag = true
+        endif
+      endfor
+
+      if has_hide_tag == false
+        if has_trigger_tag
+          assign is_new_product = true
+        elsif product_resource.published_at != blank
+          assign published_at_timestamp = product_resource.published_at | date: '%s' | plus: 0
+          assign now_timestamp = 'now' | date: '%s' | plus: 0
+          assign age_in_seconds = now_timestamp | minus: published_at_timestamp
+          assign days_in_seconds = settings.badge_new_days | default: 30 | times: 86400
+          if age_in_seconds >= 0 and age_in_seconds <= days_in_seconds
+            assign is_new_product = true
+          endif
+        endif
+      endif
+    endif
+
+    # Determine stacking vs priority logic
+    assign allow_stacking = settings.badge_new_stacking | default: false
+    assign show_stacked_sale_and_new = false
+    if allow_stacking and is_on_sale and is_new_product and is_sold_out == false
+      assign show_stacked_sale_and_new = true
+    endif
+  -%}
+
+  {%- if is_sold_out or is_on_sale or is_new_product -%}
+    <div
+      class="product-badges product-badges--{{ settings.badge_position }}{% if show_stacked_sale_and_new %} product-badges--stack{% endif %}{% if class != blank %} {{ class }}{% endif %}"
+      style="
+        --badge-border-radius: {{ settings.badge_corner_radius }}px;
+        --badge-font-family: var(--font-{{ settings.badge_font_family }}--family);
+        --badge-font-weight: var(--font-{{ settings.badge_font_family }}--weight);
+        --badge-text-transform: {{ settings.badge_text_transform }};
+        {% if style != blank %}{{ style }}{% endif %}
+      "
+    >
+      {%- if show_stacked_sale_and_new -%}
+        {% # Render both Sale and New badges stacked %}
+        <div class="product-badges__badge product-badges__badge--rectangle color-custom-badge-sale">
+          {{ 'content.product_badge_sale' | t }}
+        </div>
+        <div class="product-badges__badge product-badges__badge--rectangle color-custom-badge-new">
+          {{ settings.badge_new_text | default: 'New' }}
+        </div>
+      {%- else -%}
+        {% # Priority Single Badge (Sold Out > Sale > New) %}
+        <div
+          class="
+            product-badges__badge product-badges__badge--rectangle
+            {% if is_sold_out %} color-custom-badge-sold-out{% elsif is_on_sale %} color-custom-badge-sale{% elsif is_new_product %} color-custom-badge-new{% endif %}
+          "
+        >
+          {%- if is_sold_out -%}
+            {{ 'content.product_badge_sold_out' | t }}
+          {%- elsif is_on_sale -%}
+            {{ 'content.product_badge_sale' | t }}
+          {%- elsif is_new_product -%}
+            {{ settings.badge_new_text | default: 'New' }}
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+{%- endif -%}

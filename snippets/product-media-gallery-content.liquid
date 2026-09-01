@@ -372,30 +372,7 @@
               endif
           -%}
           {% if forloop.first and selected_product != blank %}
-            {%- liquid
-              assign is_new_product = false
-              if settings.badge_new_enable and selected_product.published_at != blank
-                assign published_at_timestamp = selected_product.published_at | date: '%s' | plus: 0
-                assign now_timestamp = 'now' | date: '%s' | plus: 0
-                assign age_in_seconds = now_timestamp | minus: published_at_timestamp
-                assign days_in_seconds = settings.badge_new_days | default: 30 | times: 86400
-                if age_in_seconds >= 0 and age_in_seconds <= days_in_seconds
-                  assign is_new_product = true
-                endif
-              endif
-            -%}
-            {%- if selected_product.available == false or selected_product.compare_at_price > selected_product.price or is_new_product -%}
-              <div
-                class="product-badges product-badges--{{ settings.badge_position }}"
-                style="
-                    --badge-border-radius: {{ settings.badge_corner_radius }}px;
-                    --badge-font-family: var(--font-{{ settings.badge_font_family }}--family); --badge-font-weight: var(--font-{{ settings.badge_font_family }}--weight); --badge-text-transform: {{ settings.badge_text_transform }};
-                    z-index: 2;
-                "
-              >
-                
-              </div>
-            {%- endif -%}
+            {% render 'bliss-product-badges', product: selected_product, style: 'z-index: 2;' %}
           {% endif %}
           {% if block_settings.aspect_ratio != 'adapt' and block_settings.constrain_to_viewport %}
             <div
