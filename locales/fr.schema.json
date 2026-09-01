@@ -574,7 +574,13 @@
     "input_style": "Style de champ de saisie",
     "selected_button_style": "Style de bouton sélectionné",
     "open_by_default": "Ouvert par défaut",
-    "title_preset": "Préréglage du titre"
+    "title_preset": "Préréglage du titre",
+    "articles_per_page": "Articles par page",
+    "collections_per_page": "Collections par page",
+    "pagination_style": "Style de pagination",
+    "align_content_to_container": "Aligner le contenu sur la largeur du conteneur",
+    "product_compare": "Comparaison de produits",
+    "compare_icon": "Icône de comparaison"
   },
   "options": {
     "apple": "Pomme",
@@ -850,7 +856,9 @@
     "below_media": "Sous le support multimédia",
     "full_frame": "Plein cadre",
     "icons": "Icônes",
-    "input_field": "Champ de saisie"
+    "input_field": "Champ de saisie",
+    "load_more_button": "Bouton Charger plus",
+    "numbered_pagination": "Pagination numérotée"
   },
   "content": {
     "background_video": "Vidéo de fond",
@@ -978,7 +986,8 @@
     "gift_card_products": "Produits de carte-cadeau",
     "disclosures": "Divulgations",
     "disclosures_metafield_content": "Avertissements de sécurité obligatoires et informations réglementaires pour ce produit.",
-    "page_text_color_contrast_info": "Les sections avec une couleur d’arrière-plan personnalisée utiliseront cette couleur du texte uniquement si le contraste des couleurs est suffisant."
+    "page_text_color_contrast_info": "Les sections avec une couleur d’arrière-plan personnalisée utiliseront cette couleur du texte uniquement si le contraste des couleurs est suffisant.",
+    "compare": "Comparer"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Partagez des informations sur votre marque avec vos clients. Décrivez un produit, faites des annonces ou accueillez les clients dans votre boutique.</p>",

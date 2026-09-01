@@ -146,7 +146,8 @@
     "disclosures": "ڈسکلوزر",
     "disclosures_metafield_content": "اس پروڈکٹ کے لیے درکار حفاظتی انتباہات اور ریگولیٹری ڈسکلوزر۔",
     "app_required_for_ratings": "پروڈکٹ کی ریٹنگز کے لیے ایک ایپ درکار ہے۔ [مزید جانیں](https://help.shopify.com/manual/apps)",
-    "navigation": "نیویگیشن"
+    "navigation": "نیویگیشن",
+    "compare": "موازنہ کریں"
   },
   "html_defaults": {
     "join_our_email_list": "<h2>ہماری ای میل لسٹ میں شامل ہوں</h2>",
@@ -235,10 +236,10 @@
     "media_type_info": "خصوصیات آپ کے مینو کے لنک سے پُر کی گئی ہیں"
   },
   "names": {
+    "404": "404",
     "column": "کالم",
     "product_title": "پروڈکٹ کا ٹائٹل",
     "custom_liquid": "کسٹم Liquid",
-    "404": "404",
     "accelerated_checkout": "تیز رفتار چیک آؤٹ",
     "accordion": "ایکارڈین",
     "accordion_row": "ایکارڈین کی قطار",
@@ -670,7 +671,9 @@
     "wide": "چوڑا",
     "youtube": "YouTube",
     "with_hints": "اشاروں کے ساتھ",
-    "below_media": "میڈیا کے نیچے"
+    "below_media": "میڈیا کے نیچے",
+    "load_more_button": "مزید لوڈ کا بٹن",
+    "numbered_pagination": "نمبر والی صفحہ بندی"
   },
   "settings": {
     "accordion": "ایکارڈین",
@@ -1085,7 +1088,13 @@
     "top_row_background": "اوپری قطار کا پس منظر",
     "top_row_text": "اوپری قطار کا متن",
     "bottom_row_background": "نچلی قطار کا پس منظر",
-    "bottom_row_text": "نچلی قطار کا متن"
+    "bottom_row_text": "نچلی قطار کا متن",
+    "articles_per_page": "فی صفحہ مضامین",
+    "collections_per_page": "فی صفحہ مجموعے",
+    "pagination_style": "صفحہ بندی کا انداز",
+    "align_content_to_container": "مواد کو کنٹینر کی چوڑائی کے مطابق کریں",
+    "product_compare": "پروڈکٹ کا موازنہ",
+    "compare_icon": "موازنہ کا آئیکن"
   },
   "text_defaults": {
     "accordion_heading": "ایکارڈین کی سرخی",

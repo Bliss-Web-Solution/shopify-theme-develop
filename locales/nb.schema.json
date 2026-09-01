@@ -574,7 +574,13 @@
     "input_style": "Inndatastil",
     "selected_button_style": "Valgt knappestil",
     "open_by_default": "Åpen som standard",
-    "title_preset": "Forhåndsinnstilling for tittel"
+    "title_preset": "Forhåndsinnstilling for tittel",
+    "articles_per_page": "Artikler per side",
+    "collections_per_page": "Kolleksjoner per side",
+    "pagination_style": "Pagineringsstil",
+    "align_content_to_container": "Juster innhold i henhold til beholderbredde",
+    "product_compare": "Sammenlign produkter",
+    "compare_icon": "Sammenligningsikon"
   },
   "options": {
     "apple": "Eple",
@@ -850,7 +856,9 @@
     "below_media": "Under mediene",
     "full_frame": "Full ramme",
     "icons": "Ikoner",
-    "input_field": "Inndatafelt"
+    "input_field": "Inndatafelt",
+    "load_more_button": "«Last mer»-knapp",
+    "numbered_pagination": "Nummerert paginering"
   },
   "content": {
     "advanced": "Avansert",
@@ -978,7 +986,8 @@
     "gift_card_products": "Gavekortprodukter",
     "disclosures": "Opplysninger",
     "disclosures_metafield_content": "Obligatoriske sikkerhetsadvarsler og lovpålagte opplysninger for dette produktet.",
-    "page_text_color_contrast_info": "Seksjoner med en egendefinert bakgrunnsfarge bruker bare denne tekstfargen når det er tilstrekkelig fargekontrast."
+    "page_text_color_contrast_info": "Seksjoner med en egendefinert bakgrunnsfarge bruker bare denne tekstfargen når det er tilstrekkelig fargekontrast.",
+    "compare": "Sammenlign"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Del informasjon om merkevaren din med kundene. Beskriv et produkt, kom med kunngjøringer eller ønsk kundene velkommen til butikken.</p>",

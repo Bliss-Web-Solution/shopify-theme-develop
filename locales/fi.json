@@ -343,5 +343,21 @@
       "success_moderated": "Kommentti on julkaistu; odotetaan moderointia",
       "success": "Kommentti on julkaistu"
     }
+  },
+  "compare": {
+    "compare_label": "Vertaa",
+    "compare_tabel": {
+      "compare_table_heading": "Vertaile tuotteita",
+      "compare_table_loading": "Ladataan vertailutietoja...",
+      "description": "Kuvaus",
+      "availability": "Saatavuus",
+      "in_stock": "Varastossa",
+      "out_of_stock": "Loppu varastosta",
+      "not_available": "Ei saatavilla",
+      "sku": "SKU",
+      "vendor": "Tuotemerkki",
+      "view_product": "Näytä tuote",
+      "remove_product_btn": "Poista"
+    }
   }
 }

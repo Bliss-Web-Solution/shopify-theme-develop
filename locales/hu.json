@@ -343,5 +343,21 @@
       "default_title": "Alapértelmezett cím",
       "sticky_add_to_cart": "Gyors hozzáadás a kosárhoz sáv"
     }
+  },
+  "compare": {
+    "compare_label": "Összehasonlítás",
+    "compare_tabel": {
+      "compare_table_heading": "Termékek összehasonlítása",
+      "compare_table_loading": "Összehasonlítási adatok betöltése...",
+      "description": "Leírás",
+      "availability": "Elérhetőség",
+      "in_stock": "Raktáron",
+      "out_of_stock": "Nincs raktáron",
+      "not_available": "N/A",
+      "sku": "Cikkszám",
+      "vendor": "Márka",
+      "view_product": "Termék megtekintése",
+      "remove_product_btn": "Eltávolítás"
+    }
   }
 }

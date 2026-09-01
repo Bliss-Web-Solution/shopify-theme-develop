@@ -343,5 +343,21 @@
       "success_moderated": "Το σχόλιο δημοσιεύτηκε, εν αναμονή τροποποίησης",
       "success": "Το σχόλιο δημοσιεύτηκε"
     }
+  },
+  "compare": {
+    "compare_label": "Σύγκριση",
+    "compare_tabel": {
+      "compare_table_heading": "Σύγκριση προϊόντων",
+      "compare_table_loading": "Φόρτωση δεδομένων σύγκρισης...",
+      "description": "Περιγραφή",
+      "availability": "Διαθεσιμότητα",
+      "in_stock": "Άμεσα διαθέσιμο",
+      "out_of_stock": "Εξαντλήθηκε",
+      "not_available": "Δ/Υ",
+      "sku": "SKU",
+      "vendor": "Μάρκα",
+      "view_product": "Προβολή προϊόντος",
+      "remove_product_btn": "Αφαίρεση"
+    }
   }
 }

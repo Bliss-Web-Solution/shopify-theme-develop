@@ -146,7 +146,8 @@
     "disclosures": "عمليات الإفصاح",
     "disclosures_metafield_content": "تحذيرات السلامة وعمليات الإفصاح التنظيمية المطلوبة لهذا المنتج.",
     "app_required_for_ratings": "يلزم وجود تطبيق لتقييمات المنتج. [تعرّف على المزيد](https://help.shopify.com/manual/apps)",
-    "navigation": "التنقل"
+    "navigation": "التنقل",
+    "compare": "مقارنة"
   },
   "html_defaults": {
     "join_our_email_list": "<h2>انضم إلى قائمتنا البريدية</h2>",
@@ -235,10 +236,10 @@
     "media_type_info": "تمت تعبئة الميزات من روابط القائمة الخاصة بك"
   },
   "names": {
+    "404": "404",
     "column": "عمود",
     "product_title": "عنوان المنتج",
     "custom_liquid": "Liquid مخصص",
-    "404": "404",
     "accelerated_checkout": "الدفع السريع",
     "accordion": "أكورديون",
     "accordion_row": "صف الأكورديون",
@@ -670,7 +671,9 @@
     "wide": "عريض",
     "youtube": "YouTube",
     "with_hints": "مع تلميحات",
-    "below_media": "أسفل الوسائط"
+    "below_media": "أسفل الوسائط",
+    "load_more_button": "زر تحميل المزيد",
+    "numbered_pagination": "ترقيم الصفحات"
   },
   "settings": {
     "accordion": "أكورديون",
@@ -1085,7 +1088,13 @@
     "top_row_background": "خلفية الصف العلوي",
     "top_row_text": "نص الصف العلوي",
     "bottom_row_background": "خلفية الصف السفلي",
-    "bottom_row_text": "نص الصف السفلي"
+    "bottom_row_text": "نص الصف السفلي",
+    "articles_per_page": "المقالات في الصفحة",
+    "collections_per_page": "المجموعات في الصفحة",
+    "pagination_style": "نمط الترقيم",
+    "align_content_to_container": "محاذاة المحتوى مع عرض الحاوية",
+    "product_compare": "مقارنة المنتجات",
+    "compare_icon": "أيقونة المقارنة"
   },
   "text_defaults": {
     "accordion_heading": "عنوان القائمة المنسدلة",

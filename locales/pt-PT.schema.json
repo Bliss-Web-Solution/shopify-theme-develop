@@ -574,7 +574,13 @@
     "input_style": "Estilo de campo",
     "selected_button_style": "Estilo do botão selecionado",
     "open_by_default": "Aberto por predefinição",
-    "title_preset": "Predefinição do título"
+    "title_preset": "Predefinição do título",
+    "articles_per_page": "Artigos por página",
+    "collections_per_page": "Coleções por página",
+    "pagination_style": "Estilo de paginação",
+    "align_content_to_container": "Alinhar conteúdo à largura do contêiner",
+    "product_compare": "Comparação de produtos",
+    "compare_icon": "Ícone de comparação"
   },
   "options": {
     "apple": "Maçã",
@@ -850,7 +856,9 @@
     "below_media": "Abaixo do conteúdo multimédia",
     "full_frame": "Ecrã inteiro",
     "icons": "Ícones",
-    "input_field": "Campo de introdução"
+    "input_field": "Campo de introdução",
+    "load_more_button": "Botão 'Carregar mais'",
+    "numbered_pagination": "Paginação numerada"
   },
   "content": {
     "advanced": "Avançado",
@@ -978,7 +986,8 @@
     "gift_card_products": "Produtos de cartão de oferta",
     "disclosures": "Divulgações",
     "disclosures_metafield_content": "Avisos de segurança e divulgações regulamentares obrigatórios para este produto.",
-    "page_text_color_contrast_info": "As secções com uma cor de fundo personalizada apenas utilizam esta cor do texto quando existe contraste de cor suficiente."
+    "page_text_color_contrast_info": "As secções com uma cor de fundo personalizada apenas utilizam esta cor do texto quando existe contraste de cor suficiente.",
+    "compare": "Comparar"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Partilhe informações sobre a sua marca com os seus clientes. Descreva um produto, faça anúncios ou dê as boas-vindas aos clientes na sua loja.</p>",

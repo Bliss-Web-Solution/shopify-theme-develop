@@ -574,7 +574,13 @@
     "input_style": "输入框样式",
     "selected_button_style": "所选按钮样式",
     "open_by_default": "默认展开",
-    "title_preset": "标题预设"
+    "title_preset": "标题预设",
+    "articles_per_page": "每页文章数",
+    "collections_per_page": "每页系列数",
+    "pagination_style": "分页样式",
+    "align_content_to_container": "将内容对齐至容器宽度",
+    "product_compare": "商品对比",
+    "compare_icon": "对比图标"
   },
   "options": {
     "apple": "Apple",
@@ -850,7 +856,9 @@
     "below_media": "媒体文件下方",
     "full_frame": "全画幅",
     "icons": "图标",
-    "input_field": "输入字段"
+    "input_field": "输入字段",
+    "load_more_button": "“加载更多”按钮",
+    "numbered_pagination": "数字分页"
   },
   "content": {
     "advanced": "高级",
@@ -978,7 +986,8 @@
     "gift_card_products": "礼品卡产品",
     "disclosures": "披露信息",
     "disclosures_metafield_content": "此产品所需的安全警告和监管披露信息。",
-    "page_text_color_contrast_info": "具有自定义背景色的分区仅在颜色对比度足够时才会使用此文本颜色。"
+    "page_text_color_contrast_info": "具有自定义背景色的分区仅在颜色对比度足够时才会使用此文本颜色。",
+    "compare": "对比"
   },
   "html_defaults": {
     "share_information_about_your": "<p>与您的客户分享有关您品牌的信息。描述产品、发布公告或欢迎客户光临您的商店。</p>",

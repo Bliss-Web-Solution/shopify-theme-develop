@@ -343,5 +343,21 @@
       "success_moderated": "ความคิดเห็นถูกโพสต์แล้ว กำลังรอการตรวจสอบ",
       "success": "ความคิดเห็นถูกโพสต์แล้ว"
     }
+  },
+  "compare": {
+    "compare_label": "เปรียบเทียบ",
+    "compare_tabel": {
+      "compare_table_heading": "เปรียบเทียบสินค้า",
+      "compare_table_loading": "กำลังโหลดข้อมูลการเปรียบเทียบ...",
+      "description": "รายละเอียด",
+      "availability": "สถานะสินค้า",
+      "in_stock": "มีสินค้า",
+      "out_of_stock": "สินค้าหมด",
+      "not_available": "ไม่มีข้อมูล",
+      "sku": "SKU",
+      "vendor": "แบรนด์",
+      "view_product": "ดูสินค้า",
+      "remove_product_btn": "ลบออก"
+    }
   }
 }

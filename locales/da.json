@@ -343,5 +343,21 @@
       "success_moderated": "Kommentaren blev indsendt og afventer moderering",
       "success": "Kommentaren blev indsendt"
     }
+  },
+  "compare": {
+    "compare_label": "Sammenlign",
+    "compare_tabel": {
+      "compare_table_heading": "Sammenlign produkter",
+      "compare_table_loading": "Indlæser sammenligningsdata...",
+      "description": "Beskrivelse",
+      "availability": "Lagerstatus",
+      "in_stock": "På lager",
+      "out_of_stock": "Ikke på lager",
+      "not_available": "Ikke tilgængelig",
+      "sku": "SKU",
+      "vendor": "Mærke",
+      "view_product": "Se produkt",
+      "remove_product_btn": "Fjern"
+    }
   }
 }

@@ -343,5 +343,21 @@
       "default_title": "Tiêu đề mặc định",
       "sticky_add_to_cart": "Thanh thêm nhanh vào giỏ hàng"
     }
+  },
+  "compare": {
+    "compare_label": "So sánh",
+    "compare_tabel": {
+      "compare_table_heading": "So sánh sản phẩm",
+      "compare_table_loading": "Đang tải dữ liệu so sánh...",
+      "description": "Mô tả",
+      "availability": "Tình trạng",
+      "in_stock": "Còn hàng",
+      "out_of_stock": "Hết hàng",
+      "not_available": "Không có",
+      "sku": "SKU",
+      "vendor": "Thương hiệu",
+      "view_product": "Xem sản phẩm",
+      "remove_product_btn": "Xóa"
+    }
   }
 }

@@ -574,7 +574,13 @@
     "input_style": "入力のスタイル",
     "selected_button_style": "選択されたボタンのスタイル",
     "open_by_default": "デフォルトで開く",
-    "title_preset": "タイトルプリセット"
+    "title_preset": "タイトルプリセット",
+    "articles_per_page": "1ページあたりの記事数",
+    "collections_per_page": "1ページあたりのコレクション数",
+    "pagination_style": "ページネーションのスタイル",
+    "align_content_to_container": "コンテンツをコンテナの幅に合わせる",
+    "product_compare": "商品比較",
+    "compare_icon": "比較アイコン"
   },
   "options": {
     "apple": "Apple",
@@ -850,7 +856,9 @@
     "below_media": "メディアの下",
     "full_frame": "フルフレーム",
     "icons": "アイコン",
-    "input_field": "入力フィールド"
+    "input_field": "入力フィールド",
+    "load_more_button": "「さらに読み込む」ボタン",
+    "numbered_pagination": "番号付きページネーション"
   },
   "content": {
     "advanced": "高度な設定",
@@ -978,7 +986,8 @@
     "gift_card_products": "ギフトカード商品",
     "disclosures": "開示情報",
     "disclosures_metafield_content": "この商品に必要な安全に関する警告および規制に基づく開示情報です。",
-    "page_text_color_contrast_info": "カスタム背景色を使用したセクションでは、色のコントラストが十分な場合にのみ、このテキストの配色が使用されます。"
+    "page_text_color_contrast_info": "カスタム背景色を使用したセクションでは、色のコントラストが十分な場合にのみ、このテキストの配色が使用されます。",
+    "compare": "比較"
   },
   "html_defaults": {
     "share_information_about_your": "<p>ブランドに関する情報をお客様に伝えましょう。商品の説明、お知らせ、ストアへのお客様への歓迎メッセージなどに使用します。</p>",

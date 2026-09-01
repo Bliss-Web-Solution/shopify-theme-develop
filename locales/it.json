@@ -350,5 +350,21 @@
       "default_title": "Titolo predefinito",
       "sticky_add_to_cart": "Barra per l'aggiunta rapida al carrello"
     }
+  },
+  "compare": {
+    "compare_label": "Confronta",
+    "compare_tabel": {
+      "compare_table_heading": "Confronto prodotti",
+      "compare_table_loading": "Caricamento dati di confronto...",
+      "description": "Descrizione",
+      "availability": "Disponibilità",
+      "in_stock": "Disponibile",
+      "out_of_stock": "Esaurito",
+      "not_available": "N/D",
+      "sku": "SKU",
+      "vendor": "Marca",
+      "view_product": "Vedi prodotto",
+      "remove_product_btn": "Rimuovi"
+    }
   }
 }

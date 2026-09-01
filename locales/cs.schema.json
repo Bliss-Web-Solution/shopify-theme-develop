@@ -574,7 +574,13 @@
     "input_style": "Styl vstupního pole",
     "selected_button_style": "Styl vybraného tlačítka",
     "open_by_default": "Otevřeno ve výchozím stavu",
-    "title_preset": "Předvolba nadpisu"
+    "title_preset": "Předvolba nadpisu",
+    "articles_per_page": "Článků na stránku",
+    "collections_per_page": "Kolekcí na stránku",
+    "pagination_style": "Styl stránkování",
+    "align_content_to_container": "Zarovnat obsah na šířku kontejneru",
+    "product_compare": "Porovnání produktů",
+    "compare_icon": "Ikona porovnání"
   },
   "options": {
     "apple": "Apple",
@@ -850,7 +856,9 @@
     "below_media": "Pod médii",
     "full_frame": "Přes celou plochu",
     "icons": "Ikony",
-    "input_field": "Vstupní pole"
+    "input_field": "Vstupní pole",
+    "load_more_button": "Tlačítko Načíst další",
+    "numbered_pagination": "Číslované stránkování"
   },
   "content": {
     "advanced": "Pokročilé",
@@ -978,7 +986,8 @@
     "gift_card_products": "Produkty dárkové karty",
     "disclosures": "Prohlášení",
     "disclosures_metafield_content": "Povinná bezpečnostní varování a zákonná prohlášení pro tento produkt.",
-    "page_text_color_contrast_info": "Sekce s vlastní barvou pozadí použijí tuto barvu textu pouze v případě dostatečného barevného kontrastu."
+    "page_text_color_contrast_info": "Sekce s vlastní barvou pozadí použijí tuto barvu textu pouze v případě dostatečného barevného kontrastu.",
+    "compare": "Porovnat"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Sdílejte informace o značce se zákazníky. Popište produkt, oznamte novinky nebo přivítejte zákazníky v obchodě.</p>",

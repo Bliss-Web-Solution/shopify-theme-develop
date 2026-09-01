@@ -574,7 +574,13 @@
     "input_style": "Stile input",
     "selected_button_style": "Stile pulsante selezionato",
     "open_by_default": "Aperto per impostazione predefinita",
-    "title_preset": "Preimpostazione titolo"
+    "title_preset": "Preimpostazione titolo",
+    "articles_per_page": "Articoli per pagina",
+    "collections_per_page": "Collezioni per pagina",
+    "pagination_style": "Stile di paginazione",
+    "align_content_to_container": "Allinea contenuto alla larghezza del contenitore",
+    "product_compare": "Confronto prodotti",
+    "compare_icon": "Icona di confronto"
   },
   "options": {
     "apple": "Mela",
@@ -850,7 +856,9 @@
     "below_media": "Sotto i contenuti multimediali",
     "full_frame": "A schermo intero",
     "icons": "Icone",
-    "input_field": "Campo di inserimento"
+    "input_field": "Campo di inserimento",
+    "load_more_button": "Pulsante Carica altro",
+    "numbered_pagination": "Paginazione numerata"
   },
   "content": {
     "advanced": "Avanzate",
@@ -978,7 +986,8 @@
     "gift_card_products": "Prodotti buono regalo",
     "disclosures": "Informative",
     "disclosures_metafield_content": "Avvertenze di sicurezza e informative normative obbligatorie per questo prodotto.",
-    "page_text_color_contrast_info": "Le sezioni con un colore di sfondo personalizzato useranno questo colore del testo solo quando il contrasto cromatico è sufficiente."
+    "page_text_color_contrast_info": "Le sezioni con un colore di sfondo personalizzato useranno questo colore del testo solo quando il contrasto cromatico è sufficiente.",
+    "compare": "Confronta"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Condividi informazioni sul tuo brand con i clienti. Descrivi un prodotto, fai annunci o dai il benvenuto ai clienti nel tuo negozio.</p>",

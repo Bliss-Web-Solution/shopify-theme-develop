@@ -574,7 +574,13 @@
     "input_style": "輸入框樣式",
     "selected_button_style": "已選取按鈕樣式",
     "open_by_default": "預設為開啟",
-    "title_preset": "標題預設設定"
+    "title_preset": "標題預設設定",
+    "articles_per_page": "每頁文章數",
+    "collections_per_page": "每頁系列數",
+    "pagination_style": "分頁樣式",
+    "align_content_to_container": "將內容對齊至容器寬度",
+    "product_compare": "商品比較",
+    "compare_icon": "比較圖示"
   },
   "options": {
     "apple": "Apple",
@@ -850,7 +856,9 @@
     "below_media": "多媒體檔案下方",
     "full_frame": "滿版",
     "icons": "圖示",
-    "input_field": "輸入欄位"
+    "input_field": "輸入欄位",
+    "load_more_button": "「載入更多」按鈕",
+    "numbered_pagination": "數字分頁"
   },
   "content": {
     "advanced": "進階",
@@ -978,7 +986,8 @@
     "gift_card_products": "禮品卡商品",
     "disclosures": "資訊揭露",
     "disclosures_metafield_content": "此商品必備的安全警告與法規資訊揭露。",
-    "page_text_color_contrast_info": "具有自訂背景顏色的區段，僅在色彩對比度充足時才會使用此文字顏色。"
+    "page_text_color_contrast_info": "具有自訂背景顏色的區段，僅在色彩對比度充足時才會使用此文字顏色。",
+    "compare": "比較"
   },
   "html_defaults": {
     "share_information_about_your": "<p>向顧客分享您的品牌故事。可用來敘述產品、發布公告，或歡迎顧客造訪您的商店。</p>",

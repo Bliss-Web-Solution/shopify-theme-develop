@@ -343,5 +343,21 @@
       "success_moderated": "Коментарът е публикуван, в очакване на модериране",
       "success": "Коментарът е публикуван"
     }
+  },
+  "compare": {
+    "compare_label": "Сравни",
+    "compare_tabel": {
+      "compare_table_heading": "Сравнение на продукти",
+      "compare_table_loading": "Зареждане на данни за сравнение...",
+      "description": "Описание",
+      "availability": "Наличност",
+      "in_stock": "В наличност",
+      "out_of_stock": "Изчерпано",
+      "not_available": "Н/П",
+      "sku": "SKU",
+      "vendor": "Марка",
+      "view_product": "Преглед на продукта",
+      "remove_product_btn": "Премахване"
+    }
   }
 }

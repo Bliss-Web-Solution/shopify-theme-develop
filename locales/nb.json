@@ -343,5 +343,21 @@
       "default_title": "Standardtittel",
       "sticky_add_to_cart": "Hurtiglinje for «Legg i handlekurv»"
     }
+  },
+  "compare": {
+    "compare_label": "Sammenlign",
+    "compare_tabel": {
+      "compare_table_heading": "Sammenlign produkter",
+      "compare_table_loading": "Laster sammenligningsdata...",
+      "description": "Beskrivelse",
+      "availability": "Lagerstatus",
+      "in_stock": "På lager",
+      "out_of_stock": "Ikke på lager",
+      "not_available": "Ikke tilgjengelig",
+      "sku": "SKU",
+      "vendor": "Merke",
+      "view_product": "Se produkt",
+      "remove_product_btn": "Fjern"
+    }
   }
 }
