@@ -574,7 +574,13 @@
     "input_style": "Inputstil",
     "selected_button_style": "Valgt knapstil",
     "open_by_default": "Åben som standard",
-    "title_preset": "Forudindstilling for titel"
+    "title_preset": "Forudindstilling for titel",
+    "articles_per_page": "Artikler pr. side",
+    "collections_per_page": "Kollektioner pr. side",
+    "pagination_style": "Pagineringstype",
+    "align_content_to_container": "Juster indhold i forhold til beholderbredde",
+    "product_compare": "Sammenlign produkter",
+    "compare_icon": "Sammenligningsikon"
   },
   "options": {
     "apple": "Apple",
@@ -850,7 +856,9 @@
     "below_media": "Under mediet",
     "full_frame": "Fuld ramme",
     "icons": "Ikoner",
-    "input_field": "Indtastningsfelt"
+    "input_field": "Indtastningsfelt",
+    "load_more_button": "Knappen 'Indlæs mere'",
+    "numbered_pagination": "Nummereret paginering"
   },
   "content": {
     "advanced": "Avanceret",
@@ -978,7 +986,8 @@
     "gift_card_products": "Gavekortprodukter",
     "disclosures": "Oplysninger",
     "disclosures_metafield_content": "Obligatoriske sikkerhedsadvarsler og lovpligtige oplysninger for dette produkt.",
-    "page_text_color_contrast_info": "Afsnit med en brugerdefineret baggrundsfarve bruger kun denne tekstfarve, når der er tilstrækkelig farvekontrast."
+    "page_text_color_contrast_info": "Afsnit med en brugerdefineret baggrundsfarve bruger kun denne tekstfarve, når der er tilstrækkelig farvekontrast.",
+    "compare": "Sammenlign"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Del oplysninger om dit brand med dine kunder. Beskriv et produkt, kom med meddelelser, eller byd kunder velkommen i din butik.</p>",

@@ -357,5 +357,21 @@
       "default_title": "Название по умолчанию",
       "sticky_add_to_cart": "Быстрое добавление в корзину"
     }
+  },
+  "compare": {
+    "compare_label": "Сравнить",
+    "compare_tabel": {
+      "compare_table_heading": "Сравнение товаров",
+      "compare_table_loading": "Загрузка данных сравнения...",
+      "description": "Описание",
+      "availability": "Наличие",
+      "in_stock": "В наличии",
+      "out_of_stock": "Нет в наличии",
+      "not_available": "Н/Д",
+      "sku": "Артикул",
+      "vendor": "Бренд",
+      "view_product": "Посмотреть товар",
+      "remove_product_btn": "Удалить"
+    }
   }
 }

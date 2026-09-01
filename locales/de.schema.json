@@ -574,7 +574,13 @@
     "input_style": "Eingabestil",
     "selected_button_style": "Ausgewählter Button-Stil",
     "open_by_default": "Standardmäßig geöffnet",
-    "title_preset": "Titelvoreinstellung"
+    "title_preset": "Titelvoreinstellung",
+    "articles_per_page": "Artikel pro Seite",
+    "collections_per_page": "Kategorien pro Seite",
+    "pagination_style": "Seitennummerierungsstil",
+    "align_content_to_container": "Inhalt an Containerbreite ausrichten",
+    "product_compare": "Produktvergleich",
+    "compare_icon": "Vergleichssymbol"
   },
   "options": {
     "apple": "Apfel",
@@ -850,7 +856,9 @@
     "below_media": "Unter den Medien",
     "full_frame": "Vollbild",
     "icons": "Symbole",
-    "input_field": "Eingabefeld"
+    "input_field": "Eingabefeld",
+    "load_more_button": "Schaltfläche \"Mehr laden\"",
+    "numbered_pagination": "Nummerierte Seitennummerierung"
   },
   "content": {
     "background_video": "Hintergrundvideo",
@@ -978,7 +986,8 @@
     "gift_card_products": "Gutscheinprodukte",
     "disclosures": "Pflichtangaben",
     "disclosures_metafield_content": "Erforderliche Sicherheitshinweise und gesetzliche Pflichtangaben für dieses Produkt.",
-    "page_text_color_contrast_info": "Abschnitte mit einer benutzerdefinierten Hintergrundfarbe verwenden diese Textfarbe nur bei ausreichendem Farbkontrast."
+    "page_text_color_contrast_info": "Abschnitte mit einer benutzerdefinierten Hintergrundfarbe verwenden diese Textfarbe nur bei ausreichendem Farbkontrast.",
+    "compare": "Vergleichen"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Teile Informationen über deine Marke mit deinen Kunden. Beschreibe ein Produkt, mache Ankündigungen oder heiße Kunden in deinem Shop willkommen.</p>",

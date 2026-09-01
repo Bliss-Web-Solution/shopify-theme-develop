@@ -574,7 +574,13 @@
     "input_style": "Estilo de campo",
     "selected_button_style": "Estilo de botón seleccionado",
     "open_by_default": "Abrir de forma predeterminada",
-    "title_preset": "Preajuste del título"
+    "title_preset": "Preajuste del título",
+    "articles_per_page": "Artículos por página",
+    "collections_per_page": "Colecciones por página",
+    "pagination_style": "Estilo de paginación",
+    "align_content_to_container": "Alinear contenido con el ancho del contenedor",
+    "product_compare": "Comparar productos",
+    "compare_icon": "Ícono de comparación"
   },
   "options": {
     "apple": "Apple",
@@ -850,7 +856,9 @@
     "below_media": "Debajo del contenido multimedia",
     "full_frame": "Marco completo",
     "icons": "Íconos",
-    "input_field": "Campo de entrada"
+    "input_field": "Campo de entrada",
+    "load_more_button": "Botón Cargar más",
+    "numbered_pagination": "Paginación numerada"
   },
   "content": {
     "advanced": "Avanzado",
@@ -978,7 +986,8 @@
     "gift_card_products": "Productos de tarjeta de regalo",
     "disclosures": "Divulgaciones",
     "disclosures_metafield_content": "Advertencias de seguridad y divulgaciones normativas obligatorias para este producto.",
-    "page_text_color_contrast_info": "Las secciones con un color de fondo personalizado usarán este color del texto solo cuando haya suficiente contraste de color."
+    "page_text_color_contrast_info": "Las secciones con un color de fondo personalizado usarán este color del texto solo cuando haya suficiente contraste de color.",
+    "compare": "Comparar"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Comparte información sobre tu marca con tus clientes. Describe un producto, anuncia novedades o da la bienvenida a quienes visitan tu tienda.</p>",

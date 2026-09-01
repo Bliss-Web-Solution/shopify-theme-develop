@@ -574,7 +574,13 @@
     "input_style": "Syöttökentän tyyli",
     "selected_button_style": "Valitun painikkeen tyyli",
     "open_by_default": "Avoinna oletuksena",
-    "title_preset": "Otsikon esiasetus"
+    "title_preset": "Otsikon esiasetus",
+    "articles_per_page": "Artikkeleita sivua kohden",
+    "collections_per_page": "Kokoelmia sivua kohden",
+    "pagination_style": "Sivutustyyli",
+    "align_content_to_container": "Tasaa sisältö säiliön leveyteen",
+    "product_compare": "Tuotteiden vertailu",
+    "compare_icon": "Vertailukuvake"
   },
   "options": {
     "apple": "Omena",
@@ -850,7 +856,9 @@
     "below_media": "Median alapuolella",
     "full_frame": "Koko ruutu",
     "icons": "Kuvakkeet",
-    "input_field": "Syöttökenttä"
+    "input_field": "Syöttökenttä",
+    "load_more_button": "\"Lataa lisää\" -painike",
+    "numbered_pagination": "Numeroitu sivutus"
   },
   "content": {
     "advanced": "Lisäasetukset",
@@ -978,7 +986,8 @@
     "gift_card_products": "Lahjakorttituotteet",
     "disclosures": "Ilmoitukset",
     "disclosures_metafield_content": "Tämän tuotteen pakolliset turvallisuusvaroitukset ja säädösten edellyttämät ilmoitukset.",
-    "page_text_color_contrast_info": "Osiot, joissa on mukautettu taustaväri, käyttävät tätä tekstin väriä vain, kun värikontrasti on riittävä."
+    "page_text_color_contrast_info": "Osiot, joissa on mukautettu taustaväri, käyttävät tätä tekstin väriä vain, kun värikontrasti on riittävä.",
+    "compare": "Vertaa"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Jaa tietoja brändistäsi asiakkaillesi. Kuvaile tuotetta, tee ilmoituksia tai toivota asiakkaat tervetulleiksi kauppaasi.</p>",

@@ -574,7 +574,13 @@
     "input_style": "Styl pola wprowadzania",
     "selected_button_style": "Styl wybranego przycisku",
     "open_by_default": "Domyślnie otwarte",
-    "title_preset": "Gotowe ustawienie tytułu"
+    "title_preset": "Gotowe ustawienie tytułu",
+    "articles_per_page": "Artykułów na stronę",
+    "collections_per_page": "Kolekcji na stronę",
+    "pagination_style": "Styl paginacji",
+    "align_content_to_container": "Wyrównaj zawartość do szerokości kontenera",
+    "product_compare": "Porównanie produktów",
+    "compare_icon": "Ikona porównania"
   },
   "options": {
     "apple": "Apple",
@@ -850,7 +856,9 @@
     "below_media": "Pod multimediami",
     "full_frame": "Pełna klatka",
     "icons": "Ikony",
-    "input_field": "Pole wprowadzania"
+    "input_field": "Pole wprowadzania",
+    "load_more_button": "Przycisk „Załaduj więcej”",
+    "numbered_pagination": "Paginacja numerowana"
   },
   "content": {
     "background_video": "Wideo w tle",
@@ -978,7 +986,8 @@
     "gift_card_products": "Produkty typu karta prezentowa",
     "disclosures": "Informacje prawne",
     "disclosures_metafield_content": "Wymagane ostrzeżenia dotyczące bezpieczeństwa i informacje prawne dla tego produktu.",
-    "page_text_color_contrast_info": "Sekcje z niestandardowym kolorem tła będą używać tego koloru tekstu tylko w przypadku wystarczającego kontrastu kolorów."
+    "page_text_color_contrast_info": "Sekcje z niestandardowym kolorem tła będą używać tego koloru tekstu tylko w przypadku wystarczającego kontrastu kolorów.",
+    "compare": "Porównaj"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Podziel się informacjami o swojej marce z klientami. Opisz produkt, ogłaszaj nowości lub witaj klientów w swoim sklepie.</p>",

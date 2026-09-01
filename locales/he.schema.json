@@ -146,7 +146,8 @@
     "disclosures": "גילוי נאות",
     "disclosures_metafield_content": "אזהרות בטיחות חובה וגילויים רגולטוריים עבור מוצר זה.",
     "app_required_for_ratings": "נדרש יישום עבור דירוגי מוצרים. [למידע נוסף](https://help.shopify.com/manual/apps)",
-    "navigation": "ניווט"
+    "navigation": "ניווט",
+    "compare": "השוואה"
   },
   "html_defaults": {
     "join_our_email_list": "<h2>הצטרף לרשימת הדיוור שלנו</h2>",
@@ -235,10 +236,10 @@
     "media_type_info": "התכונות מאוכלסות מקישורי התפריט שלך"
   },
   "names": {
+    "404": "404",
     "column": "עמודה",
     "product_title": "כותרת מוצר",
     "custom_liquid": "Custom Liquid",
-    "404": "404",
     "accelerated_checkout": "תשלום מואץ",
     "accordion": "אקורדיון",
     "accordion_row": "שורת אקורדיון",
@@ -670,7 +671,9 @@
     "wide": "רחב",
     "youtube": "YouTube",
     "with_hints": "עם רמזים",
-    "below_media": "מתחת למדיה"
+    "below_media": "מתחת למדיה",
+    "load_more_button": "לחצן טען עוד",
+    "numbered_pagination": "עימוד ממוספר"
   },
   "settings": {
     "accordion": "אקורדיון",
@@ -1085,7 +1088,13 @@
     "top_row_background": "רקע לשורה העליונה",
     "top_row_text": "טקסט לשורה העליונה",
     "bottom_row_background": "רקע לשורה התחתונה",
-    "bottom_row_text": "טקסט לשורה התחתונה"
+    "bottom_row_text": "טקסט לשורה התחתונה",
+    "articles_per_page": "מאמרים לדף",
+    "collections_per_page": "אוספים לדף",
+    "pagination_style": "סגנון עימוד",
+    "align_content_to_container": "יישר תוכן לרוחב המיכל",
+    "product_compare": "השוואת מוצרים",
+    "compare_icon": "סמל השוואה"
   },
   "text_defaults": {
     "accordion_heading": "כותרת אקורדיון",

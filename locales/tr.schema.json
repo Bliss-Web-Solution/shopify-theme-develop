@@ -574,7 +574,13 @@
     "input_style": "Giriş stili",
     "selected_button_style": "Seçili düğme stili",
     "open_by_default": "Varsayılan olarak açık",
-    "title_preset": "Başlık ön ayarı"
+    "title_preset": "Başlık ön ayarı",
+    "articles_per_page": "Sayfa başına makale",
+    "collections_per_page": "Sayfa başına koleksiyon",
+    "pagination_style": "Sayfalama stili",
+    "align_content_to_container": "İçeriği kapsayıcı genişliğine hizala",
+    "product_compare": "Ürün karşılaştırma",
+    "compare_icon": "Karşılaştırma simgesi"
   },
   "options": {
     "apple": "Apple",
@@ -850,7 +856,9 @@
     "below_media": "Medyanın altında",
     "full_frame": "Tam çerçeve",
     "icons": "Simgeler",
-    "input_field": "Giriş alanı"
+    "input_field": "Giriş alanı",
+    "load_more_button": "\"Daha fazla yükle\" düğmesi",
+    "numbered_pagination": "Numaralı sayfalama"
   },
   "content": {
     "background_video": "Arka plan videosu",
@@ -978,7 +986,8 @@
     "gift_card_products": "Hediye kartı ürünleri",
     "disclosures": "Bildirimler",
     "disclosures_metafield_content": "Bu ürün için zorunlu güvenlik uyarıları ve yasal bildirimler.",
-    "page_text_color_contrast_info": "Özel arka plan rengine sahip bölümler, yalnızca yeterli renk kontrastı olduğunda bu metin rengini kullanır."
+    "page_text_color_contrast_info": "Özel arka plan rengine sahip bölümler, yalnızca yeterli renk kontrastı olduğunda bu metin rengini kullanır.",
+    "compare": "Karşılaştır"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Markanızla ilgili bilgileri müşterilerinizle paylaşın. Bir ürünü açıklayın, duyurular yapın veya mağazanıza gelen müşterileri karşılayın.</p>",
