@@ -7,9 +7,11 @@
   @param {string} [title] - Header of the collection or search results
   @param {string} children - List or grid of product cards
   @param {boolean} [enable_infinite_scroll] - Whether to enable infinite scroll (default: true)
+  @param {string} [pagination_type] - Type of pagination ('infinite_scroll', 'load_more', 'page_numbers')
 {%- enddoc -%}
 
 {%- liquid
+  assign pagination_type = pagination_type | default: section.settings.pagination_type
   if section.settings.background_color != blank
     render 'contrast-override', background_color: section.settings.background_color, section_id: section.id
   endif

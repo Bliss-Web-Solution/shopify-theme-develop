@@ -17,9 +17,6 @@
 
   # Desktop peek settings
   assign enable_peek_setting = settings.enable_peek
-  if enable_peek_setting == null and section.settings.enable_peek != null
-    assign enable_peek_setting = section.settings.enable_peek
-  endif
 
   if enable_peek_setting != false
     assign peek_desktop = true
@@ -47,9 +44,6 @@
 
   # Mobile peek settings
   assign enable_peek_mobile_setting = settings.enable_peek_mobile
-  if enable_peek_mobile_setting == null and section.settings.enable_peek_mobile != null
-    assign enable_peek_mobile_setting = section.settings.enable_peek_mobile
-  endif
 
   if enable_peek_mobile_setting != false
     assign peek_mobile = true
@@ -81,9 +75,6 @@
   endif
 
   assign show_dots_setting = settings.show_dots
-  if show_dots_setting == null and section.settings.show_dots != null
-    assign show_dots_setting = section.settings.show_dots
-  endif
 
   assign slideshow_controls = null
   if show_dots_setting == true
