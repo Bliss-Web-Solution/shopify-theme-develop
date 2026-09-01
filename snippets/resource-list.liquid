@@ -12,6 +12,7 @@
   @param {string} content_type - Type of content: 'products' | 'collections' | 'articles'
   @param {string} [test_id] - Data test ID for the main resource list
   @param {object} [paginate] - Liquid pagination object
+  @param {string} [layout_type_override] - Optional layout type override
 
   @example
   {% render 'resource-list',
@@ -43,8 +44,8 @@
   assign slide_count = slide_count | default: 0
   assign content_type = content_type | default: 'collections'
   assign test_id = test_id | default: ''
-  assign paginate = paginate
-  assign layout_type_override = layout_type_override
+  assign paginate = paginate | default: null
+  assign layout_type_override = layout_type_override | default: null
 
   unless settings != empty
     echo '<!-- Error: settings parameter required for resource-list snippet -->'

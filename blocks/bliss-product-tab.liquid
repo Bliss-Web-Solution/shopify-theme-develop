@@ -17,32 +17,35 @@
   {{ block.shopify_attributes }}
 >
   {% capture list_items %}
-    {% if collection != blank and collection.all_products_count != 0 %}
-      {% paginate collection.products by max_items %}
-        {% for product in collection.products limit: max_items %}
-          <div class="resource-list__item">
-            {% content_for 'block',
-              type: '_product-card',
-              id: 'static-product-card',
-              closest.product: product,
-              product_view_context: 'collection'
-            %}
-          </div>
-          {% unless forloop.last %}
-            <!--@list/split-->
-          {% endunless %}
-        {% endfor %}
-      {% endpaginate %}
-    {% else %}
-      {% for i in (1..max_items) %}
-        <div class="resource-list__item">
-          {% content_for 'block', type: '_product-card', id: 'static-product-card', closest.product: null %}
-        </div>
-        {% unless forloop.last %}
-          <!--@list/split-->
-        {% endunless %}
-      {% endfor %}
-    {% endif %}
+    {% liquid
+      if collection != blank and collection.all_products_count != 0
+        assign tab_products = collection.products
+        assign is_placeholder = false
+      else
+        assign tab_products = (1..max_items)
+        assign is_placeholder = true
+      endif
+    %}
+    {% for item in tab_products limit: max_items %}
+      {% liquid
+        if is_placeholder
+          assign current_product = null
+        else
+          assign current_product = item
+        endif
+      %}
+      <div class="resource-list__item">
+        {% content_for 'block',
+          type: '_product-card',
+          id: 'static-product-card',
+          closest.product: current_product,
+          product_view_context: 'collection'
+        %}
+      </div>
+      {% unless forloop.last %}
+        <!--@list/split-->
+      {% endunless %}
+    {% endfor %}
   {% endcapture %}
 
   {% liquid
