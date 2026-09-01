@@ -98,7 +98,7 @@
     </button>
 
     <div class="gallery-lightbox__media-container">
-      <img id="GalleryLightboxImage-{{ section.id }}" alt="" width="" height="" style="display:none;">
+      <img id="GalleryLightboxImage-{{ section.id }}" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E" alt="{{ section.settings.title | escape | default: 'Gallery lightbox image' }}" width="1200" height="800" loading="lazy" style="display:none;"> 
       <video id="GalleryLightboxVideo-{{ section.id }}" controls playsinline style="display:none;"></video>
     </div>
 
