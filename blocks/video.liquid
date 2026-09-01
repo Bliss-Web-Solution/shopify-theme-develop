@@ -1,4 +1,8 @@
 {% assign block_settings = block.settings %}
+{% assign video_class = 'spacing-style size-style border-style' %}
+{% if block_settings.custom_class != blank %}
+  {% assign video_class = video_class | append: ' ' | append: block_settings.custom_class %}
+{% endif %}
 
 {% capture video_style %}
   {%  render 'spacing-style', settings: block_settings %}
@@ -10,7 +14,7 @@
 {% if block_settings.source == 'uploaded' %}
   {% render 'video',
     video: block_settings.video,
-    video_class: 'spacing-style size-style border-style',
+    video_class: video_class,
     video_loop: block_settings.video_loop,
     video_style: video_style,
     video_preview_image: block_settings.video.preview_image,
@@ -20,7 +24,7 @@
   {% render 'video',
     video_from_url: true,
     video: block_settings.video_url.id,
-    video_class: 'spacing-style size-style border-style',
+    video_class: video_class,
     video_type: block_settings.video_url.type,
     video_style: video_style,
     video_alt: block_settings.alt,
@@ -247,6 +251,16 @@
       "step": 1,
       "unit": "px",
       "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Custom Class"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom Class",
+      "placeholder": "my-custom-class"
     }
   ],
   "presets": [

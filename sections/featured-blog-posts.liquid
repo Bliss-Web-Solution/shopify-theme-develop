@@ -20,6 +20,7 @@
     section-resource-list
     spacing-style
     gap-style
+    {% if section.settings.custom_class != blank %}{{ section.settings.custom_class }}{% endif %}
   "
   style="
     {%- render 'spacing-style', settings: section.settings -%}
@@ -332,6 +333,16 @@
       "step": 1,
       "unit": "px",
       "default": 32
+    },
+    {
+      "type": "header",
+      "content": "Custom Class"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom Class",
+      "placeholder": "my-custom-class"
     }
   ],
   "presets": [

@@ -11,72 +11,78 @@
 ></script>
 
 {%- if section.blocks.size > 0 -%}
-<div
-  class="section-background{% if section.settings.background_color != blank %} color-custom-{{ section.id }}{% endif %}"
-></div>
-<div
-  data-testid="tabbed-collection"
-  class="
-    section
-    section--{{ section.settings.section_width }}
-    {% if section.settings.background_color != blank %}color-custom-{{ section.id }}{% endif %}
-    section-resource-list
-    spacing-style
-    gap-style
-  "
-  style="
-    {% render 'spacing-style', settings: section.settings %}
-    {% render 'gap-style', value: section.settings.gap %}
-  "
->
-  <div class="section-resource-list__header">
-    {%- content_for 'block', type: '_product-list-content', id: 'static-header' -%}
-  </div>
+  <div
+    class="section-background{% if section.settings.background_color != blank %} color-custom-{{ section.id }}{% endif %}"
+  ></div>
+  <div
+    data-testid="tabbed-collection"
+    class="
+      section
+      section--{{ section.settings.section_width }}
+      {% if section.settings.background_color != blank %}color-custom-{{ section.id }}{% endif %}
+      section-resource-list
+      spacing-style
+      gap-style
+      {% if section.settings.custom_class != blank %}{{ section.settings.custom_class }}{% endif %}
+    "
+    style="
+      {% render 'spacing-style', settings: section.settings %}
+      {% render 'gap-style', value: section.settings.gap %}
+    "
+  >
+    <div class="section-resource-list__header">
+      {%- content_for 'block', type: '_product-list-content', id: 'static-header' -%}
+    </div>
 
-  <tabbed-collection-component data-layout="{{ section.settings.responsive_layout }}">
-    <!-- Custom Style Variables for Tabs -->
-    {% style %}
-      #shopify-section-{{ section.id }} {
-        {% if section.settings.tab_text_color != blank %}
-          --tab-text-color: {{ section.settings.tab_text_color }};
-        {% endif %}
-        {% if section.settings.tab_active_color != blank %}
-          --tab-active-color: {{ section.settings.tab_active_color }};
-        {% endif %}
-        {% if section.settings.tab_active_bg_color != blank %}
-          --tab-active-bg-color: {{ section.settings.tab_active_bg_color }};
-        {% endif %}
-        {% if section.settings.accordion_bg_color != blank %}
-          --accordion-bg-color: {{ section.settings.accordion_bg_color }};
-        {% endif %}
-        {% if section.settings.accordion_active_bg_color != blank %}
-          --accordion-active-bg-color: {{ section.settings.accordion_active_bg_color }};
-        {% endif %}
-      }
-    {% endstyle %}
+    <tabbed-collection-component data-layout="{{ section.settings.responsive_layout }}">
+      <!-- Custom Style Variables for Tabs -->
+      {% style %}
+        #shopify-section-{{ section.id }} {
+          {% if section.settings.tab_text_color != blank %}
+            --tab-text-color: {{ section.settings.tab_text_color }};
+          {% endif %}
+          {% if section.settings.tab_active_color != blank %}
+            --tab-active-color: {{ section.settings.tab_active_color }};
+          {% endif %}
+          {% if section.settings.tab_active_bg_color != blank %}
+            --tab-active-bg-color: {{ section.settings.tab_active_bg_color }};
+          {% endif %}
+          {% if section.settings.accordion_bg_color != blank %}
+            --accordion-bg-color: {{ section.settings.accordion_bg_color }};
+          {% endif %}
+          {% if section.settings.accordion_active_bg_color != blank %}
+            --accordion-active-bg-color: {{ section.settings.accordion_active_bg_color }};
+          {% endif %}
+        }
+      {% endstyle %}
 
-    <!-- Tabs Navigation Wrapper (populated dynamically by JS) -->
-    <div class="tabbed-collection__tabs-wrapper" style="--horizontal-alignment: {{ section.settings.tab_alignment }};">
+      <!-- Tabs Navigation Wrapper (populated dynamically by JS) -->
       <div
-        class="tabbed-collection__tabs"
-        role="tablist"
-        data-style="{{ section.settings.tab_style | default: 'underline' }}"
-        ref="tabsContainer"
-      ></div>
-    </div>
-
-    <!-- Tab Panels Wrapper -->
-    <div class="tabbed-collection__panels" ref="panelsContainer">
-      {%- content_for 'blocks' -%}
-    </div>
-
-    {%- if section.blocks.size == 0 -%}
-      <div class="tabbed-collection__empty">
-        <p style="text-align: center; padding: 2rem;">Please add Tab blocks inside the section settings to display collections.</p>
+        class="tabbed-collection__tabs-wrapper"
+        style="--horizontal-alignment: {{ section.settings.tab_alignment }};"
+      >
+        <div
+          class="tabbed-collection__tabs"
+          role="tablist"
+          data-style="{{ section.settings.tab_style | default: 'underline' }}"
+          ref="tabsContainer"
+        ></div>
       </div>
-    {%- endif -%}
-  </tabbed-collection-component>
-</div>
+
+      <!-- Tab Panels Wrapper -->
+      <div class="tabbed-collection__panels" ref="panelsContainer">
+        {%- content_for 'blocks' -%}
+      </div>
+
+      {%- if section.blocks.size == 0 -%}
+        <div class="tabbed-collection__empty">
+          <p style="text-align: center; padding: 2rem;">
+            Please add Tab blocks inside the section settings to display collections.
+          </p>
+        </div>
+      {%- endif -%}
+    </tabbed-collection-component>
+  </div>
 {%- endif -%}
 
 {% stylesheet %}
@@ -85,7 +91,7 @@
     width: 100%;
   }
 
-  .tabbed-collection__tabs-wrapper:has(.tabbed-collection__tabs[data-style="pill"]) {
+  .tabbed-collection__tabs-wrapper:has(.tabbed-collection__tabs[data-style='pill']) {
     border-bottom: none;
   }
 
@@ -149,7 +155,7 @@
   }
 
   /* Pill Style */
-  .tabbed-collection__tabs[data-style="pill"] {
+  .tabbed-collection__tabs[data-style='pill'] {
     background: var(--color-background-secondary, #f5f5f5);
     padding: 0.25rem;
     border-radius: 2rem;
@@ -160,34 +166,34 @@
     margin-bottom: -1px;
   }
 
-  .tabbed-collection__tabs[data-style="pill"] .tabbed-collection__tab-btn {
+  .tabbed-collection__tabs[data-style='pill'] .tabbed-collection__tab-btn {
     padding: 0.5rem 1.5rem;
     border-radius: 1.5rem;
     transition: background-color 0.25s ease-in-out, color 0.25s ease-in-out;
   }
 
-  .tabbed-collection__tabs[data-style="pill"] .tabbed-collection__tab-btn::after {
+  .tabbed-collection__tabs[data-style='pill'] .tabbed-collection__tab-btn::after {
     display: none;
   }
 
-  .tabbed-collection__tabs[data-style="pill"] .tabbed-collection__tab-btn.active {
+  .tabbed-collection__tabs[data-style='pill'] .tabbed-collection__tab-btn.active {
     background-color: var(--tab-active-bg-color, var(--color-text, #000));
     color: var(--tab-active-color, #fff);
   }
 
   /* Responsive Layouts */
   @media (max-width: 767px) {
-    tabbed-collection-component[data-layout="tabs"] .tabbed-collection__tabs {
+    tabbed-collection-component[data-layout='tabs'] .tabbed-collection__tabs {
       flex-wrap: wrap;
       overflow-x: visible;
       justify-content: flex-start;
     }
-    
-    tabbed-collection-component[data-layout="accordion"] .tabbed-collection__tabs-wrapper {
+
+    tabbed-collection-component[data-layout='accordion'] .tabbed-collection__tabs-wrapper {
       display: none;
     }
-    
-    tabbed-collection-component[data-layout="accordion"] .tabbed-collection__accordion-btn {
+
+    tabbed-collection-component[data-layout='accordion'] .tabbed-collection__accordion-btn {
       display: flex;
     }
   }
@@ -210,7 +216,7 @@
     text-align: left;
     transition: background 0.2s ease, border-radius 0.2s ease;
   }
-  
+
   .tabbed-collection__accordion-btn:hover {
     background: var(--accordion-bg-color, var(--color-background-tertiary, #ebebeb));
     opacity: 0.9;
@@ -221,11 +227,11 @@
     transition: transform 0.3s ease;
   }
 
-  .tabbed-collection__accordion-btn[aria-expanded="true"] .tabbed-collection__accordion-icon {
+  .tabbed-collection__accordion-btn[aria-expanded='true'] .tabbed-collection__accordion-icon {
     transform: rotate(180deg);
   }
-  
-  .tabbed-collection__accordion-btn[aria-expanded="true"] {
+
+  .tabbed-collection__accordion-btn[aria-expanded='true'] {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     margin-bottom: 0;
@@ -233,9 +239,9 @@
     background: var(--accordion-active-bg-color, var(--tab-active-bg-color, var(--tab-active-color, #000)));
     color: var(--tab-active-color, #fff);
   }
-  
+
   @media (max-width: 767px) {
-    tabbed-collection-component[data-layout="accordion"] .tabbed-collection__panel {
+    tabbed-collection-component[data-layout='accordion'] .tabbed-collection__panel {
       display: grid !important; /* Override inline display block/none from JS for smooth animation */
       grid-template-rows: 0fr;
       visibility: hidden;
@@ -245,14 +251,16 @@
       margin-block: 0;
       border: 1px solid transparent;
       border-top: none;
-      transition: grid-template-rows .35s cubic-bezier(.4,0,.2,1), opacity .25s ease, padding-block .35s cubic-bezier(.4,0,.2,1), margin-block .35s cubic-bezier(.4,0,.2,1), visibility .35s allow-discrete, content-visibility .35s allow-discrete;
+      transition: grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease,
+        padding-block 0.35s cubic-bezier(0.4, 0, 0.2, 1), margin-block 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        visibility 0.35s allow-discrete, content-visibility 0.35s allow-discrete;
     }
-    
-    tabbed-collection-component[data-layout="accordion"] .tabbed-collection__panel > * {
+
+    tabbed-collection-component[data-layout='accordion'] .tabbed-collection__panel > * {
       min-height: 0;
     }
 
-    tabbed-collection-component[data-layout="accordion"] .tabbed-collection__panel.active {
+    tabbed-collection-component[data-layout='accordion'] .tabbed-collection__panel.active {
       grid-template-rows: 1fr;
       visibility: visible;
       opacity: 1;
@@ -453,6 +461,16 @@
       "step": 1,
       "unit": "px",
       "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Custom Class"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom Class",
+      "placeholder": "my-custom-class"
     }
   ],
   "presets": [
@@ -605,11 +623,7 @@
                   }
                 }
               },
-              "block_order": [
-                "product-card-gallery",
-                "product_title",
-                "price"
-              ]
+              "block_order": ["product-card-gallery", "product_title", "price"]
             }
           }
         },
@@ -695,19 +709,12 @@
                   }
                 }
               },
-              "block_order": [
-                "product-card-gallery",
-                "product_title",
-                "price"
-              ]
+              "block_order": ["product-card-gallery", "product_title", "price"]
             }
           }
         }
       },
-      "block_order": [
-        "tab_1",
-        "tab_2"
-      ]
+      "block_order": ["tab_1", "tab_2"]
     }
   ]
 }

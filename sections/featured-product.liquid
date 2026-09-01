@@ -27,6 +27,7 @@
     section
     section--full-width
     {% if section.settings.background_color != blank %}color-custom-{{ section.id }}{% endif %}
+    {% if section.settings.custom_class != blank %}{{ section.settings.custom_class }}{% endif %}
   "
   style="--gallery-aspect-ratio: {{ gallery_aspect_ratio }};"
   data-testid="featured-product-{{ section.id }}"
@@ -164,6 +165,16 @@
       "step": 1,
       "unit": "px",
       "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Custom Class"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom Class",
+      "placeholder": "my-custom-class"
     }
   ],
   "presets": [

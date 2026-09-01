@@ -21,7 +21,7 @@
 
 <div class="section-background color-custom-{{ section_id }}"></div>
 <div
-  class="section section--{{ section.settings.section_width }} color-custom-{{ section_id }}{% if section.settings.align_content_to_container %} section--align-container{% endif %}"
+  class="section section--{{ section.settings.section_width }} color-custom-{{ section_id }}{% if section.settings.align_content_to_container %} section--align-container{% endif %}{% if section.settings.custom_class != blank %} {{ section.settings.custom_class }}{% endif %}"
   data-testid="ui-test-section"
 
   {% if request.visual_preview_mode %}

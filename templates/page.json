@@ -9,18 +9,6 @@
  */
 {
   "sections": {
-    "breadcrumbs": {
-      "type": "bliss-breadcrumbs",
-      "settings": {
-        "enabled": false,
-        "width": "page",
-        "separator": "slash",
-        "alignment": "left",
-        "item_spacing": 8,
-        "padding-block-start": 12,
-        "padding-block-end": 12
-      }
-    },
     "main": {
       "type": "main-page",
       "blocks": {
@@ -39,6 +27,7 @@
             "letter_spacing": "normal",
             "case": "none",
             "wrap": "pretty",
+            "text_color": "",
             "background": false,
             "background_color": "#00000026",
             "corner_radius": 0,
@@ -51,7 +40,9 @@
         },
         "page-content": {
           "type": "page-content",
-          "settings": {},
+          "settings": {
+            "text_color": ""
+          },
           "blocks": {}
         }
       },
@@ -62,13 +53,13 @@
       "settings": {
         "content_direction": "column",
         "gap": 32,
+        "background_color": "",
         "padding-block-start": 40,
         "padding-block-end": 80
       }
     }
   },
   "order": [
-    "breadcrumbs",
     "main"
   ]
 }

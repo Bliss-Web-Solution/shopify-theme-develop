@@ -47,6 +47,7 @@
               <li>
                 <a
                   href="{{ link.url }}"
+                  {% if link.url contains '://' %}{% unless link.url contains shop.domain %} target="_blank"{% endunless %}{% endif %}
                   id="MenuItem-{{ link.handle }}"
                   class="menu-list__item"
                   {% if link.current %}
@@ -120,6 +121,7 @@
           {%- endif -%}
           <a
             href="{{ link.url }}"
+            {% if link.url contains '://' %}{% unless link.url contains shop.domain %} target="_blank"{% endunless %}{% endif %}
             data-skip-node-update="true"
             class="menu-list__link{% if link.active %} menu-list__link--active{% endif %}"
             {% if link.current %}
@@ -159,13 +161,13 @@
                   <ul class="compact-dropdown__list list-unstyled" role="list">
                     {%- for child_link in link.links -%}
                       <li>
-                        <a href="{{ child_link.url }}" class="compact-dropdown__link{% if child_link.current %} compact-dropdown__link--active{% endif %}"{% if child_link.current %} aria-current="page"{% endif %}>
+                        <a href="{{ child_link.url }}"{% if child_link.url contains '://' %}{% unless child_link.url contains shop.domain %} target="_blank"{% endunless %}{% endif %} class="compact-dropdown__link{% if child_link.current %} compact-dropdown__link--active{% endif %}"{% if child_link.current %} aria-current="page"{% endif %}>
                           {{ child_link.title | escape }}
                         </a>
                       </li>
                       {%- for grandchild_link in child_link.links -%}
                         <li>
-                          <a href="{{ grandchild_link.url }}" class="compact-dropdown__link compact-dropdown__link--grandchild{% if grandchild_link.current %} compact-dropdown__link--active{% endif %}"{% if grandchild_link.current %} aria-current="page"{% endif %}>
+                          <a href="{{ grandchild_link.url }}"{% if grandchild_link.url contains '://' %}{% unless grandchild_link.url contains shop.domain %} target="_blank"{% endunless %}{% endif %} class="compact-dropdown__link compact-dropdown__link--grandchild{% if grandchild_link.current %} compact-dropdown__link--active{% endif %}"{% if grandchild_link.current %} aria-current="page"{% endif %}>
                             {{ grandchild_link.title | escape }}
                           </a>
                         </li>
