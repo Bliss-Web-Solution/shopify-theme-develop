@@ -79,72 +79,47 @@
   {%- endif -%}
 
   <div class="theme-share-bar__icons">
+    {%- liquid
+      assign share_platforms = 'facebook,instagram,twitter,linkedin,pinterest,email,whatsapp' | split: ','
+    -%}
+    {%- for platform in share_platforms -%}
+      {%- assign setting_key = 'show_' | append: platform -%}
+      {%- if block.settings[setting_key] -%}
+        {%- liquid
+          assign platform_url = ''
+          assign platform_label = platform | capitalize
+          assign icon_name = platform
+          case platform
+            when 'facebook'
+              assign platform_url = facebook_url
+            when 'instagram'
+              assign platform_url = instagram_url
+            when 'twitter'
+              assign platform_url = twitter_url
+              assign platform_label = 'X (Twitter)'
+            when 'linkedin'
+              assign platform_url = linkedin_url
+            when 'pinterest'
+              assign platform_url = pinterest_url
+            when 'email'
+              assign platform_url = email_url
+            when 'whatsapp'
+              assign platform_url = whatsapp_url
+          endcase
+        -%}
+        <a class="theme-share-bar__icon-link" href="{{ platform_url }}" target="_blank" rel="noopener noreferrer" aria-label="Share on {{ platform_label }}" title="{{ platform_label }}">
+          <svg class="theme-share-bar__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            {%- if platform == 'email' -%}
+              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+            {%- else -%}
+              {%- render 'icon', icon: icon_name -%}
+            {%- endif -%}
+          </svg>
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
 
-    {%- comment -%} Facebook {%- endcomment -%}
-    {%- if block.settings.show_facebook -%}
-      <a class="theme-share-bar__icon-link" href="{{ facebook_url }}" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook" title="Facebook">
-        <svg class="theme-share-bar__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-          {%- render 'icon', icon: 'facebook' -%}
-        </svg>
-      </a>
-    {%- endif -%}
-
-    {%- comment -%} Instagram {%- endcomment -%}
-    {%- if block.settings.show_instagram -%}
-      <a class="theme-share-bar__icon-link" href="{{ instagram_url }}" target="_blank" rel="noopener noreferrer" aria-label="Follow on Instagram" title="Instagram">
-        <svg class="theme-share-bar__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-          {%- render 'icon', icon: 'instagram' -%}
-        </svg>
-      </a>
-    {%- endif -%}
-
-    {%- comment -%} X / Twitter {%- endcomment -%}
-    {%- if block.settings.show_twitter -%}
-      <a class="theme-share-bar__icon-link" href="{{ twitter_url }}" target="_blank" rel="noopener noreferrer" aria-label="Share on X" title="X">
-        <svg class="theme-share-bar__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-          {%- render 'icon', icon: 'twitter' -%}
-        </svg>
-      </a>
-    {%- endif -%}
-
-    {%- comment -%} LinkedIn {%- endcomment -%}
-    {%- if block.settings.show_linkedin -%}
-      <a class="theme-share-bar__icon-link" href="{{ linkedin_url }}" target="_blank" rel="noopener noreferrer" aria-label="Share on LinkedIn" title="LinkedIn">
-        <svg class="theme-share-bar__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M4.477 3C3.66 3 3 3.664 3 4.485c0 .82.66 1.485 1.477 1.485.816 0 1.476-.665 1.476-1.485C5.953 3.664 5.293 3 4.477 3ZM3.15 7.121v9.753h2.654V7.121H3.15ZM8.045 7.121v9.753h2.654v-4.83c0-1.25.236-2.46 1.784-2.46 1.527 0 1.546 1.43 1.546 2.539v4.751H16.7v-5.35c0-2.31-.497-4.085-3.193-4.085-1.295 0-2.165.711-2.52 1.385h-.035V7.12H8.045Z"/>
-        </svg>
-      </a>
-    {%- endif -%}
-
-    {%- comment -%} Pinterest {%- endcomment -%}
-    {%- if block.settings.show_pinterest -%}
-      <a class="theme-share-bar__icon-link" href="{{ pinterest_url }}" target="_blank" rel="noopener noreferrer" aria-label="Share on Pinterest" title="Pinterest">
-        <svg class="theme-share-bar__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-          {%- render 'icon', icon: 'pinterest' -%}
-        </svg>
-      </a>
-    {%- endif -%}
-
-    {%- comment -%} Email {%- endcomment -%}
-    {%- if block.settings.show_email -%}
-      <a class="theme-share-bar__icon-link" href="{{ email_url }}" target="_blank" rel="noopener noreferrer" aria-label="Share via Email" title="Email">
-        <svg class="theme-share-bar__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-          <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-        </svg>
-      </a>
-    {%- endif -%}
-
-    {%- comment -%} WhatsApp {%- endcomment -%}
-    {%- if block.settings.show_whatsapp -%}
-      <a class="theme-share-bar__icon-link" href="{{ whatsapp_url }}" target="_blank" rel="noopener noreferrer" aria-label="Share on WhatsApp" title="WhatsApp">
-        <svg class="theme-share-bar__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-          {%- render 'icon', icon: 'whatsapp' -%}
-        </svg>
-      </a>
-    {%- endif -%}
-
-    {%- comment -%} Copy Link {%- endcomment -%}
     {%- if block.settings.show_copy_link -%}
       <button type="button" class="theme-share-bar__icon-link theme-share-bar__copy-link" data-url="{{ share_url }}" aria-label="Copy Link" title="Copy Link">
         <svg class="theme-share-bar__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -153,7 +128,6 @@
         </svg>
       </button>
     {%- endif -%}
-
   </div>
 </div>
 {%- else -%}
@@ -179,63 +153,47 @@
       <div class="theme-share-dropdown__header">{{ label_text }}</div>
     {%- endif -%}
     <div class="theme-share-dropdown__list">
-      {%- if block.settings.show_facebook -%}
-        <a class="theme-share-dropdown__item" href="{{ facebook_url }}" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook">
-          <svg class="theme-share-dropdown__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-            {%- render 'icon', icon: 'facebook' -%}
-          </svg>
-          Facebook
-        </a>
-      {%- endif -%}
-      {%- if block.settings.show_twitter -%}
-        <a class="theme-share-dropdown__item" href="{{ twitter_url }}" target="_blank" rel="noopener noreferrer" aria-label="Share on X">
-          <svg class="theme-share-dropdown__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-            {%- render 'icon', icon: 'twitter' -%}
-          </svg>
-          Twitter / X
-        </a>
-      {%- endif -%}
-      {%- if block.settings.show_pinterest -%}
-        <a class="theme-share-dropdown__item" href="{{ pinterest_url }}" target="_blank" rel="noopener noreferrer" aria-label="Share on Pinterest">
-          <svg class="theme-share-dropdown__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-            {%- render 'icon', icon: 'pinterest' -%}
-          </svg>
-          Pinterest
-        </a>
-      {%- endif -%}
-      {%- if block.settings.show_linkedin -%}
-        <a class="theme-share-dropdown__item" href="{{ linkedin_url }}" target="_blank" rel="noopener noreferrer" aria-label="Share on LinkedIn">
-          <svg class="theme-share-dropdown__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M4.477 3C3.66 3 3 3.664 3 4.485c0 .82.66 1.485 1.477 1.485.816 0 1.476-.665 1.476-1.485C5.953 3.664 5.293 3 4.477 3ZM3.15 7.121v9.753h2.654V7.121H3.15ZM8.045 7.121v9.753h2.654v-4.83c0-1.25.236-2.46 1.784-2.46 1.527 0 1.546 1.43 1.546 2.539v4.751H16.7v-5.35c0-2.31-.497-4.085-3.193-4.085-1.295 0-2.165.711-2.52 1.385h-.035V7.12H8.045Z"/>
-          </svg>
-          LinkedIn
-        </a>
-      {%- endif -%}
-      {%- if block.settings.show_email -%}
-        <a class="theme-share-dropdown__item" href="{{ email_url }}" target="_blank" rel="noopener noreferrer" aria-label="Share via Email">
-          <svg class="theme-share-dropdown__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-          </svg>
-          Email
-        </a>
-      {%- endif -%}
-      {%- if block.settings.show_whatsapp -%}
-        <a class="theme-share-dropdown__item" href="{{ whatsapp_url }}" target="_blank" rel="noopener noreferrer" aria-label="Share on WhatsApp">
-          <svg class="theme-share-dropdown__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-            {%- render 'icon', icon: 'whatsapp' -%}
-          </svg>
-          WhatsApp
-        </a>
-      {%- endif -%}
-      {%- if block.settings.show_instagram -%}
-        <a class="theme-share-dropdown__item" href="{{ instagram_url }}" target="_blank" rel="noopener noreferrer" aria-label="Follow on Instagram">
-          <svg class="theme-share-dropdown__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-            {%- render 'icon', icon: 'instagram' -%}
-          </svg>
-          Instagram
-        </a>
-      {%- endif -%}
+      {%- liquid
+        assign share_platforms = 'facebook,instagram,twitter,linkedin,pinterest,email,whatsapp' | split: ','
+      -%}
+      {%- for platform in share_platforms -%}
+        {%- assign setting_key = 'show_' | append: platform -%}
+        {%- if block.settings[setting_key] -%}
+          {%- liquid
+            assign platform_url = ''
+            assign platform_label = platform | capitalize
+            assign icon_name = platform
+            case platform
+              when 'facebook'
+                assign platform_url = facebook_url
+              when 'instagram'
+                assign platform_url = instagram_url
+              when 'twitter'
+                assign platform_url = twitter_url
+              when 'linkedin'
+                assign platform_url = linkedin_url
+              when 'pinterest'
+                assign platform_url = pinterest_url
+              when 'email'
+                assign platform_url = email_url
+              when 'whatsapp'
+                assign platform_url = whatsapp_url
+            endcase
+          -%}
+          <a class="theme-share-dropdown__item" href="{{ platform_url }}" target="_blank" rel="noopener noreferrer" aria-label="Share on {{ platform | capitalize }}">
+            <svg class="theme-share-dropdown__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              {%- if platform == 'email' -%}
+                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+              {%- else -%}
+                {%- render 'icon', icon: icon_name -%}
+              {%- endif -%}
+            </svg>
+            {{ platform_label }}
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+
       {%- if block.settings.show_copy_link -%}
         <button type="button" class="theme-share-dropdown__item theme-share-bar__copy-link" data-url="{{ share_url }}">
           <svg class="theme-share-dropdown__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
