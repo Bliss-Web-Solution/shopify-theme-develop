@@ -75,50 +75,6 @@
   .announcement-bar__text {
     margin-top: 0;
   }
-  marquee-component.announcement-bar__marquee {
-    display: block;
-    width: 100%;
-    overflow: hidden;
-  }
-
-  .announcement-bar__marquee .marquee__wrapper {
-    display: flex;
-    gap: 100px;
-    width: fit-content;
-    white-space: nowrap;
-    align-items: center;
-  }
-
-  .announcement-bar__marquee .marquee__content {
-    min-width: max-content;
-    display: flex;
-    gap: 100px;
-    align-items: center;
-  }
-
-  .announcement-bar__marquee .marquee__content p {
-    white-space: nowrap;
-  }
-
-  .announcement-bar__marquee .marquee__repeated-items {
-    min-width: max-content;
-    display: flex;
-    gap: 100px;
-    align-items: center;
-    justify-content: center;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    marquee-component.announcement-bar__marquee:not([data-disabled]) .marquee__wrapper {
-      animation: marquee-motion var(--marquee-speed) linear infinite var(--marquee-direction);
-    }
-  }
-
-  @keyframes marquee-motion {
-    to {
-      transform: translate3d(calc(-50% - (var(--marquee-gap) / 2)), 0, 0);
-    }
-  }
 
   .announcement-bar__slider {
     display: flex;
@@ -187,9 +143,9 @@
       &[data-position="active"],
       &[data-position="next"],
       &[data-position="prev"] {
-        opacity: 1 !important;
-        visibility: visible !important;
-        content-visibility: visible !important;
+        opacity: 1;
+        visibility: visible;
+        content-visibility: visible;
       }
 
       &:not([data-position]):first-child,
@@ -200,12 +156,12 @@
 
       &[data-position="hidden"] {
         transition: none;
-        opacity: 0 !important;
+        opacity: 0;
       }
     }
 
     &.is-initializing .announcement-bar__slide {
-      transition: none !important;
+      transition: none;
     }
   }
 
@@ -221,12 +177,12 @@
   }
 
   .announcement-bar__marquee .announcement-bar__slide {
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: none !important;
-    transition: none !important;
-    content-visibility: visible !important;
-    width: max-content !important;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: none;
+    content-visibility: visible;
+    width: max-content;
     flex-shrink: 0;
   }
 
