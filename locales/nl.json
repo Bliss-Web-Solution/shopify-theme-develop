@@ -343,5 +343,21 @@
       "default_title": "Standaardtitel",
       "sticky_add_to_cart": "Balk voor snel toevoegen aan winkelwagen"
     }
+  },
+  "compare": {
+    "compare_label": "Vergelijken",
+    "compare_tabel": {
+      "compare_table_heading": "Producten vergelijken",
+      "compare_table_loading": "Vergelijkingsgegevens laden...",
+      "description": "Beschrijving",
+      "availability": "Beschikbaarheid",
+      "in_stock": "Op voorraad",
+      "out_of_stock": "Niet op voorraad",
+      "not_available": "N.v.t.",
+      "sku": "SKU",
+      "vendor": "Merk",
+      "view_product": "Bekijk product",
+      "remove_product_btn": "Verwijderen"
+    }
   }
 }

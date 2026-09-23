@@ -357,5 +357,21 @@
       "success_moderated": "Komentar je bil objavljen, čakanje na odobritev",
       "success": "Komentar je bil objavljen"
     }
+  },
+  "compare": {
+    "compare_label": "Primerjaj",
+    "compare_tabel": {
+      "compare_table_heading": "Primerjava izdelkov",
+      "compare_table_loading": "Nalaganje podatkov o primerjavi...",
+      "description": "Opis",
+      "availability": "Dostopnost",
+      "in_stock": "Na zalogi",
+      "out_of_stock": "Ni na zalogi",
+      "not_available": "Ni na voljo",
+      "sku": "SKU",
+      "vendor": "Blagovna znamka",
+      "view_product": "Ogled izdelka",
+      "remove_product_btn": "Odstrani"
+    }
   }
 }

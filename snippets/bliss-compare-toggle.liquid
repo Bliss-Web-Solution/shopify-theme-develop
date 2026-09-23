@@ -1,0 +1,35 @@
+{% liquid
+  assign comparetoggle = settings.product_compare_toggle
+%}
+
+{% if comparetoggle %}
+  <div
+    class="compare-toggle"
+    data-product-id="{{ product.id }}"
+    data-product-handle="{{ product.handle }}"
+    data-product-title="{{ product.title | escape }}"
+    data-product-image="{{ product.featured_media | image_url: width: 100 }}"
+  >
+    <label for="compare-{{ product.id }}" class="compare-toggle-lbl">
+      <input type="checkbox" id="compare-{{ product.id }}" class="compare-toggle-input">
+      <span class="compare-toggle-text">{{ 'compare.compare_label' | t }}</span>
+    </label>
+  </div>
+{% endif %}
+{% stylesheet %}
+  .compare-toggle-lbl {
+    cursor: pointer;
+  }
+
+  @media screen and (min-width: 750px) {
+    .compare-toggle {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .compare-toggle {
+      display: block;
+    }
+  }
+{% endstylesheet %}

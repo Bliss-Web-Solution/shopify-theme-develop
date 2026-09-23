@@ -135,6 +135,7 @@
     "resource_reference_product_title": "Displays title from parent product",
     "resource_reference_product_variant_picker": "Displays variants from parent product",
     "resource_reference_product_custom_property": "Add customizable input fields to collect custom information that will be added to this order line item, later visible in the order details.",
+    "compare": "Compare",
     "search": "Search",
     "section_layout": "Section layout",
     "section_link": "Section link",
@@ -586,6 +587,7 @@
     "link": "Link",
     "linkedin": "LinkedIn",
     "lipstick": "Lipstick",
+    "load_more_button": "Load more button",
     "lock": "Lock",
     "loose": "Loose",
     "lowercase": "lowercase",
@@ -605,6 +607,7 @@
     "normal": "Normal",
     "nowrap": "No wrap",
     "numbers": "Numbers",
+    "numbered_pagination": "Numbered pagination",
     "nut_free": "Nut free",
     "off": "Off",
     "off_media": "Off media",
@@ -758,11 +761,14 @@
     "add_to_cart_animation": "Add to cart",
     "always_stack_buttons": "Always stack buttons",
     "aspect_ratio": "Aspect ratio",
+    "articles_per_page": "Articles per page",
+    "collections_per_page": "Collections per page",
     "custom_mobile_media": "Show different media on mobile",
     "stack_media_on_mobile": "Stack media",
     "auto_rotate_announcements": "Auto-rotate announcements",
     "auto_rotate_slides": "Auto-rotate slides",
     "auto_load_products": "Auto load products on scroll",
+    "pagination_style": "Pagination style",
     "autoplay": "Autoplay",
     "background": "Background",
     "background_color": "Background color",
@@ -868,6 +874,7 @@
     "error_color": "Error",
     "expand_first_group": "Expand first group",
     "extend_media_to_screen_edge": "Extend media to screen edge",
+    "align_content_to_container": "Align content to container width",
     "extend_summary": "Extend to screen edge",
     "extra_large": "Extra large",
     "extra_small": "Extra small",
@@ -1050,6 +1057,9 @@
       "input_preset": "Input",
       "checkbox_preset": "Checkbox label"
     },
+    // Enable Compare toggle on collection pages
+    "product_compare": "Product compare",
+    // End
     // Checkbox setting to enable quick add to cart from product cards
     "quick_add": "Quick add",
     // Color scheme for quick add buttons on product cards
@@ -1066,6 +1076,7 @@
     "scroll_speed": "Time to next announcement",
     "search": "Search",
     "search_icon": "Search icon",
+    "compare_icon": "Compare icon",
     // Setting for search bar placement in header
     "search_position": "Position",
     "search_row": "Row",

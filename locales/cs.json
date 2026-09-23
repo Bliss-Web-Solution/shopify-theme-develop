@@ -357,5 +357,21 @@
       "success_moderated": "Komentář odeslán, čeká na schválení",
       "success": "Komentář zveřejněn"
     }
+  },
+  "compare": {
+    "compare_label": "Porovnat",
+    "compare_tabel": {
+      "compare_table_heading": "Porovnání produktů",
+      "compare_table_loading": "Načítání údajů o porovnání...",
+      "description": "Popis",
+      "availability": "Dostupnost",
+      "in_stock": "Skladem",
+      "out_of_stock": "Není skladem",
+      "not_available": "N/A",
+      "sku": "SKU",
+      "vendor": "Značka",
+      "view_product": "Zobrazit produkt",
+      "remove_product_btn": "Odebrat"
+    }
   }
 }

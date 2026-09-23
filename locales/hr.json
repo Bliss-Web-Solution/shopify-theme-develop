@@ -350,5 +350,21 @@
       "success_moderated": "Komentar je objavljen, čeka moderiranje",
       "success": "Komentar objavljen"
     }
+  },
+  "compare": {
+    "compare_label": "Compare",
+    "compare_tabel": {
+      "compare_table_heading": "Comparing Products",
+      "compare_table_loading": "Loading comparison data..",
+      "description": "Description",
+      "availability": "Availability",
+      "in_stock": "In Stock",
+      "out_of_stock": "Out of Stock",
+      "not_available": "N/A",
+      "sku": "SKU",
+      "vendor": "Vendor/Brand",
+      "view_product": "View product",
+      "remove_product_btn": "Remove"
+    }
   }
 }

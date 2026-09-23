@@ -53,6 +53,44 @@
         "type": "image_picker",
         "id": "favicon",
         "label": "t:settings.favicon"
+      },
+      {
+        "type": "header",
+        "content": "Custom Placeholder"
+      },
+      {
+        "type": "select",
+        "id": "custom_placeholder_type",
+        "label": "Placeholder Source Type",
+        "options": [
+          {
+            "value": "default",
+            "label": "Shopify Default SVG Placeholder"
+          },
+          {
+            "value": "svg_code",
+            "label": "Inline SVG Code"
+          },
+          {
+            "value": "image",
+            "label": "Uploaded Image / SVG File"
+          }
+        ],
+        "default": "default"
+      },
+      {
+        "type": "textarea",
+        "id": "custom_placeholder_svg_code",
+        "label": "Custom Inline SVG Code",
+        "info": "Paste raw <svg>...</svg> code here to display inline SVG directly.",
+        "visible_if": "{{ settings.custom_placeholder_type == 'svg_code' }}"
+      },
+      {
+        "type": "image_picker",
+        "id": "custom_placeholder_svg",
+        "label": "Custom Placeholder Image / SVG File",
+        "info": "Upload an image or SVG file to use as the placeholder.",
+        "visible_if": "{{ settings.custom_placeholder_type == 'image' }}"
       }
     ]
   },
@@ -1849,6 +1887,12 @@
     "settings": [
       {
         "type": "checkbox",
+        "id": "product_compare_toggle",
+        "label": "t:settings.product_compare",
+        "default": false
+      },
+      {
+        "type": "checkbox",
         "id": "quick_add",
         "label": "t:settings.quick_add",
         "default": true
@@ -2114,6 +2158,99 @@
           }
         ],
         "default": "equal-width-buttons"
+      }
+    ]
+  },
+  {
+    "name": "Back to top",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "back_to_top_enabled",
+        "label": "Enable back to top button",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "back_to_top_position",
+        "label": "Button position",
+        "options": [
+          {
+            "value": "bottom-right",
+            "label": "Bottom right"
+          },
+          {
+            "value": "bottom-left",
+            "label": "Bottom left"
+          }
+        ],
+        "default": "bottom-right"
+      },
+      {
+        "type": "range",
+        "id": "back_to_top_size",
+        "label": "Button size",
+        "min": 40,
+        "max": 80,
+        "step": 2,
+        "unit": "px",
+        "default": 50
+      },
+      {
+        "type": "color",
+        "id": "back_to_top_background",
+        "label": "Background",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "back_to_top_hover_background",
+        "label": "Hover background",
+        "default": "#333333"
+      },
+      {
+        "type": "color",
+        "id": "back_to_top_color",
+        "label": "Icon color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "back_to_top_hover_color",
+        "label": "Hover icon color",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "range",
+        "id": "back_to_top_radius",
+        "label": "Border radius",
+        "min": 0,
+        "max": 50,
+        "step": 2,
+        "unit": "px",
+        "default": 50
+      },
+      {
+        "type": "range",
+        "id": "back_to_top_border_width",
+        "label": "Border width",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "color",
+        "id": "back_to_top_border_color",
+        "label": "Border color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "back_to_top_hover_border_color",
+        "label": "Hover border color",
+        "default": "#333333"
       }
     ]
   }

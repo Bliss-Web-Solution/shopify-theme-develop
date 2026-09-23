@@ -350,5 +350,21 @@
       "success_moderated": "Comentário publicado, a aguardar moderação",
       "success": "Comentário publicado"
     }
+  },
+  "compare": {
+    "compare_label": "Comparar",
+    "compare_tabel": {
+      "compare_table_heading": "Comparando produtos",
+      "compare_table_loading": "A carregar dados de comparação...",
+      "description": "Descrição",
+      "availability": "Disponibilidade",
+      "in_stock": "Em stock",
+      "out_of_stock": "Esgotado",
+      "not_available": "N/A",
+      "sku": "SKU",
+      "vendor": "Marca",
+      "view_product": "Ver produto",
+      "remove_product_btn": "Remover"
+    }
   }
 }

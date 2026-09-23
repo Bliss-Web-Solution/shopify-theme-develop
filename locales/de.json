@@ -343,5 +343,21 @@
       "success_moderated": "Kommentar gepostet, Moderation ausstehend",
       "success": "Kommentar gepostet"
     }
+  },
+  "compare": {
+    "compare_label": "Vergleichen",
+    "compare_tabel": {
+      "compare_table_heading": "Produkte vergleichen",
+      "compare_table_loading": "Vergleichsdaten werden geladen...",
+      "description": "Beschreibung",
+      "availability": "Verfügbarkeit",
+      "in_stock": "Auf Lager",
+      "out_of_stock": "Nicht auf Lager",
+      "not_available": "K. A.",
+      "sku": "SKU",
+      "vendor": "Marke",
+      "view_product": "Produkt ansehen",
+      "remove_product_btn": "Entfernen"
+    }
   }
 }

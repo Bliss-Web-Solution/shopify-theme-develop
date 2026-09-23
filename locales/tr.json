@@ -343,5 +343,21 @@
       "default_title": "Varsayılan Başlık",
       "sticky_add_to_cart": "Sepete hızlı ekle çubuğu"
     }
+  },
+  "compare": {
+    "compare_label": "Karşılaştır",
+    "compare_tabel": {
+      "compare_table_heading": "Ürün Karşılaştırma",
+      "compare_table_loading": "Karşılaştırma verileri yükleniyor...",
+      "description": "Açıklama",
+      "availability": "Stok Durumu",
+      "in_stock": "Stokta Var",
+      "out_of_stock": "Stokta Yok",
+      "not_available": "Mevcut Değil",
+      "sku": "Stok Kodu",
+      "vendor": "Marka",
+      "view_product": "Ürünü İncele",
+      "remove_product_btn": "Kaldır"
+    }
   }
 }

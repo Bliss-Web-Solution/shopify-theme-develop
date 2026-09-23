@@ -357,5 +357,21 @@
       "default_title": "Predvolený názov",
       "sticky_add_to_cart": "Panel rýchleho pridania do košíka"
     }
+  },
+  "compare": {
+    "compare_label": "Porovnať",
+    "compare_tabel": {
+      "compare_table_heading": "Porovnanie produktov",
+      "compare_table_loading": "Načítavajú sa údaje o porovnaní...",
+      "description": "Popis",
+      "availability": "Dostupnosť",
+      "in_stock": "Na sklade",
+      "out_of_stock": "Nedostupné na sklade",
+      "not_available": "N/A",
+      "sku": "SKU",
+      "vendor": "Značka",
+      "view_product": "Zobraziť produkt",
+      "remove_product_btn": "Odstrániť"
+    }
   }
 }

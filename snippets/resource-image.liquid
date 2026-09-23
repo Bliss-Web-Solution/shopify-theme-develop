@@ -142,6 +142,7 @@
       {% if block_settings.background_color != blank %} color-custom-{{ parent_block_id }}{% endif %}
     "
     style="
+      --ratio: {{ ratio }};
       {%- render 'spacing-style', settings: block_settings -%}
       {%- render 'border-override', settings: block_settings -%}
     "
@@ -170,6 +171,7 @@
       {% if block_settings.background_color != blank %} color-custom-{{ parent_block_id }}{% endif %}
     "
     style="
+      --ratio: {{ ratio }};
       {%- render 'spacing-style', settings: block_settings -%}
       {%- render 'border-override', settings: block_settings -%}
     "
@@ -181,9 +183,11 @@
 
     <div class="resource-image__image">
       {% if content_type == 'articles' %}
-        {{ placeholder_name | placeholder_svg_tag: 'blog-placeholder-svg' }}
+        {% assign resource_alt = closest.article.title | default: article.title %}
+        {% render 'placeholder-image', placeholder_name: placeholder_name, alt: resource_alt, class_name: 'blog-placeholder-svg' %}
       {% else %}
-        {{ placeholder_name | placeholder_svg_tag }}
+        {% assign resource_alt = closest.collection.title | default: collection.title %}
+        {% render 'placeholder-image', placeholder_name: placeholder_name, alt: resource_alt %}
       {% endif %}
     </div>
   </div>

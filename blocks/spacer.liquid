@@ -7,6 +7,9 @@
     {% if block_settings.custom_mobile_size %}
       spacer-block--size-mobile-{{ block_settings.size_mobile }}
     {% endif %}
+    {% if block_settings.custom_class != blank %}
+      {{ block_settings.custom_class }}
+    {% endif %}
   "
   style="
     {% if block_settings.size == 'percent' %}
@@ -172,6 +175,16 @@
       "unit": "px",
       "default": 120,
       "visible_if": "{{ block.settings.size_mobile == 'pixel' and block.settings.custom_mobile_size == true}}"
+    },
+    {
+      "type": "header",
+      "content": "Custom Class"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom Class",
+      "placeholder": "my-custom-class"
     }
   ],
   "presets": [

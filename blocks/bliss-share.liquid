@@ -1,0 +1,535 @@
+{%- doc -%}
+  Share Bar — Horizon theme safe block.
+  Platforms: Facebook · Instagram · Twitter/X · LinkedIn · Pinterest · Email · WhatsApp · Custom URL
+
+  Per-platform settings:
+    • Checkbox → show / hide the icon
+    • URL field → optional override (leave blank to auto-generate the share URL)
+
+  Works automatically on:
+    - Blog posts (uses article data)
+    - Products (uses product data)
+{%- enddoc -%}
+
+{%- liquid
+  # Determine data source based on template
+  assign share_url = shop.url
+  assign share_title = shop.name | url_encode
+  assign share_image = ''
+
+  if article
+    assign share_url = article.url | prepend: shop.url
+    assign share_title = article.title | url_encode
+    if article.image
+      assign share_image = article.image | image_url: width: 1200
+    endif
+  elsif template.name == 'product'
+    assign share_url = product.url | prepend: shop.url
+    assign share_title = product.title | url_encode
+    if product.featured_image
+      assign share_image = product.featured_image | image_url: width: 1200
+    endif
+  elsif template.name == 'article'
+    assign share_url = article.url | prepend: shop.url
+    assign share_title = article.title | url_encode
+    if article.image
+      assign share_image = article.image | image_url: width: 1200
+    endif
+  elsif template.name == 'page'
+    assign share_url = page.url | prepend: shop.url
+    assign share_title = page.title | url_encode
+  endif
+
+  # Facebook — URL
+  assign facebook_url = 'https://www.facebook.com/sharer/sharer.php?u=' | append: share_url
+
+  # Instagram — URL
+  assign instagram_url = 'https://www.instagram.com/'
+
+  # X / Twitter — URL
+  assign twitter_url = 'https://x.com/intent/tweet?text=' | append: share_title | append: '&url=' | append: share_url
+
+  # LinkedIn — URL
+  assign linkedin_url = 'https://www.linkedin.com/sharing/share-offsite/?url=' | append: share_url
+
+  # Pinterest — URL
+  assign pinterest_url = 'https://pinterest.com/pin/create/button/?url=' | append: share_url | append: '&media=' | append: share_image | append: '&description=' | append: share_title
+
+  # Email — URL
+  assign email_url = 'mailto:?subject=' | append: share_title | append: '&body=' | append: share_url
+
+  # WhatsApp — URL
+  assign whatsapp_url = 'https://wa.me/?text=' | append: share_title | append: '%20' | append: share_url
+
+  assign icon_color = block.settings.icon_color
+  assign label_text = block.settings.label_text | default: 'Share'
+-%}
+
+{%- if block.settings.layout_style == 'inline' -%}
+<div
+  class="theme-share-bar theme-share-bar--{{ block.settings.inline_direction | default: 'row' }} spacing-style"
+  style="
+    {%- render 'spacing-style', settings: block.settings -%}
+    {%- if icon_color != blank -%}--theme-share-icon-color: {{ icon_color }};{%- endif -%}
+  "
+  {{ block.shopify_attributes }}
+>
+  {%- if label_text != blank and block.settings.inline_direction != 'column' -%}
+    <span class="theme-share-bar__label">{{ label_text }}</span>
+  {%- endif -%}
+
+  <div class="theme-share-bar__icons">
+    {%- liquid
+      assign share_platforms = 'facebook,instagram,twitter,linkedin,pinterest,email,whatsapp' | split: ','
+    -%}
+    {%- for platform in share_platforms -%}
+      {%- assign setting_key = 'show_' | append: platform -%}
+      {%- if block.settings[setting_key] -%}
+        {%- liquid
+          assign platform_url = ''
+          assign platform_label = platform | capitalize
+          assign icon_name = platform
+          case platform
+            when 'facebook'
+              assign platform_url = facebook_url
+            when 'instagram'
+              assign platform_url = instagram_url
+            when 'twitter'
+              assign platform_url = twitter_url
+              assign platform_label = 'X (Twitter)'
+            when 'linkedin'
+              assign platform_url = linkedin_url
+            when 'pinterest'
+              assign platform_url = pinterest_url
+            when 'email'
+              assign platform_url = email_url
+            when 'whatsapp'
+              assign platform_url = whatsapp_url
+          endcase
+        -%}
+        <a class="theme-share-bar__icon-link" href="{{ platform_url }}" target="_blank" rel="noopener noreferrer" aria-label="Share on {{ platform_label }}" title="{{ platform_label }}">
+          <svg class="theme-share-bar__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            {%- if platform == 'email' -%}
+              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+            {%- else -%}
+              {%- render 'icon', icon: icon_name -%}
+            {%- endif -%}
+          </svg>
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if block.settings.show_copy_link -%}
+      <button type="button" class="theme-share-bar__icon-link theme-share-bar__copy-link" data-url="{{ share_url }}" aria-label="Copy Link" title="Copy Link">
+        <svg class="theme-share-bar__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z" />
+          <path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z" />
+        </svg>
+      </button>
+    {%- endif -%}
+  </div>
+</div>
+{%- else -%}
+<div
+  class="theme-share-dropdown spacing-style"
+  style="
+    {%- render 'spacing-style', settings: block.settings -%}
+    {%- if icon_color != blank -%}--theme-share-icon-color: {{ icon_color }};{%- endif -%}
+  "
+  {{ block.shopify_attributes }}
+>
+  <button type="button" class="theme-share-dropdown__toggle" aria-expanded="false" aria-controls="share-menu-{{ block.id }}">
+    <svg class="theme-share-bar__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+      <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-1.74l4.94-2.47C13.456 6.18 14.19 6.5 15 8z" />
+    </svg>
+    {%- if label_text != blank -%}
+      <span class="theme-share-dropdown__label">{{ label_text }}</span>
+    {%- endif -%}
+  </button>
+
+  <div id="share-menu-{{ block.id }}" class="theme-share-dropdown__menu" hidden>
+    {%- if label_text != blank -%}
+      <div class="theme-share-dropdown__header">{{ label_text }}</div>
+    {%- endif -%}
+    <div class="theme-share-dropdown__list">
+      {%- liquid
+        assign share_platforms = 'facebook,instagram,twitter,linkedin,pinterest,email,whatsapp' | split: ','
+      -%}
+      {%- for platform in share_platforms -%}
+        {%- assign setting_key = 'show_' | append: platform -%}
+        {%- if block.settings[setting_key] -%}
+          {%- liquid
+            assign platform_url = ''
+            assign platform_label = platform | capitalize
+            assign icon_name = platform
+            case platform
+              when 'facebook'
+                assign platform_url = facebook_url
+              when 'instagram'
+                assign platform_url = instagram_url
+              when 'twitter'
+                assign platform_url = twitter_url
+              when 'linkedin'
+                assign platform_url = linkedin_url
+              when 'pinterest'
+                assign platform_url = pinterest_url
+              when 'email'
+                assign platform_url = email_url
+              when 'whatsapp'
+                assign platform_url = whatsapp_url
+            endcase
+          -%}
+          <a class="theme-share-dropdown__item" href="{{ platform_url }}" target="_blank" rel="noopener noreferrer" aria-label="Share on {{ platform | capitalize }}">
+            <svg class="theme-share-dropdown__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              {%- if platform == 'email' -%}
+                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+              {%- else -%}
+                {%- render 'icon', icon: icon_name -%}
+              {%- endif -%}
+            </svg>
+            {{ platform_label }}
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if block.settings.show_copy_link -%}
+        <button type="button" class="theme-share-dropdown__item theme-share-bar__copy-link" data-url="{{ share_url }}">
+          <svg class="theme-share-dropdown__icon" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z" />
+            <path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z" />
+          </svg>
+          <span class="theme-share-dropdown__copy-text">Copy Link</span>
+        </button>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+{%- endif -%}
+
+{% stylesheet %}
+  .theme-share-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md, 16px);
+    flex-wrap: wrap;
+    max-width: var(--normal-content-width);
+  }
+
+  .theme-share-bar--column,
+  .theme-share-bar--column .theme-share-bar__icons {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .theme-share-bar__label {
+    font-weight: 600;
+    font-size: var(--font-size--body-sm, 0.875rem);
+    color: var(--color-foreground);
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .theme-share-bar__icons {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm, 12px);
+    flex-wrap: wrap;
+  }
+
+  .theme-share-bar__icon-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--theme-share-icon-color, var(--color-foreground));
+    width: var(--icon-size-lg, 24px);
+    height: var(--icon-size-lg, 24px);
+    text-decoration: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  button.theme-share-bar__icon-link {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+  }
+
+  .theme-share-bar__icon {
+    display: block;
+    width: var(--icon-size-lg, 24px);
+    height: var(--icon-size-lg, 24px);
+    flex-shrink: 0;
+  }
+
+  /* Dropdown Layout */
+  .theme-share-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .theme-share-dropdown__toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: var(--font-size--body, 1rem);
+    color: var(--color-foreground);
+    transition: opacity 0.2s ease;
+  }
+
+  .theme-share-dropdown__menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    background: var(--color-background, #ffffff);
+    border: 1px solid var(--color-border, #e5e5e5);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    min-width: 200px;
+    z-index: 10;
+  }
+  .theme-share-dropdown__menu[hidden] {
+    display: none;
+  }
+
+  .theme-share-dropdown__header {
+    padding: 12px 16px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-foreground);
+    border-bottom: 1px solid var(--color-border, #e5e5e5);
+    letter-spacing: 0.05em;
+  }
+
+  .theme-share-dropdown__list {
+    padding: 8px 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .theme-share-dropdown__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    color: var(--color-foreground);
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .theme-share-dropdown__icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: var(--theme-share-icon-color, var(--color-foreground));
+  }
+{% endstylesheet %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    
+    // Dropdown functionality
+    const toggles = document.querySelectorAll('.theme-share-dropdown__toggle');
+    toggles.forEach(button => {
+      button.addEventListener('click', (e) => {
+        const menuId = button.getAttribute('aria-controls');
+        const menu = document.getElementById(menuId);
+        const expanded = button.getAttribute('aria-expanded') === 'true';
+        
+        // Close all other dropdowns
+        document.querySelectorAll('.theme-share-dropdown__menu').forEach(m => m.hidden = true);
+        toggles.forEach(b => b.setAttribute('aria-expanded', 'false'));
+        
+        if (!expanded) {
+          menu.hidden = false;
+          button.setAttribute('aria-expanded', 'true');
+        }
+        e.stopPropagation();
+      });
+    });
+
+    // Close when clicking outside
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.theme-share-dropdown__menu').forEach(m => m.hidden = true);
+      document.querySelectorAll('.theme-share-dropdown__toggle').forEach(b => b.setAttribute('aria-expanded', 'false'));
+    });
+
+    // Copy Link functionality
+    const copyButtons = document.querySelectorAll('.theme-share-bar__copy-link');
+    copyButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.stopPropagation(); // keep dropdown open if clicked inside
+        const url = button.getAttribute('data-url');
+        if (navigator.clipboard && url) {
+          navigator.clipboard.writeText(url).then(() => {
+            const originalTitle = button.getAttribute('title');
+            if(originalTitle) {
+              button.setAttribute('title', 'Copied!');
+              button.setAttribute('aria-label', 'Copied!');
+              setTimeout(() => {
+                button.setAttribute('title', originalTitle);
+                button.setAttribute('aria-label', originalTitle);
+              }, 2000);
+            }
+            
+            // For dropdown text
+            const textSpan = button.querySelector('.theme-share-dropdown__copy-text');
+            if (textSpan) {
+              const originalText = textSpan.textContent;
+              textSpan.textContent = 'Copied!';
+              setTimeout(() => {
+                textSpan.textContent = originalText;
+              }, 2000);
+            }
+          });
+        }
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Share Icons",
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout_style",
+      "label": "Layout style",
+      "options": [
+        {
+          "value": "inline",
+          "label": "Inline icons"
+        },
+        {
+          "value": "dropdown",
+          "label": "Dropdown menu"
+        }
+      ],
+      "default": "inline"
+    },
+    {
+      "type": "select",
+      "id": "inline_direction",
+      "label": "Inline direction",
+      "visible_if": "{{ block.settings.layout_style == 'inline' }}",
+      "options": [
+        {
+          "value": "row",
+          "label": "Horizontal"
+        },
+        {
+          "value": "column",
+          "label": "Vertical"
+        }
+      ],
+      "default": "row"
+    },
+    {
+      "type": "text",
+      "id": "label_text",
+      "label": "Label text",
+      "default": "Share",
+      "info": "Leave blank to hide the label"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "placeholder": "Default"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_facebook",
+      "label": "Show Facebook",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_instagram",
+      "label": "Show Instagram",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_twitter",
+      "label": "Show X (Twitter)",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_linkedin",
+      "label": "Show LinkedIn",
+      "default": true 
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pinterest",
+      "label": "Show Pinterest",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_email",
+      "label": "Show Email",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_whatsapp",
+      "label": "Show WhatsApp",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_copy_link",
+      "label": "Show Copy Link",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bliss Share Icons",
+      "category": "Basic"
+    }
+  ]
+}
+{% endschema %}

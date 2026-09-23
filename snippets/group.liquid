@@ -30,6 +30,7 @@
     spacing-style
     size-style
     {{ class }}
+    {% if settings.custom_class != blank %} {{ settings.custom_class }}{% endif %}
     {% if background_color != blank %} color-custom-{{ block_id }}{% endif %}
   "
   style="

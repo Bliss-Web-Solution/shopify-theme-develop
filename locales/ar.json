@@ -371,5 +371,21 @@
       "default_title": "العنوان الافتراضي",
       "sticky_add_to_cart": "شريط الإضافة السريعة إلى سلة التسوق"
     }
+  },
+  "compare": {
+    "compare_label": "مقارنة",
+    "compare_tabel": {
+      "compare_table_heading": "مقارنة المنتجات",
+      "compare_table_loading": "جاري تحميل بيانات المقارنة...",
+      "description": "الوصف",
+      "availability": "التوفر",
+      "in_stock": "متوفر في المخزون",
+      "out_of_stock": "غير متوفر",
+      "not_available": "غير متاح",
+      "sku": "رمز المنتج (SKU)",
+      "vendor": "العلامة التجارية",
+      "view_product": "عرض المنتج",
+      "remove_product_btn": "إزالة"
+    }
   }
 }

@@ -343,5 +343,21 @@
       "default_title": "ڈیفالٹ عنوان",
       "sticky_add_to_cart": "کوئیک ایڈ ٹو کارٹ بار"
     }
+  },
+  "compare": {
+    "compare_label": "موازنہ کریں",
+    "compare_tabel": {
+      "compare_table_heading": "مصنوعات کا موازنہ",
+      "compare_table_loading": "موازنہ کا ڈیٹا لوڈ ہو رہا ہے...",
+      "description": "تفصیل",
+      "availability": "دستیابی",
+      "in_stock": "دستیاب ہے",
+      "out_of_stock": "دستیاب نہیں ہے",
+      "not_available": "غیر موجود",
+      "sku": "ایس کے یو",
+      "vendor": "برانڈ",
+      "view_product": "پروڈکٹ دیکھیں",
+      "remove_product_btn": "ہٹائیں"
+    }
   }
 }

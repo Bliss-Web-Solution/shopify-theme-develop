@@ -5,6 +5,13 @@
     fetchpriority="low"
   ></script>
 {% endif %}
+{% if section.settings.animation == 'marquee' %}
+  <script
+    src="{{ 'marquee.js' | asset_url }}"
+    type="module"
+    fetchpriority="low"
+  ></script>
+{% endif %}
 
 {% render 'contrast-override', background_color: section.settings.background_color, section_id: section.id %}
 
@@ -22,25 +29,51 @@
     endif
   %}
 
-  <announcement-bar-component
-    class="announcement-bar__slider"
-    {% if autoplay == true %}
-      autoplay="{{ section.settings.speed }}" aria-live="polite"
-    {% endif %}
-  >
-    {% if show_arrows %}
-      {% render 'slideshow-arrows', icon_style: 'chevron' %}
-    {% endif %}
+  {% capture announcement_blocks %}
+    {% content_for 'blocks' %}
+  {% endcapture %}
 
-    <div class="announcement-bar__slides">
-      {% content_for 'blocks' %}
-    </div>
-  </announcement-bar-component>
+  {% if section.settings.animation == 'marquee' %}
+    <marquee-component
+      class="announcement-bar__marquee"
+      style="--marquee-direction: normal; --marquee-gap: 40px;"
+      data-speed-factor="{{ section.settings.speed | times: 10 }}"
+      data-movement-direction="normal"
+    >
+      <div class="marquee__wrapper" ref="wrapper">
+        <div class="marquee__content" ref="content">
+          <div class="marquee__repeated-items" ref="marqueeItems[]">
+            {{ announcement_blocks }}
+          </div>
+        </div>
+      </div>
+    </marquee-component>
+  {% else %}
+    <announcement-bar-component
+      class="announcement-bar__slider"
+      data-animation="{{ section.settings.animation }}"
+      {% if autoplay == true %}
+        autoplay="{{ section.settings.speed }}" aria-live="polite"
+      {% endif %}
+    >
+      {% if show_arrows %}
+        {% render 'slideshow-arrows', icon_style: 'chevron' %}
+      {% endif %}
+
+      <div class="announcement-bar__slides">
+        {{ announcement_blocks }}
+      </div>
+    </announcement-bar-component>
+  {% endif %}
 </aside>
 
 {% stylesheet %}
   .announcement-bar {
     border-block-end: var(--border-bottom-width) solid var(--color-border);
+  }
+
+  .announcement-bar__text {
+    margin-top: 0;
   }
 
   .announcement-bar__slider {
@@ -55,18 +88,22 @@
   }
 
   .announcement-bar__slides {
-    display: grid;
-    grid: [stack] auto / [stack] auto;
     width: calc(100% - var(--button-size) * 2);
     max-width: 680px;
     margin-inline: auto;
   }
 
-  .announcement-bar__slides > * {
+  /* Fade Animation */
+  announcement-bar-component[data-animation="fade"] .announcement-bar__slides {
+    display: grid;
+    grid: [stack] auto / [stack] auto;
+  }
+
+  announcement-bar-component[data-animation="fade"] .announcement-bar__slides > * {
     grid-area: stack;
   }
 
-  .announcement-bar__slide {
+  announcement-bar-component[data-animation="fade"] .announcement-bar__slide {
     transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
     content-visibility: visible;
 
@@ -74,6 +111,79 @@
       opacity: 0;
       visibility: hidden;
     }
+  }
+
+  .announcement-bar__content-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  /* Horizontal and Vertical Slide Animations */
+  announcement-bar-component[data-animation="horizontal"],
+  announcement-bar-component[data-animation="vertical"] {
+    overflow: hidden;
+
+    .announcement-bar__slides {
+      display: grid;
+      grid: [stack] auto / [stack] minmax(0, 1fr);
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .announcement-bar__slide {
+      grid-area: stack;
+      transition: transform 0.5s ease-in-out;
+      z-index: 1;
+      opacity: 0;
+      transform: translateX(100%);
+
+      &:not([data-position]):first-child,
+      &[data-position="active"],
+      &[data-position="next"],
+      &[data-position="prev"] {
+        opacity: 1;
+        visibility: visible;
+        content-visibility: visible;
+      }
+
+      &:not([data-position]):first-child,
+      &[data-position="active"] {
+        transform: translate(0, 0);
+        z-index: 2;
+      }
+
+      &[data-position="hidden"] {
+        transition: none;
+        opacity: 0;
+      }
+    }
+
+    &.is-initializing .announcement-bar__slide {
+      transition: none;
+    }
+  }
+
+  /* Direction Specific Transforms */
+  announcement-bar-component[data-animation="horizontal"] .announcement-bar__slide {
+    &[data-position="next"], &[data-position="hidden"] { transform: translateX(100%); }
+    &[data-position="prev"] { transform: translateX(-100%); }
+  }
+
+  announcement-bar-component[data-animation="vertical"] .announcement-bar__slide {
+    &[data-position="next"], &[data-position="hidden"] { transform: translateY(100%); }
+    &[data-position="prev"] { transform: translateY(-100%); }
+  }
+
+  .announcement-bar__marquee .announcement-bar__slide {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: none;
+    content-visibility: visible;
+    width: max-content;
+    flex-shrink: 0;
   }
 
   .announcement-bar__slider slideshow-arrows {
@@ -143,6 +253,30 @@
       "max": 10,
       "default": 5,
       "unit": "sec"
+    },
+    {
+      "type": "select",
+      "id": "animation",
+      "label": "Animation Type",
+      "options": [
+        {
+          "value": "fade",
+          "label": "Fade"
+        },
+        {
+          "value": "horizontal",
+          "label": "Horizontal"
+        },
+        {
+          "value": "vertical",
+          "label": "Vertical"
+        },
+        {
+          "value": "marquee",
+          "label": "Marquee"
+        }
+      ],
+      "default": "fade"
     },
     {
       "type": "header",

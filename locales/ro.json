@@ -350,5 +350,21 @@
       "default_title": "Titlu implicit",
       "sticky_add_to_cart": "Bara de adăugare rapidă în coș"
     }
+  },
+  "compare": {
+    "compare_label": "Compară",
+    "compare_tabel": {
+      "compare_table_heading": "Comparare produse",
+      "compare_table_loading": "Se încarcă datele de comparare...",
+      "description": "Descriere",
+      "availability": "Disponibilitate",
+      "in_stock": "În stoc",
+      "out_of_stock": "Stoc epuizat",
+      "not_available": "N/A",
+      "sku": "SKU",
+      "vendor": "Marcă",
+      "view_product": "Vezi produsul",
+      "remove_product_btn": "Elimină"
+    }
   }
 }

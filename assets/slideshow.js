@@ -413,23 +413,86 @@ export class Slideshow extends Component {
     return this.#current;
   }
 
+  #updateActiveDot() {
+    const liveDots = this.querySelectorAll('.slideshow-controls__dots button');
+    const { dots, scroller, slides } = this.refs;
+    const dotsToUpdate = liveDots.length ? Array.from(liveDots) : (dots || []);
+    if (!dotsToUpdate.length) return;
+
+    let closestDotIndex = 0;
+
+    if (scroller && scroller.scrollWidth > scroller.offsetWidth) {
+      const scrollLeft = scroller.scrollLeft;
+      const maxScroll = scroller.scrollWidth - scroller.offsetWidth;
+
+      if (scrollLeft <= 15) {
+        closestDotIndex = 0;
+      } else if (scrollLeft + scroller.offsetWidth >= scroller.scrollWidth - 15) {
+        closestDotIndex = dotsToUpdate.length - 1;
+      } else if (slides?.length) {
+        const baseOffset = slides[0].offsetLeft;
+        let minDistance = Infinity;
+
+        dotsToUpdate.forEach((el, i) => {
+          const targetIndexAttr = el.dataset.targetIndex;
+          const targetIndex = targetIndexAttr !== undefined ? parseInt(targetIndexAttr, 10) : i;
+          const targetSlide = slides[targetIndex] || slides[i];
+
+          if (targetSlide) {
+            const targetScroll = targetSlide.offsetLeft - baseOffset;
+            const distance = Math.abs(scrollLeft - targetScroll);
+            if (distance < minDistance) {
+              minDistance = distance;
+              closestDotIndex = i;
+            }
+          }
+        });
+      } else {
+        closestDotIndex = Math.min(
+          dotsToUpdate.length - 1,
+          Math.max(0, Math.round((scrollLeft / maxScroll) * (dotsToUpdate.length - 1)))
+        );
+      }
+    } else {
+      let minDistance = Infinity;
+      const value = this.current;
+      dotsToUpdate.forEach((el, i) => {
+        const targetIndexAttr = el.dataset.targetIndex;
+        const targetIndex = targetIndexAttr !== undefined ? parseInt(targetIndexAttr, 10) : i;
+        const distance = Math.abs(targetIndex - value);
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestDotIndex = i;
+        }
+      });
+    }
+
+    dotsToUpdate.forEach((el, i) => {
+      const isSelected = i === closestDotIndex;
+      const currentSelected = el.getAttribute('aria-selected');
+      if (currentSelected !== `${isSelected}`) {
+        el.setAttribute('aria-selected', `${isSelected}`);
+      }
+    });
+  }
+
   /**
    * Sets the current slide index and update the DOM
    * @type {number}
    */
   set current(value) {
-    const { current, thumbnails, dots, slides, previous, next } = this.refs;
+    const { current, thumbnails } = this.refs;
 
     this.#current = value;
 
     if (current) current.textContent = `${value + 1}`;
 
-    for (const controls of [thumbnails, dots]) {
-      controls?.forEach((el, i) => el.setAttribute('aria-selected', `${i === value}`));
+    if (thumbnails) {
+      thumbnails.forEach((el, i) => el.setAttribute('aria-selected', `${i === value}`));
     }
 
-    if (previous) previous.disabled = Boolean(!this.infinite && value === 0);
-    if (next) next.disabled = Boolean(!this.infinite && slides && this.nextIndex >= slides.length);
+    this.#updateActiveDot();
+    this.#updateNavigationButtons();
   }
 
   get infinite() {
@@ -440,18 +503,32 @@ export class Slideshow extends Component {
     return this.#visibleSlides;
   }
 
-  get previousIndex() {
-    const { current, visibleSlides } = this;
-    const modifier = visibleSlides.length > 1 ? visibleSlides.length : 1;
+  get columnsCount() {
+    const columnCountCss = getComputedStyle(this).getPropertyValue('--column-count');
+    if (columnCountCss) {
+      const parsed = parseInt(columnCountCss.trim(), 10);
+      if (!isNaN(parsed) && parsed > 0) return parsed;
+    }
+    const { scroller } = this.refs;
+    const { slides } = this;
+    if (scroller && slides?.[0]) {
+      const scrollerWidth = scroller.offsetWidth;
+      const slideWidth = slides[0].offsetWidth;
+      if (scrollerWidth > 0 && slideWidth > 0) {
+        return Math.max(1, Math.floor(scrollerWidth / slideWidth + 0.1));
+      }
+    }
+    return 1;
+  }
 
-    return current - modifier;
+  get previousIndex() {
+    const { current } = this;
+    return current - this.columnsCount;
   }
 
   get nextIndex() {
-    const { current, visibleSlides } = this;
-    const modifier = visibleSlides.length > 1 ? visibleSlides.length : 1;
-
-    return current + modifier;
+    const { current } = this;
+    return current + this.columnsCount;
   }
 
   get atStart() {
@@ -598,7 +675,12 @@ export class Slideshow extends Component {
         }
       });
 
-      this.#resizeObserver.observe(this.refs.slideshowContainer);
+      if (this.refs.slideshowContainer) {
+        this.#resizeObserver.observe(this.refs.slideshowContainer);
+      }
+      if (this.slides?.[0]) {
+        this.#resizeObserver.observe(this.slides[0]);
+      }
     });
   }
 
@@ -607,6 +689,8 @@ export class Slideshow extends Component {
    * and emit a slide change event if the index has changed.
    */
   #handleScroll = () => {
+    this.#updateActiveDot();
+
     const previousIndex = this.#current;
     const index = this.#sync();
 
@@ -657,7 +741,7 @@ export class Slideshow extends Component {
     const closestCenter = closest(centers, referencePoint);
     const closestVisibleSlide = visibleSlides[centers.indexOf(closestCenter)];
 
-    if (!closestVisibleSlide) return (this.current = 0);
+    if (!closestVisibleSlide) return this.current;
 
     const index = slides.indexOf(closestVisibleSlide);
 
@@ -758,10 +842,11 @@ export class Slideshow extends Component {
 
       if (!slides?.length || !scroller) return;
 
-      const direction = Math.sign(velocity);
+      const overallDelta = startPosition - event[axis];
+      const direction = Math.sign(overallDelta);
       const next = this.#sync();
 
-      const modifier = current !== next || Math.abs(velocity) < 10 || distanceTravelled < 10 ? 0 : direction;
+      const modifier = current !== next || Math.abs(velocity) < 150 || distanceTravelled < 40 ? 0 : direction;
       const newIndex = clamp(next + modifier, 0, slides.length - 1);
 
       const newSlide = slides[newIndex];
@@ -836,12 +921,24 @@ export class Slideshow extends Component {
    */
   #handleVisibilityChange = () => (document.hidden ? this.suspend() : this.resume());
 
+  #updateNavigationButtons() {
+    const { previous, next, scroller } = this.refs;
+    if (!scroller) return;
+
+    if (previous) {
+      previous.disabled = Boolean(!this.infinite && scroller.scrollLeft <= 5);
+    }
+    if (next) {
+      next.disabled = Boolean(!this.infinite && scroller.scrollLeft + scroller.offsetWidth >= scroller.scrollWidth - 5);
+    }
+  }
+
   #updateControlsVisibility() {
     if (!this.hasAttribute('auto-hide-controls')) return;
 
     const { scroller, slideshowControls } = this.refs;
 
-    if (!(slideshowControls instanceof HTMLElement)) return;
+    if (!scroller || !(slideshowControls instanceof HTMLElement)) return;
 
     slideshowControls.hidden = scroller.scrollWidth <= scroller.offsetWidth;
   }
@@ -929,6 +1026,73 @@ export class Slideshow extends Component {
     // Probably that the slideshow's host is mid-animation or zero-layout, like in an animating modal.
     // Don't stamp aria-hidden="true" on every slide. Set the current slide to the first visible slide.
     if (visibleSlides.length === 0) return 0;
+
+    // Calculate page count and rebuild dot buttons
+    const scroller = this.refs.scroller;
+    if (scroller) {
+      const visibleColumns = this.columnsCount;
+      const dotsContainer = this.querySelector('.slideshow-controls__dots');
+      if (dotsContainer) {
+        const totalPages = Math.ceil(slides.length / Math.max(1, visibleColumns));
+
+        if (totalPages <= 1) {
+          dotsContainer.innerHTML = '';
+          dotsContainer.hidden = true;
+          dotsContainer.style.display = 'none';
+          return;
+        } else {
+          dotsContainer.hidden = false;
+          dotsContainer.style.removeProperty('display');
+        }
+
+        const currentDotButtons = dotsContainer.querySelectorAll('button');
+        let needsRebuild = currentDotButtons.length !== totalPages;
+        const maxScrollIndex = Math.max(0, slides.length - visibleColumns);
+        if (!needsRebuild) {
+          for (let i = 0; i < totalPages; i++) {
+            const targetIndex = Math.min(i * visibleColumns, maxScrollIndex);
+            if (currentDotButtons[i].dataset.targetIndex !== String(targetIndex)) {
+              needsRebuild = true;
+              break;
+            }
+          }
+        }
+
+        if (needsRebuild) {
+          let newHtml = '';
+          for (let i = 0; i < totalPages; i++) {
+            const targetIndex = Math.min(i * visibleColumns, maxScrollIndex);
+            newHtml += `
+              <li>
+                <button
+                  class="slideshow-control button button-unstyled"
+                  style="animation-timeline: --slide-${targetIndex}"
+                  aria-label="Go to page ${i + 1} of ${totalPages}"
+                  on:click="/select/${targetIndex}"
+                  ref="dots[]"
+                  data-target-index="${targetIndex}"
+                >
+                  ${i + 1}
+                </button>
+              </li>
+            `;
+          }
+          dotsContainer.innerHTML = newHtml;
+          dotsContainer.querySelectorAll('button').forEach((button) => {
+            button.addEventListener('click', (e) => {
+              e.preventDefault();
+              const targetIndex = parseInt(button.dataset.targetIndex, 10);
+              this.select(targetIndex);
+            });
+          });
+          this.#updateActiveDot();
+        } else {
+          this.#updateActiveDot();
+        }
+      }
+    }
+
+    this.#updateNavigationButtons();
 
     // Batch writes to the DOM
     scheduler.schedule(() => {

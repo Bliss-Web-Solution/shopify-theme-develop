@@ -357,5 +357,21 @@
       "default_title": "כותרת ברירת מחדל",
       "sticky_add_to_cart": "סרגל הוספה מהירה לסל"
     }
+  },
+  "compare": {
+    "compare_label": "השוואה",
+    "compare_tabel": {
+      "compare_table_heading": "השוואת מוצרים",
+      "compare_table_loading": "טוען נתוני השוואה...",
+      "description": "תיאור",
+      "availability": "זמינות",
+      "in_stock": "במלאי",
+      "out_of_stock": "אזל מהמלאי",
+      "not_available": "לא זמין",
+      "sku": "מק״ט",
+      "vendor": "מותג",
+      "view_product": "הצג מוצר",
+      "remove_product_btn": "הסר"
+    }
   }
 }

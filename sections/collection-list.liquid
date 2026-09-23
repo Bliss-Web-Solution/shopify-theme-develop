@@ -31,6 +31,7 @@
     section-resource-list
     spacing-style
     gap-style
+    {% if section.settings.custom_class != blank %}{{ section.settings.custom_class }}{% endif %}
   "
   style="
     {% render 'spacing-style', settings: section.settings %}
@@ -300,6 +301,27 @@
       "visible_if": "{{ section.settings.icons_style != 'none' and section.settings.layout_type == 'carousel' or section.settings.carousel_on_mobile == true }}"
     },
     {
+      "type": "checkbox",
+      "id": "show_dots",
+      "label": "Show pagination dots",
+      "default": false,
+      "visible_if": "{{ section.settings.layout_type == 'carousel' or section.settings.carousel_on_mobile == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_peek",
+      "label": "Peek next slide (Desktop)",
+      "default": true,
+      "visible_if": "{{ section.settings.layout_type == 'carousel' or section.settings.carousel_on_mobile == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_peek_mobile",
+      "label": "Peek next slide (Mobile)",
+      "default": true,
+      "visible_if": "{{ section.settings.layout_type == 'carousel' or section.settings.carousel_on_mobile == true }}"
+    },
+    {
       "type": "header",
       "content": "t:content.section_layout"
     },
@@ -358,6 +380,16 @@
       "step": 1,
       "unit": "px",
       "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Custom Class"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom Class",
+      "placeholder": "my-custom-class"
     }
   ],
   "presets": [

@@ -41,6 +41,18 @@
         alt: image.alt
     }}
   </div>
+{%- else -%}
+  <div
+    class="blog-post-featured-image blog-post-featured-image--{{ block.id }} blog-post-featured-image--height-{{ block_settings.height }} spacing-style size-style"
+    style="
+      --ratio: 16 / 9;
+      {% render 'size-style', settings: block_settings %}
+      {% render 'spacing-style', settings: block_settings %}
+    "
+    {{ block.shopify_attributes }}
+  >
+    {% render 'placeholder-image', placeholder_name: 'blog-apparel-1', alt: closest.article.title, class_name: 'blog-post-featured-image__image border-style' %}
+  </div>
 {%- endif -%}
 
 {% stylesheet %}
