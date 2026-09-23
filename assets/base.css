@@ -43,7 +43,7 @@ html[scroll-lock] .page-wrapper {
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
-  transition: margin-right var(--animation-speed) var(--animation-timing-fade-out);
+  transition: margin-inline-end var(--animation-speed) var(--animation-timing-fade-out);
 }
 
 @media (min-width: 990px) {
@@ -58,10 +58,15 @@ html[scroll-lock] .page-wrapper {
   .page-wrapper--drawer-open shopify-account::part(dialog) {
     translate: calc(-1 * var(--theme-drawer-width, var(--sidebar-width)));
   }
+
+  /* The theme drawer opens from the inline-end edge, so the shift mirrors in RTL */
+  [dir='rtl'] .page-wrapper--drawer-open shopify-account::part(dialog) {
+    translate: var(--theme-drawer-width, var(--sidebar-width));
+  }
 }
 
 .page-wrapper--drawer-open {
-  margin-right: var(--theme-drawer-width, var(--sidebar-width));
+  margin-inline-end: var(--theme-drawer-width, var(--sidebar-width));
   transition-timing-function: var(--animation-timing-fade-in);
 }
 
@@ -285,12 +290,14 @@ p:empty {
   flex-grow: 1;
 }
 
-/* Set up page widths & margins */
+/* Set up page widths & margins. Gutters grow to the device safe-area insets (viewport-fit=cover)
+   so section backgrounds bleed edge-to-edge while content stays clear of the notch; taking the
+   larger of both insets keeps the centered page grid symmetric. */
 .page-width-wide,
 .page-width-normal,
 .page-width-narrow,
 .page-width-content {
-  --page-margin: 25px;
+  --page-margin: max(16px, var(--safe-area-inset-left, 0px), var(--safe-area-inset-right, 0px));
 }
 
 @media screen and (min-width: 750px) {
@@ -299,7 +306,7 @@ p:empty {
   .page-width-normal,
   .page-width-narrow,
   .page-width-content {
-    --page-margin: 40px;
+    --page-margin: max(40px, var(--safe-area-inset-left, 0px), var(--safe-area-inset-right, 0px));
   }
 }
 
@@ -402,8 +409,7 @@ p:empty {
   grid-column: 1 / -1;
 
   @media screen and (min-width: 750px) {
-    padding-left: var(--page-margin);
-    padding-right: var(--page-margin);
+    padding-inline: var(--page-margin);
   }
 }
 
@@ -526,9 +532,9 @@ p:empty {
 }
 
 .text-left {
-  --text-align: left;
+  --text-align: start;
 
-  text-align: left;
+  text-align: start;
 }
 
 .text-center {
@@ -538,9 +544,9 @@ p:empty {
 }
 
 .text-right {
-  --text-align: right;
+  --text-align: end;
 
-  text-align: right;
+  text-align: end;
 }
 
 .text-inherit {
@@ -552,7 +558,7 @@ p:empty {
 }
 
 .justify-left {
-  justify-content: left;
+  justify-content: flex-start;
 }
 
 .justify-center {
@@ -560,7 +566,7 @@ p:empty {
 }
 
 .justify-right {
-  justify-content: right;
+  justify-content: flex-end;
 }
 
 .svg-wrapper {
@@ -1178,8 +1184,10 @@ details[open]>summary .icon-plus .vertical {
 /* Animate the UI elements in only after the view transition is complete */
 .close-button {
   position: fixed;
-  top: var(--margin-lg);
-  right: var(--margin-lg);
+
+  /* Keep the fixed close button clear of the status bar and inline-end notch (viewport-fit=cover) */
+  top: max(var(--margin-lg), var(--safe-area-inset-top, 0px));
+  inset-inline-end: max(var(--margin-lg), var(--safe-area-inset-right, 0px));
   width: var(--minimum-touch-target);
   height: var(--minimum-touch-target);
   z-index: var(--layer-flat);
@@ -1190,6 +1198,11 @@ details[open]>summary .icon-plus .vertical {
 
   /* For the outline radius */
   border-radius: 50%;
+}
+
+/* Safe-area env() values are physical; in RTL the button sits by the left-side notch */
+[dir='rtl'] .close-button {
+  inset-inline-end: max(var(--margin-lg), var(--safe-area-inset-left, 0px));
 }
 
 /* This triggers iOS < 16.4. The outline bug is not recognized as a lack of @supports */
@@ -1467,7 +1480,7 @@ product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) .volume-pricing-note {
 
 .field__input {
   flex-grow: 1;
-  text-align: left;
+  text-align: start;
   border-radius: var(--style-border-radius-inputs);
   transition: box-shadow var(--animation-speed) ease, background-color var(--animation-speed) ease;
   padding: var(--input-padding);
@@ -1499,7 +1512,7 @@ product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) .volume-pricing-note {
 .field__label {
   color: rgb(var(--color-input-text-rgb) / var(--opacity-80));
   font-size: var(--font-paragraph--size);
-  left: var(--input-padding-x);
+  inset-inline-start: var(--input-padding-x);
   top: 50%;
   transform: translateY(-50%);
   margin-bottom: 0;
@@ -1646,7 +1659,7 @@ input[type='radio'] {
   content: '';
   position: absolute;
   top: 50%;
-  left: 50%;
+  left: 50%; /* stylelint-disable-line csstools/use-logical -- centring pair with a physical translate(-50%) */
   transform: translate(-50%, -50%);
   width: calc(var(--checkbox-size) / 2);
   height: calc(var(--checkbox-size) / 2);
@@ -1695,7 +1708,7 @@ input[type='radio'] {
   content: '';
   position: absolute;
   top: 50%;
-  left: 50%;
+  left: 50%; /* stylelint-disable-line csstools/use-logical -- centring pair with a physical translate(-50%) */
   transform: translate(-50%, -50%);
   width: var(--checkbox-size);
   height: var(--checkbox-size);
@@ -1958,6 +1971,24 @@ input[type='radio'] {
   to {
     transform: translateY(var(--padding-sm));
     opacity: 0;
+  }
+}
+
+/* Slideshow Arrow Hover Animation - must stay in base.css for proper CSS cascade */
+
+slideshow-container[animate-arrows]:hover > slideshow-arrows .slideshow-control,
+slideshow-component:focus-within > slideshow-container[animate-arrows] > slideshow-arrows .slideshow-control {
+  animation: arrowsSlideIn var(--animation-speed) var(--animation-easing) forwards;
+}
+
+@keyframes arrowsSlideIn {
+  from {
+    transform: translate(var(--padding-sm), 0);
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
   }
 }
 
