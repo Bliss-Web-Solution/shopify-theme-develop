@@ -857,6 +857,12 @@
     "full_frame": "전체 프레임",
     "icons": "아이콘",
     "input_field": "입력 필드",
+    "direction_bottom_start": "왼쪽 하단",
+    "direction_center": "가운데",
+    "direction_end": "오른쪽",
+    "direction_start": "왼쪽",
+    "direction_top_end": "오른쪽 상단",
+    "direction_top_start": "왼쪽 상단"
     "load_more_button": "더 보기 버튼",
     "numbered_pagination": "페이지 번호 매기기"
   },

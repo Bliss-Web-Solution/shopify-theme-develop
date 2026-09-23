@@ -857,6 +857,12 @@
     "full_frame": "เต็มเฟรม",
     "icons": "ไอคอน",
     "input_field": "ช่องกรอกข้อมูล",
+    "direction_bottom_start": "ล่างซ้าย",
+    "direction_center": "ตรงกลาง",
+    "direction_end": "ขวา",
+    "direction_start": "ซ้าย",
+    "direction_top_end": "บนขวา",
+    "direction_top_start": "บนซ้าย"
     "load_more_button": "ปุ่มโหลดเพิ่มเติม",
     "numbered_pagination": "การแบ่งหน้าแบบใส่ตัวเลข"
   },

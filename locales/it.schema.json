@@ -857,6 +857,12 @@
     "full_frame": "A schermo intero",
     "icons": "Icone",
     "input_field": "Campo di inserimento",
+    "direction_bottom_start": "In basso a sinistra",
+    "direction_center": "Centro",
+    "direction_end": "Destra",
+    "direction_start": "Sinistra",
+    "direction_top_end": "In alto a destra",
+    "direction_top_start": "In alto a sinistra"
     "load_more_button": "Pulsante Carica altro",
     "numbered_pagination": "Paginazione numerata"
   },

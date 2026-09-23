@@ -340,10 +340,10 @@
 
     inset: unset;
     top: var(--cart-disclosure-tooltip-popover-top, var(--cart-disclosure-tooltip-popover-native-fallback-top));
-    left: max(
+    inset-inline-start: max(
       var(--cart-disclosure-tooltip-popover-viewport-margin),
       min(
-        calc(anchor(left) - var(--cart-disclosure-tooltip-symbol-inset-inline)),
+        calc(anchor(start) - var(--cart-disclosure-tooltip-symbol-inset-inline)),
         calc(
           100vw - var(--cart-disclosure-tooltip-popover-max-width) -
             var(--cart-disclosure-tooltip-popover-viewport-margin)
@@ -372,10 +372,10 @@
     .cart-disclosure-tooltip__popover {
       position: fixed;
       top: var(--cart-disclosure-tooltip-popover-fixed-fallback-top);
-      left: max(
+      inset-inline-start: max(
         var(--cart-disclosure-tooltip-popover-viewport-margin),
         min(
-          calc((var(--anchor-left) * 1px) - var(--cart-disclosure-tooltip-symbol-inset-inline)),
+          calc((var(--anchor-inline-start) * 1px) - var(--cart-disclosure-tooltip-symbol-inset-inline)),
           calc(
             100vw - var(--cart-disclosure-tooltip-popover-max-width) -
               var(--cart-disclosure-tooltip-popover-viewport-margin)
@@ -565,6 +565,12 @@
     overflow: visible;
   }
 
+  /* Match the specificity of the base [dir='rtl'] .close-button safe-area rule so
+     the absolutely positioned modal button keeps its own corner inset in RTL */
+  [dir='rtl'] .cart-disclosure-modal__close {
+    inset-inline-end: var(--padding-sm);
+  }
+
   @media screen and (min-width: 750px) {
     .cart-disclosure-modal__content {
       padding-block: var(--padding-2xl);
@@ -583,7 +589,7 @@
       width: 100%;
       height: fit-content;
       max-width: 100%;
-      max-height: 100dvh;
+      max-height: calc(100dvh - max(var(--padding-2xl), var(--safe-area-inset-top)));
       margin: auto 0 0;
       border-start-start-radius: var(--cart-disclosure-modal-border-radius);
       border-start-end-radius: var(--cart-disclosure-modal-border-radius);
@@ -594,7 +600,7 @@
     }
 
     .cart-disclosure-modal__content {
-      max-height: min(var(--modal-max-height), 100dvh);
+      padding-block-end: calc(var(--padding-2xl) + var(--safe-area-inset-bottom));
     }
   }
 {% endstylesheet %}

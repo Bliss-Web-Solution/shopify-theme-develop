@@ -857,6 +857,12 @@
     "full_frame": "Pełna klatka",
     "icons": "Ikony",
     "input_field": "Pole wprowadzania",
+    "direction_bottom_start": "Dół po lewej",
+    "direction_center": "Środek",
+    "direction_end": "Po prawej",
+    "direction_start": "Po lewej",
+    "direction_top_end": "Góra po prawej",
+    "direction_top_start": "Góra po lewej"
     "load_more_button": "Przycisk „Załaduj więcej”",
     "numbered_pagination": "Paginacja numerowana"
   },
