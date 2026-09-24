@@ -862,7 +862,7 @@
     "direction_end": "Rechts",
     "direction_start": "Links",
     "direction_top_end": "Oben rechts",
-    "direction_top_start": "Oben links"
+    "direction_top_start": "Oben links",
     "load_more_button": "Schaltfläche \"Mehr laden\"",
     "numbered_pagination": "Nummerierte Seitennummerierung"
   },
