@@ -862,7 +862,7 @@
     "direction_end": "ขวา",
     "direction_start": "ซ้าย",
     "direction_top_end": "บนขวา",
-    "direction_top_start": "บนซ้าย"
+    "direction_top_start": "บนซ้าย",
     "load_more_button": "ปุ่มโหลดเพิ่มเติม",
     "numbered_pagination": "การแบ่งหน้าแบบใส่ตัวเลข"
   },

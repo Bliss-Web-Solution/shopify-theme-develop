@@ -862,7 +862,7 @@
     "direction_end": "Oikealla",
     "direction_start": "Vasemmalla",
     "direction_top_end": "Ylhäällä oikealla",
-    "direction_top_start": "Ylhäällä vasemmalla"
+    "direction_top_start": "Ylhäällä vasemmalla",
     "load_more_button": "\"Lataa lisää\" -painike",
     "numbered_pagination": "Numeroitu sivutus"
   },
