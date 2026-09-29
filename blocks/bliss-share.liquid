@@ -62,6 +62,7 @@
   assign whatsapp_url = 'https://wa.me/?text=' | append: share_title | append: '%20' | append: share_url
 
   assign icon_color = block.settings.icon_color
+  assign icon_hover_color = block.settings.icon_hover_color
   assign label_text = block.settings.label_text | default: 'Share'
 -%}
 
@@ -71,6 +72,7 @@
   style="
     {%- render 'spacing-style', settings: block.settings -%}
     {%- if icon_color != blank -%}--theme-share-icon-color: {{ icon_color }};{%- endif -%}
+    {%- if icon_hover_color != blank -%}--theme-share-icon-hover-color: {{ icon_hover_color }};{%- endif -%}
   "
   {{ block.shopify_attributes }}
 >
@@ -136,6 +138,7 @@
   style="
     {%- render 'spacing-style', settings: block.settings -%}
     {%- if icon_color != blank -%}--theme-share-icon-color: {{ icon_color }};{%- endif -%}
+    {%- if icon_hover_color != blank -%}--theme-share-icon-hover-color: {{ icon_hover_color }};{%- endif -%}
   "
   {{ block.shopify_attributes }}
 >
@@ -247,7 +250,11 @@
     width: var(--icon-size-lg, 24px);
     height: var(--icon-size-lg, 24px);
     text-decoration: none;
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
+  }
+
+  .theme-share-bar__icon-link:hover {
+    color: var(--theme-share-icon-hover-color, var(--theme-share-icon-color, var(--color-foreground)));
   }
 
   button.theme-share-bar__icon-link {
@@ -336,6 +343,11 @@
     height: 20px;
     flex-shrink: 0;
     color: var(--theme-share-icon-color, var(--color-foreground));
+    transition: color 0.2s ease;
+  }
+
+  .theme-share-dropdown__item:hover .theme-share-dropdown__icon {
+    color: var(--theme-share-icon-hover-color, var(--theme-share-icon-color, var(--color-foreground)));
   }
 {% endstylesheet %}
 
@@ -450,6 +462,12 @@
       "type": "color",
       "id": "icon_color",
       "label": "Icon color",
+      "placeholder": "Default"
+    },
+    {
+      "type": "color",
+      "id": "icon_hover_color",
+      "label": "Icon hover color",
       "placeholder": "Default"
     },
     {
