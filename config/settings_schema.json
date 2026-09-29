@@ -2184,7 +2184,8 @@
             "label": "Bottom left"
           }
         ],
-        "default": "bottom-right"
+        "default": "bottom-right",
+        "visible_if": "{{ settings.back_to_top_enabled }}"
       },
       {
         "type": "range",
@@ -2194,31 +2195,36 @@
         "max": 80,
         "step": 2,
         "unit": "px",
-        "default": 50
+        "default": 50,
+        "visible_if": "{{ settings.back_to_top_enabled }}"
       },
       {
         "type": "color",
         "id": "back_to_top_background",
         "label": "Background",
-        "default": "#000000"
+        "default": "#000000",
+        "visible_if": "{{ settings.back_to_top_enabled }}"
       },
       {
         "type": "color",
         "id": "back_to_top_hover_background",
         "label": "Hover background",
-        "default": "#333333"
+        "default": "#333333",
+        "visible_if": "{{ settings.back_to_top_enabled }}"
       },
       {
         "type": "color",
         "id": "back_to_top_color",
         "label": "Icon color",
-        "default": "#ffffff"
+        "default": "#ffffff",
+        "visible_if": "{{ settings.back_to_top_enabled }}"
       },
       {
         "type": "color",
         "id": "back_to_top_hover_color",
         "label": "Hover icon color",
-        "default": "#FFFFFF"
+        "default": "#FFFFFF",
+        "visible_if": "{{ settings.back_to_top_enabled }}"
       },
       {
         "type": "range",
@@ -2228,7 +2234,8 @@
         "max": 50,
         "step": 2,
         "unit": "px",
-        "default": 50
+        "default": 50,
+        "visible_if": "{{ settings.back_to_top_enabled }}"
       },
       {
         "type": "range",
@@ -2238,19 +2245,22 @@
         "max": 10,
         "step": 1,
         "unit": "px",
-        "default": 0
+        "default": 0,
+        "visible_if": "{{ settings.back_to_top_enabled }}"
       },
       {
         "type": "color",
         "id": "back_to_top_border_color",
         "label": "Border color",
-        "default": "#000000"
+        "default": "#000000",
+        "visible_if": "{{ settings.back_to_top_enabled }}"
       },
       {
         "type": "color",
         "id": "back_to_top_hover_border_color",
         "label": "Hover border color",
-        "default": "#333333"
+        "default": "#333333",
+        "visible_if": "{{ settings.back_to_top_enabled }}"
       }
     ]
   }
