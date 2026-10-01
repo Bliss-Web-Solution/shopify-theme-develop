@@ -1659,7 +1659,8 @@ input[type='radio'] {
   content: '';
   position: absolute;
   top: 50%;
-  left: 50%; /* stylelint-disable-line csstools/use-logical -- centring pair with a physical translate(-50%) */
+  left: 50%;
+  /* stylelint-disable-line csstools/use-logical -- centring pair with a physical translate(-50%) */
   transform: translate(-50%, -50%);
   width: calc(var(--checkbox-size) / 2);
   height: calc(var(--checkbox-size) / 2);
@@ -1708,7 +1709,8 @@ input[type='radio'] {
   content: '';
   position: absolute;
   top: 50%;
-  left: 50%; /* stylelint-disable-line csstools/use-logical -- centring pair with a physical translate(-50%) */
+  left: 50%;
+  /* stylelint-disable-line csstools/use-logical -- centring pair with a physical translate(-50%) */
   transform: translate(-50%, -50%);
   width: var(--checkbox-size);
   height: var(--checkbox-size);
@@ -1971,24 +1973,6 @@ input[type='radio'] {
   to {
     transform: translateY(var(--padding-sm));
     opacity: 0;
-  }
-}
-
-/* Slideshow Arrow Hover Animation - must stay in base.css for proper CSS cascade */
-
-slideshow-container[animate-arrows]:hover > slideshow-arrows .slideshow-control,
-slideshow-component:focus-within > slideshow-container[animate-arrows] > slideshow-arrows .slideshow-control {
-  animation: arrowsSlideIn var(--animation-speed) var(--animation-easing) forwards;
-}
-
-@keyframes arrowsSlideIn {
-  from {
-    transform: translate(var(--padding-sm), 0);
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
   }
 }
 
