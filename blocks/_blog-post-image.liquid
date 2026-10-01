@@ -33,20 +33,28 @@
   {{ block.shopify_attributes }}
 >
   <a href="{{ article.url }}">
-    {{
-      image
-      | image_url: width: 2000
-      | image_tag:
-        width: image.width,
-        widths: widths,
-        height: image.height,
-        sizes: sizes,
-        loading: loading,
-        fetchpriority: fetch_priority,
-        alt: image.alt,
-        class: image_class,
-        style: image_border_style
-    }}
+    {%- if image != blank -%}
+      {{
+        image
+        | image_url: width: 2000
+        | image_tag:
+          width: image.width,
+          widths: widths,
+          height: image.height,
+          sizes: sizes,
+          loading: loading,
+          fetchpriority: fetch_priority,
+          alt: image.alt,
+          class: image_class,
+          style: image_border_style
+      }}
+    {%- else -%}
+      {% render 'placeholder-image',
+        placeholder_name: 'blog-apparel-1',
+        alt: article.title,
+        class_name: 'border-style blog-post-card__image'
+      %}
+    {%- endif -%}
   </a>
 </div>
 
