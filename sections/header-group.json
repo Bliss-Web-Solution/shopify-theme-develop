@@ -141,7 +141,7 @@
           "settings": {
             "separator_char": ">",
             "bg_color": "#f9fafb",
-            "text_color": "#6b7280",
+            "text_color": "#000000",
             "hover_color": "#111827",
             "active_color": "#111827",
             "border_color": "#e5e7eb",
