@@ -314,51 +314,54 @@ if (!customElements.get('compare-bar')) {
             } else {
                 this.removeAttribute('data-minimized');
             }
-
-            const itemsHtml = products.map(p => `
-        <div class="compare-bar__item">
-          <div class="compare-bar__img-container">
-               <img src="${p.image}" alt="${p.title}" width="50" height="50" loading="lazy">
-          </div>
-          <button type="button" class="compare-bar__remove" data-id="${p.id}" aria-label="Remove ${p.title}">
-            <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-close" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7.00023 5.58595L11.9502 0.635953C12.1455 0.440669 12.4104 0.330963 12.6866 0.330963C12.9629 0.330963 13.2277 0.440669 13.423 0.635953C13.6183 0.831238 13.728 1.09613 13.728 1.37233C13.728 1.64853 13.6183 1.91343 13.423 2.10871L8.47306 7.05872L13.423 12.0087C13.6183 12.204 13.728 12.4689 13.728 12.7451C13.728 13.0213 13.6183 13.2862 13.423 13.4815C13.2277 13.6768 12.9629 13.7865 12.6866 13.7865C12.4104 13.7865 12.1455 13.6768 11.9502 13.4815L7.00023 8.53148L2.05023 13.4815C1.85495 13.6768 1.58999 13.7865 1.31379 13.7865C1.03759 13.7865 0.772635 13.6768 0.577353 13.4815C0.382071 13.2862 0.272365 13.0213 0.272365 12.7451C0.272365 12.4689 0.382071 12.204 0.577353 12.0087L5.52739 7.05872L0.577353 2.10871C0.382071 1.91343 0.272365 1.64853 0.272365 1.37233C0.272365 1.09613 0.382071 0.831238 0.577353 0.635953C0.772635 0.440669 1.03759 0.330963 1.31379 0.330963C1.58999 0.330963 1.85495 0.440669 2.05023 0.635953L7.00023 5.58595Z" fill="currentColor"/>
-            </svg>
-          </button>
-        </div>
-      `).join('');
+            const placeholderImage = 'https://cdn.shopify.com/s/files/1/0784/9535/0922/files/Placeholder_image.png';
+            const itemsHtml = products.map(p => {
+                const imageSrc = p.image && !p.image.includes('Liquid error') && p.image.trim() !== '' ? p.image : placeholderImage;
+                return `
+                <div class="compare-bar__item">
+                    <div class="compare-bar__img-container">
+                        <img src="${imageSrc}" alt="${p.title}" width="50" height="50" loading="lazy">
+                    </div>
+                    <button type="button" class="compare-bar__remove" data-id="${p.id}" aria-label="Remove ${p.title}" >
+                        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-close" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7.00023 5.58595L11.9502 0.635953C12.1455 0.440669 12.4104 0.330963 12.6866 0.330963C12.9629 0.330963 13.2277 0.440669 13.423 0.635953C13.6183 0.831238 13.728 1.09613 13.728 1.37233C13.728 1.64853 13.6183 1.91343 13.423 2.10871L8.47306 7.05872L13.423 12.0087C13.6183 12.204 13.728 12.4689 13.728 12.7451C13.728 13.0213 13.6183 13.2862 13.423 13.4815C13.2277 13.6768 12.9629 13.7865 12.6866 13.7865C12.4104 13.7865 12.1455 13.6768 11.9502 13.4815L7.00023 8.53148L2.05023 13.4815C1.85495 13.6768 1.58999 13.7865 1.31379 13.7865C1.03759 13.7865 0.772635 13.6768 0.577353 13.4815C0.382071 13.2862 0.272365 13.0213 0.272365 12.7451C0.272365 12.4689 0.382071 12.204 0.577353 12.0087L5.52739 7.05872L0.577353 2.10871C0.382071 1.91343 0.272365 1.64853 0.272365 1.37233C0.272365 1.09613 0.382071 0.831238 0.577353 0.635953C0.772635 0.440669 1.03759 0.330963 1.31379 0.330963C1.58999 0.330963 1.85495 0.440669 2.05023 0.635953L7.00023 5.58595Z" fill="currentColor"/>
+                        </svg>
+                    </button>
+                </div>
+                `
+            }).join('');
 
             this.innerHTML = `
-        <div class="compare-bar__inner">
-            <div class="compare-bar__header">
-                <div style="display: flex; align-items: center; gap:5px;">
-                    <span class="compare-bar__title">Compare Products (${products.length})</span>
-                    <button class="compare-bar__toggle-btn" aria-label="Minimize Compare Bar">
-                        <svg width="15" height="15" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <div class="compare-bar__inner">
+                    <div class="compare-bar__header">
+                        <div style="display: flex; align-items: center; gap:5px;">
+                            <span class="compare-bar__title">Compare Products (${products.length})</span>
+                            <button class="compare-bar__toggle-btn" aria-label="Minimize Compare Bar">
+                                <svg width="15" height="15" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2.25 4.5L6 8.25L9.75 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <button class="compare-bar__clear link link--text">Clear All</button>
+                    </div>
+                    <div class="compare-bar__content">
+                        <div class="compare-bar__items">${itemsHtml}</div>
+                        <div class="compare-bar__actions">
+                            <a href="${window.compareManager.getCompareUrl()}" class="button button--primary button--full-width">
+                            Compare Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="compare-bar__minimized-view">
+                    <button class="compare-bar__minimized-trigger">
+                        <span>Compare (${products.length})</span>
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(180deg);">
                             <path d="M2.25 4.5L6 8.25L9.75 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </button>
                 </div>
-                <button class="compare-bar__clear link link--text">Clear All</button>
-            </div>
-            <div class="compare-bar__content">
-                <div class="compare-bar__items">${itemsHtml}</div>
-                <div class="compare-bar__actions">
-                    <a href="${window.compareManager.getCompareUrl()}" class="button button--primary button--full-width">
-                    Compare Now
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="compare-bar__minimized-view">
-             <button class="compare-bar__minimized-trigger">
-                <span>Compare (${products.length})</span>
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(180deg);">
-                    <path d="M2.25 4.5L6 8.25L9.75 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-             </button>
-        </div>
-      `;
+            `;
         }
     });
 }

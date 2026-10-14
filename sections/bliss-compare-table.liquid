@@ -8,7 +8,10 @@
   endif
 %}
 
-<section class="section {% if section.settings.background_color != blank or section.settings.text_color != blank %}color-custom-{{ section.id }}{% endif %}">
+<section
+  class="section spacing-style {% if section.settings.background_color != blank or section.settings.text_color != blank %}color-custom-{{ section.id }}{% endif %}"
+  style="{% render 'spacing-style', settings: section.settings %}"
+>
   <div class="compare-table-wrapper">
     <h1 class="heading center" id="CompareHeading">{{ 'compare.compare_tabel.compare_table_heading' | t }}</h1>
 
@@ -107,6 +110,10 @@
 </script>
 
 {% style %}
+  .compare-table-wrapper {
+    background: var(--color-background);
+  }
+
   .compare-page__container {
     margin-top: 40px;
     overflow-x: auto;
@@ -140,7 +147,6 @@
   }
 
   .compare-table th.compareTable-heading {
-    background: var(--color-background);
     width: 200px;
     font-weight: bold;
     position: sticky;
@@ -186,7 +192,6 @@
 {
   "name": "Compare Table",
   "class": "compare-table-section",
-  "blocks": [{ "type": "@theme" }],
   "settings": [
     {
       "type": "header",
@@ -201,6 +206,30 @@
       "type": "color",
       "id": "text_color",
       "label": "t:settings.text_color"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
     }
   ],
   "presets": [
