@@ -1,4 +1,4 @@
-<div>
+<div{% if block.settings.custom_class != blank %} class="{{ block.settings.custom_class }}"{% endif %}>
   {{ block.settings.custom_liquid }}
 </div>
 
@@ -12,6 +12,16 @@
       "id": "custom_liquid",
       "label": "t:settings.custom_liquid",
       "info": "t:info.custom_liquid"
+    },
+    {
+      "type": "header",
+      "content": "Custom Class"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom Class",
+      "placeholder": "my-custom-class"
     }
   ],
   "presets": [

@@ -126,11 +126,8 @@
           }}
         {%- endif -%}
       {%- else -%}
-        <div
-          aria-hidden="true"
-          class="resource-card__image-placeholder"
-        >
-          {{- resource.title | truncate: 60 -}}
+        <div class="resource-card__image-placeholder">
+          {% render 'placeholder-image', placeholder_name: 'product-apparel-1', class_name: 'resource-card__image' %}
         </div>
       {%- endif -%}
     {%- elsif resource_type == 'collection' -%}
@@ -249,9 +246,14 @@
     line-height: var(--line-height--display-loose);
     word-break: break-word;
     background-color: rgb(var(--color-foreground-rgb) / var(--opacity-5));
-    aspect-ratio: var(--resource-card-aspect-ratio, auto);
     border-radius: var(--resource-card-corner-radius);
     color: var(--color-foreground);
+
+    .resource-card__image {
+      aspect-ratio: unset;
+      height: 100%;
+      width: 100%;
+    }
   }
 
   .resource-card__title {

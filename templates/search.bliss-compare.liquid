@@ -1,0 +1,227 @@
+{% layout none %}
+
+<table class="compare-table">
+  <thead>
+    <tr class="compareTable-row">
+      <th class="compareTable-heading"></th>
+      {% for product in search.results %}
+        {% if product.object_type == 'product' %}
+          <th class="compareTable-product" data-product-id="{{ product.id }}">
+            <article class="card">
+              <figure class="card-figure">
+                <a href="{{ product.url }}" class="card-figure__link">
+                  <div class="card-img-container">
+                    <img
+                      src="{{ product.featured_media | image_url: width: 300 }}"
+                      alt="{{ product.title | escape }}"
+                      width="300"
+                      height="300"
+                      loading="lazy"
+                    >
+                  </div>
+                </a>
+              </figure>
+              <div class="card-body">
+                <p class="card-title">
+                  <a href="{{ product.url }}">{{ product.title }}</a>
+                </p>
+                <div class="price price-section">
+                  {% render 'price', product_resource: product %}
+                </div>
+              </div>
+            </article>
+          </th>
+        {% endif %}
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="compareTable-row">
+      <th class="compareTable-heading">{{ 'compare.compare_tabel.description' | t }}</th>
+      {% for product in search.results %}
+        {% if product.object_type == 'product' %}
+          <td class="compareTable-item">
+            <div class="rte">
+              {% if product.description != blank %}
+                <div class="compareTable-description-scroll">
+                  {{ product.description }}
+                </div>
+              {% else %}
+                {{ 'compare.compare_tabel.not_available' | t }}
+              {% endif %}
+            </div>
+          </td>
+        {% endif %}
+      {% endfor %}
+    </tr>
+    <tr class="compareTable-row">
+      <th class="compareTable-heading">{{ 'compare.compare_tabel.availability' | t }}</th>
+      {% for product in search.results %}
+        {% if product.object_type == 'product' %}
+          <td class="compareTable-item">
+            {% if product.available %}
+              <span class="badge badge--success">{{ 'compare.compare_tabel.in_stock' | t }}</span>
+            {% else %}
+              <span class="badge badge--error">{{ 'compare.compare_tabel.out_of_stock' | t }}</span>
+            {% endif %}
+          </td>
+        {% endif %}
+      {% endfor %}
+    </tr>
+    <tr class="compareTable-row">
+      <th class="compareTable-heading">{{ 'compare.compare_tabel.sku' | t }}</th>
+      {% for product in search.results %}
+        {% if product.object_type == 'product' %}
+          <td class="compareTable-item">
+            {% if product.selected_or_first_available_variant.sku != blank %}
+              {{ product.selected_or_first_available_variant.sku }}
+            {% else %}
+              {{ 'compare.compare_tabel.not_available' | t }}
+            {% endif %}
+          </td>
+        {% endif %}
+      {% endfor %}
+    </tr>
+    <tr class="compareTable-row">
+      <th class="compareTable-heading">{{ 'compare.compare_tabel.vendor' | t }}</th>
+      {% for product in search.results %}
+        {% if product.object_type == 'product' %}
+          <td class="compareTable-item">
+            {% if product.vendor != blank %}
+              {{ product.vendor }}
+            {% else %}
+              {{ 'compare.compare_tabel.not_available' | t }}
+            {% endif %}
+          </td>
+        {% endif %}
+      {% endfor %}
+    </tr>
+    <tr class="compareTable-row">
+      <th class="compareTable-heading">Product Type</th>
+      {% for product in search.results %}
+        {% if product.object_type == 'product' %}
+          <td class="compareTable-item">
+            {% if product.type != blank %}
+              {{ product.type }}
+            {% else %}
+              {{ 'compare.compare_tabel.not_available' | t }}
+            {% endif %}
+          </td>
+        {% endif %}
+      {% endfor %}
+    </tr>
+    <tr class="compareTable-row">
+      <th class="compareTable-heading">Options</th>
+      {% for product in search.results %}
+        {% if product.object_type == 'product' %}
+          <td class="compareTable-item">
+            {% if product.has_only_default_variant %}
+              {{ 'compare.compare_tabel.not_available' | t }}
+            {% elsif product.options.size > 0 %}
+              <ul style="margin: 0; padding-inline-start: 15px; list-style-type: disc;">
+                {% for option in product.options_with_values %}
+                  {% if option.values.size > 0 and option.values.first != blank %}
+                    <li><strong>{{ option.name }}:</strong> {{ option.values | join: ', ' }}</li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            {% else %}
+              {{ 'compare.compare_tabel.not_available' | t }}
+            {% endif %}
+          </td>
+        {% endif %}
+      {% endfor %}
+    </tr>
+    <tr class="compareTable-row">
+      <th class="compareTable-heading">Collections</th>
+      {% for product in search.results %}
+        {% if product.object_type == 'product' %}
+          <td class="compareTable-item">
+            {% if product.collections.size > 0 %}
+              {% for collection in product.collections %}
+                {{ collection.title }}{% unless forloop.last %}, {% endunless %}
+              {% endfor %}
+            {% else %}
+              {{ 'compare.compare_tabel.not_available' | t }}
+            {% endif %}
+          </td>
+        {% endif %}
+      {% endfor %}
+    </tr>
+    <tr class="compareTable-row">
+      <th class="compareTable-heading">Tags</th>
+      {% for product in search.results %}
+        {% if product.object_type == 'product' %}
+          <td class="compareTable-item">
+            {% if product.tags.size > 0 %}
+              {{ product.tags | join: ', ' }}
+            {% else %}
+              {{ 'compare.compare_tabel.not_available' | t }}
+            {% endif %}
+          </td>
+        {% endif %}
+      {% endfor %}
+    </tr>
+    {% comment %} View Product and Remove Button {% endcomment %}
+    <tr class="compareTable-row">
+      <th class="compareTable-heading"></th>
+      {% for product in search.results %}
+        {% if product.object_type == 'product' %}
+          <td class="compareTable-action">
+            <div class="compareTable-action-buttons">
+              {%- assign product_form_id = 'product-form-' | append: section.id | append: '-' | append: product.id -%}
+              <product-form class="product-form" data-section-id="{{ section.id }}">
+                <div class="product-form__error-message-wrapper" role="alert" hidden>
+                  <span class="product-form__error-message"></span>
+                </div>
+
+                {%- form 'product', product, id: product_form_id, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+                  {%- if product.variants.size > 1 -%}
+                    <div class="select" style="margin-bottom: 10px;">
+                      <select name="id" class="select__select" style="width: 100%;">
+                        {%- for variant in product.variants -%}
+                          <option
+                            value="{{ variant.id }}"
+                            {% if variant == product.selected_or_first_available_variant %}selected="selected"{% endif %}
+                            {% if variant.available == false %}disabled{% endif %}
+                          >
+                            {{ variant.title }} - {{ variant.price | money }}
+                          </option>
+                        {%- endfor -%}
+                      </select>
+                    </div>
+                  {%- else -%}
+                    <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                  {%- endif -%}
+
+                  <button
+                    type="submit"
+                    name="add"
+                    class="button button--primary"
+                    style="width: 100%; margin-bottom: 10px;"
+                    {% if product.selected_or_first_available_variant.available == false %}disabled{% endif %}
+                  >
+                    <span>
+                      {%- if product.selected_or_first_available_variant.available -%}
+                        {{ 'products.product.add_to_cart' | t }}
+                      {%- else -%}
+                        {{ 'products.product.sold_out' | t }}
+                      {%- endif -%}
+                    </span>
+                  </button>
+                {%- endform -%}
+              </product-form>
+
+              <a href="{{ product.url }}" class="button button--secondary">
+                {{ 'compare.compare_tabel.view_product' | t }}
+              </a>
+              <button type="button" class="compareTable-removeProduct" data-id="{{ product.id }}">
+                {{ 'compare.compare_tabel.remove_product_btn' | t }}
+              </button>
+            </div>
+          </td>
+        {% endif %}
+      {% endfor %}
+    </tr>
+  </tbody>
+</table>

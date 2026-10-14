@@ -575,7 +575,13 @@
     "selected_button_style": "Vald knappstil",
     "open_by_default": "Öppen som standard",
     "title_preset": "Förinställning för rubrik",
-    "customer_account_menu": "Kundkontomeny"
+    "customer_account_menu": "Kundkontomeny",
+    "articles_per_page": "Artiklar per sida",
+    "collections_per_page": "Kollektioner per sida",
+    "pagination_style": "Pagineringsstil",
+    "align_content_to_container": "Anpassa innehåll till behållarbredd",
+    "product_compare": "Jämför produkter",
+    "compare_icon": "Jämförelseikon"
   },
   "options": {
     "apple": "Apple",
@@ -857,7 +863,9 @@
     "direction_end": "Höger",
     "direction_start": "Vänster",
     "direction_top_end": "Uppe till höger",
-    "direction_top_start": "Uppe till vänster"
+    "direction_top_start": "Uppe till vänster",
+    "load_more_button": "Knappen 'Ladda mer'",
+    "numbered_pagination": "Numrerad paginering"
   },
   "content": {
     "advanced": "Avancerat",
@@ -985,7 +993,8 @@
     "gift_card_products": "Presentkortsprodukter",
     "disclosures": "Upplysningar",
     "disclosures_metafield_content": "Obligatoriska säkerhetsvarningar och lagstadgad information för denna produkt.",
-    "page_text_color_contrast_info": "Sektioner med anpassad bakgrundsfärg använder endast den här textfärgen om färgkontrasten är tillräcklig."
+    "page_text_color_contrast_info": "Sektioner med anpassad bakgrundsfärg använder endast den här textfärgen om färgkontrasten är tillräcklig.",
+    "compare": "Jämför"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Dela information om ditt varumärke med dina kunder. Beskriv en produkt, gör tillkännagivanden eller välkomna kunder till din butik.</p>",

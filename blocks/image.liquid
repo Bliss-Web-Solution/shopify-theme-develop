@@ -17,7 +17,7 @@
 %}
 
 {% capture class %}
-  image-block image-block--{{ block.id }} image-block--height-{{ block_settings.height }} spacing-style size-style
+  image-block image-block--{{ block.id }} image-block--height-{{ block_settings.height }} spacing-style size-style{% if block_settings.custom_class != blank %} {{ block_settings.custom_class }}{% endif %}
 {% endcapture %}
 
 {% capture style %}
@@ -53,7 +53,7 @@
     }}
   {%- else -%}
     <div class="placeholder-image border-style size-style" style="{{ image_border_style }}">
-      {{ 'detailed-apparel-1' | placeholder_svg_tag: 'image-block__placeholder' }}
+      {% render 'placeholder-image', placeholder_name: 'detailed-apparel-1', class_name: 'image-block__placeholder' %}
     </div>
   {%- endif -%}
 {% endcapture %}
@@ -334,6 +334,16 @@
       "step": 1,
       "unit": "px",
       "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Custom Class"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom Class",
+      "placeholder": "my-custom-class"
     }
   ],
   "presets": [

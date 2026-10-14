@@ -1,5 +1,8 @@
 {% assign block_settings = block.settings %}
 {% assign icon_block_class = 'icon-block__media icon-block-' | append: block.id %}
+{% if block_settings.custom_class != blank %}
+  {% assign icon_block_class = icon_block_class | append: ' ' | append: block_settings.custom_class %}
+{% endif %}
 
 {% if block_settings.icon_color != blank %}
   {% style %}
@@ -324,6 +327,16 @@
       "id": "icon_color",
       "label": "t:settings.color",
       "placeholder": "t:settings.default"
+    },
+    {
+      "type": "header",
+      "content": "Custom Class"
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom Class",
+      "placeholder": "my-custom-class"
     }
   ],
   "presets": [

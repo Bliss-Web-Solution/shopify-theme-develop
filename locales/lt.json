@@ -357,5 +357,21 @@
       "default_title": "Numatytasis pavadinimas",
       "sticky_add_to_cart": "Greito pridėjimo į krepšelį juosta"
     }
+  },
+  "compare": {
+    "compare_label": "Palyginti",
+    "compare_tabel": {
+      "compare_table_heading": "Produktų palyginimas",
+      "compare_table_loading": "Palyginimo duomenys įkeliami...",
+      "description": "Aprašymas",
+      "availability": "Prieinamumas",
+      "in_stock": "Yra sandėlyje",
+      "out_of_stock": "Nėra sandėlyje",
+      "not_available": "N/A",
+      "sku": "SKU",
+      "vendor": "Prekės ženklas",
+      "view_product": "Peržiūrėti produktą",
+      "remove_product_btn": "Pašalinti"
+    }
   }
 }

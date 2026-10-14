@@ -109,6 +109,7 @@
     <div>
       <a
         href="{{ link.url }}"
+        {% if link.url contains '://' %}{% unless link.url contains shop.domain %} target="_blank"{% endunless %}{% endif %}
         class="mega-menu__link {% if link.links != blank %}mega-menu__link--parent{% endif %}"
       >
         {% if menu_content_type == 'collection_images' %}
@@ -151,6 +152,7 @@
             >
               <a
                 href="{{ childLink.url }}"
+                {% if childLink.url contains '://' %}{% unless childLink.url contains shop.domain %} target="_blank"{% endunless %}{% endif %}
                 class="mega-menu__link"
               >
                 <span class="wrap-text">{{- childLink.title -}}</span>

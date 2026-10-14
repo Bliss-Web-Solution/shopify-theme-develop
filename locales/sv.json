@@ -343,5 +343,21 @@
       "default_title": "Standardtitel",
       "sticky_add_to_cart": "Fält för att lägga till snabbt i varukorgen"
     }
+  },
+  "compare": {
+    "compare_label": "Jämför",
+    "compare_tabel": {
+      "compare_table_heading": "Jämför produkter",
+      "compare_table_loading": "Laddar jämförelsedata...",
+      "description": "Beskrivning",
+      "availability": "Lagerstatus",
+      "in_stock": "I lager",
+      "out_of_stock": "Ej i lager",
+      "not_available": "Ej tillgänglig",
+      "sku": "SKU",
+      "vendor": "Varumärke",
+      "view_product": "Visa produkt",
+      "remove_product_btn": "Ta bort"
+    }
   }
 }

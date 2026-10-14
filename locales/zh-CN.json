@@ -343,5 +343,21 @@
       "success_moderated": "评论已发布，等待审核",
       "success": "评论已发布"
     }
+  },
+  "compare": {
+    "compare_label": "对比",
+    "compare_tabel": {
+      "compare_table_heading": "商品对比",
+      "compare_table_loading": "正在加载对比数据...",
+      "description": "商品描述",
+      "availability": "库存状态",
+      "in_stock": "有货",
+      "out_of_stock": "缺货",
+      "not_available": "不适用",
+      "sku": "SKU",
+      "vendor": "品牌",
+      "view_product": "查看商品",
+      "remove_product_btn": "移除"
+    }
   }
 }

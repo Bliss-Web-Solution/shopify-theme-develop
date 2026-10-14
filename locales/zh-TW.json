@@ -343,5 +343,21 @@
       "default_title": "預設標題",
       "sticky_add_to_cart": "快速加入購物車列"
     }
+  },
+  "compare": {
+    "compare_label": "比較",
+    "compare_tabel": {
+      "compare_table_heading": "商品比較",
+      "compare_table_loading": "正在載入比較資料...",
+      "description": "商品描述",
+      "availability": "庫存狀態",
+      "in_stock": "有貨",
+      "out_of_stock": "缺貨",
+      "not_available": "不適用",
+      "sku": "SKU",
+      "vendor": "品牌",
+      "view_product": "檢視商品",
+      "remove_product_btn": "移除"
+    }
   }
 }

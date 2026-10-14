@@ -27,16 +27,12 @@
   <div
     class="collection-wrapper grid gap-style"
   >
-    {% assign products_per_page = 24 %}
-
-    {% if section.settings.enable_infinite_scroll == false %}
-      {% assign products_per_page = section.settings.products_per_page %}
-    {% endif %}
+    {% assign products_per_page = section.settings.products_per_page | default: 12 %}
 
     {% paginate search.results by products_per_page %}
       {% if search.results_count > 0 %}
-        {% content_for 'block', type: 'filters', id: 'filters', results: search, results_size: search.results_count %}
         {% assign products = search.results | where: 'object_type', 'product' %}
+        {% content_for 'block', type: 'filters', id: 'filters', results: search, results_size: search.results_count %}
       {% else %}
         {% assign collection = settings.empty_state_collection | default: collections.all %}
         {% assign default_title = 'content.search_results_resource_products' | t %}
@@ -69,6 +65,7 @@
         products: products,
         paginate: paginate,
         enable_infinite_scroll: section.settings.enable_infinite_scroll,
+        pagination_type: section.settings.pagination_type,
         title: title
       %}
     {% endpaginate %}
@@ -78,6 +75,9 @@
 {% schema %}
 {
   "name": "t:names.search_results",
+  "enabled_on": {
+    "templates": ["search"]
+  },
   "settings": [
     {
       "type": "paragraph",
@@ -147,14 +147,30 @@
       "default": true
     },
     {
+      "type": "select",
+      "id": "pagination_type",
+      "label": "t:settings.pagination_style",
+      "options": [
+        {
+          "value": "numbers",
+          "label": "t:options.numbered_pagination"
+        },
+        {
+          "value": "load_more",
+          "label": "t:options.load_more_button"
+        }
+      ],
+      "default": "numbers",
+      "visible_if": "{{ section.settings.enable_infinite_scroll == false }}"
+    },
+    {
       "type": "range",
       "id": "products_per_page",
       "label": "t:settings.products_per_page",
-      "min": 8,
+      "min": 1,
       "max": 36,
-      "step": 4,
-      "default": 24,
-      "visible_if": "{{ section.settings.enable_infinite_scroll == false }}"
+      "step": 1,
+      "default": 12
     },
     {
       "type": "header",

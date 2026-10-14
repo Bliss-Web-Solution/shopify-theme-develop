@@ -343,5 +343,21 @@
       "success_moderated": "Komentar diposting, menunggu moderasi",
       "success": "Komentar diposting"
     }
+  },
+  "compare": {
+    "compare_label": "Bandingkan",
+    "compare_tabel": {
+      "compare_table_heading": "Membandingkan Produk",
+      "compare_table_loading": "Memuat data pembanding...",
+      "description": "Deskripsi",
+      "availability": "Ketersediaan",
+      "in_stock": "Tersedia",
+      "out_of_stock": "Stok Habis",
+      "not_available": "T/A",
+      "sku": "SKU",
+      "vendor": "Merek",
+      "view_product": "Lihat produk",
+      "remove_product_btn": "Hapus"
+    }
   }
 }

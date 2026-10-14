@@ -34,6 +34,9 @@ export default class PaginatedList extends Component {
   /** @type {PaginatedListAspectRatioHelper} */
   #aspectRatioHelper;
 
+  #isRenderingNext = false;
+  #isRenderingPrevious = false;
+
   connectedCallback() {
     super.connectedCallback();
 
@@ -52,6 +55,9 @@ export default class PaginatedList extends Component {
     // Listen for filter updates to clear cached pages
     document.addEventListener(StandardEvents.searchUpdate, this.#handleFilterUpdate);
     document.addEventListener(StandardEvents.collectionUpdate, this.#handleFilterUpdate);
+
+    // Listen to scroll events for immediate fallback triggering
+    window.addEventListener('scroll', this.#handleScroll, { passive: true });
   }
 
   disconnectedCallback() {
@@ -62,12 +68,46 @@ export default class PaginatedList extends Component {
     // Remove the filter update listeners
     document.removeEventListener(StandardEvents.searchUpdate, this.#handleFilterUpdate);
     document.removeEventListener(StandardEvents.collectionUpdate, this.#handleFilterUpdate);
+    window.removeEventListener('scroll', this.#handleScroll);
   }
 
-  #observeViewMore() {
-    const { viewMorePrevious, viewMoreNext } = this.refs;
+  #handleScroll = () => {
+    const { viewMoreNext } = this.refs;
+    if (!viewMoreNext) return;
+    const rect = viewMoreNext.getBoundingClientRect();
+    if (rect.top <= window.innerHeight + 400) {
+      this.#renderNextPage();
+    }
+  };
 
-    // Return if neither element exists
+  #observeViewMore() {
+    const { viewMorePrevious, viewMoreNext, loadMoreButton } = this.refs;
+
+    // Attach listener to loadMoreButton if present
+    if (loadMoreButton && !loadMoreButton.dataset.hasListener) {
+      loadMoreButton.dataset.hasListener = 'true';
+      loadMoreButton.addEventListener('click', async () => {
+        loadMoreButton.disabled = true;
+        const originalText = loadMoreButton.textContent;
+        loadMoreButton.textContent = '...';
+
+        try {
+          await this.#renderNextPage();
+        } catch (error) {
+          console.error('Error rendering next page:', error);
+        } finally {
+          loadMoreButton.disabled = false;
+          loadMoreButton.textContent = originalText;
+
+          const nextPage = this.#getPage('next');
+          if (!nextPage || !this.#shouldUsePage(nextPage)) {
+            loadMoreButton.remove();
+          }
+        }
+      });
+    }
+
+    // Return if neither infinite scroll observer element exists
     if (!viewMorePrevious && !viewMoreNext) return;
 
     // Create observer if it doesn't exist
@@ -91,7 +131,7 @@ export default class PaginatedList extends Component {
           }
         },
         {
-          rootMargin: '100px',
+          rootMargin: '400px',
         }
       );
     }
@@ -168,90 +208,139 @@ export default class PaginatedList extends Component {
   }
 
   async #renderNextPage() {
-    const { grid } = this.refs;
+    if (this.#isRenderingNext) return;
+    this.#isRenderingNext = true;
 
-    if (!grid) return;
+    try {
+      const { grid } = this.refs;
+      if (!grid) return;
 
-    const nextPage = this.#getPage('next');
+      let nextPage = this.#getPage('next');
 
-    if (!nextPage || !this.#shouldUsePage(nextPage)) return;
-    let nextPageItemElements = this.#getGridForPage(nextPage.page);
+      while (nextPage && this.#shouldUsePage(nextPage)) {
+        let nextPageItemElements = this.#getGridForPage(nextPage.page);
 
-    if (!nextPageItemElements) {
-      const promise = new Promise((res) => {
-        this.#resolveNextPagePromise = res;
-      });
+        if (!nextPageItemElements) {
+          const promise = new Promise((res) => {
+            this.#resolveNextPagePromise = res;
+          });
 
-      // Trigger the fetch for this page
-      this.#fetchPage('next');
+          // Trigger the fetch for this page
+          this.#fetchPage('next');
 
-      await promise;
-      nextPageItemElements = this.#getGridForPage(nextPage.page);
-      if (!nextPageItemElements) return;
+          await promise;
+          nextPageItemElements = this.#getGridForPage(nextPage.page);
+        }
+
+        if (nextPageItemElements && nextPageItemElements.length > 0) {
+          // Deduplicate items against existing cards in grid by element HTML ID
+          const existingIds = new Set(
+            Array.from(grid.children)
+              .map((el) => el.id)
+              .filter((id) => id && id.length > 0)
+          );
+          const uniqueElements = Array.from(nextPageItemElements).filter((el) => {
+            return !el.id || !existingIds.has(el.id);
+          });
+
+          if (uniqueElements.length > 0) {
+            grid.append(...uniqueElements);
+            this.#aspectRatioHelper?.processNewElements();
+            await yieldToMainThread();
+            requestIdleCallback(() => {
+              this.#fetchPage('next');
+
+              // If viewMoreNext is still in or near the viewport, trigger renderNextPage again
+              const { viewMoreNext } = this.refs;
+              if (viewMoreNext) {
+                const rect = viewMoreNext.getBoundingClientRect();
+                if (rect.top <= window.innerHeight + 400) {
+                  this.#renderNextPage();
+                }
+              }
+            });
+            break;
+          }
+        }
+
+        // If this page yielded no unique items, advance to the next page
+        nextPage = {
+          page: nextPage.page + 1,
+          url: new URL(nextPage.url.toString()),
+        };
+        nextPage.url.searchParams.set('page', nextPage.page.toString());
+      }
+    } finally {
+      this.#isRenderingNext = false;
     }
-
-    grid.append(...nextPageItemElements);
-
-    this.#aspectRatioHelper.processNewElements();
-
-    await yieldToMainThread();
-
-    history.pushState('', '', nextPage.url.toString());
-
-    requestIdleCallback(() => {
-      this.#fetchPage('next');
-    });
   }
 
   async #renderPreviousPage() {
-    const { grid } = this.refs;
+    if (this.#isRenderingPrevious) return;
+    this.#isRenderingPrevious = true;
 
-    if (!grid) return;
+    try {
+      const { grid } = this.refs;
 
-    const previousPage = this.#getPage('previous');
-    if (!previousPage || !this.#shouldUsePage(previousPage)) return;
+      if (!grid) return;
 
-    let previousPageItemElements = this.#getGridForPage(previousPage.page);
-    if (!previousPageItemElements) {
-      const promise = new Promise((res) => {
-        this.#resolvePreviousPagePromise = res;
+      const previousPage = this.#getPage('previous');
+      if (!previousPage || !this.#shouldUsePage(previousPage)) return;
+
+      let previousPageItemElements = this.#getGridForPage(previousPage.page);
+      if (!previousPageItemElements) {
+        const promise = new Promise((res) => {
+          this.#resolvePreviousPagePromise = res;
+        });
+
+        // Trigger the fetch for this page
+        this.#fetchPage('previous');
+
+        await promise;
+        previousPageItemElements = this.#getGridForPage(previousPage.page);
+        if (!previousPageItemElements) return;
+      }
+
+      // Deduplicate items against existing cards in grid by element HTML ID
+      const existingIds = new Set(
+        Array.from(grid.children)
+          .map((el) => el.id)
+          .filter((id) => id && id.length > 0)
+      );
+      const uniqueElements = Array.from(previousPageItemElements).filter((el) => {
+        return !el.id || !existingIds.has(el.id);
       });
 
-      // Trigger the fetch for this page
-      this.#fetchPage('previous');
+      if (uniqueElements.length === 0) return;
 
-      await promise;
-      previousPageItemElements = this.#getGridForPage(previousPage.page);
-      if (!previousPageItemElements) return;
-    }
+      // Store the current scroll position and height of the first element
+      const currentScrollTop = getScrollTop();
+      const firstElement = grid.firstElementChild;
+      const oldHeight = firstElement ? firstElement.getBoundingClientRect().top + currentScrollTop : 0;
 
-    // Store the current scroll position and height of the first element
-    const currentScrollTop = getScrollTop();
-    const firstElement = grid.firstElementChild;
-    const oldHeight = firstElement ? firstElement.getBoundingClientRect().top + currentScrollTop : 0;
+      // Prepend the new elements
+      grid.prepend(...uniqueElements);
 
-    // Prepend the new elements
-    grid.prepend(...previousPageItemElements);
+      this.#aspectRatioHelper?.processNewElements();
 
-    this.#aspectRatioHelper.processNewElements();
+      // Calculate and adjust scroll position to maintain the same view
+      if (firstElement) {
+        const newHeight = firstElement.getBoundingClientRect().top + getScrollTop();
+        const heightDiff = newHeight - oldHeight;
+        scrollTo({
+          top: currentScrollTop + heightDiff,
+          behavior: 'instant',
+        });
+      }
 
-    // Calculate and adjust scroll position to maintain the same view
-    if (firstElement) {
-      const newHeight = firstElement.getBoundingClientRect().top + getScrollTop();
-      const heightDiff = newHeight - oldHeight;
-      scrollTo({
-        top: currentScrollTop + heightDiff,
-        behavior: 'instant',
+      await yieldToMainThread();
+
+      requestIdleCallback(() => {
+        this.#fetchPage('previous');
       });
+    } finally {
+      this.#isRenderingPrevious = false;
     }
-
-    await yieldToMainThread();
-
-    history.pushState('', '', previousPage.url.toString());
-
-    requestIdleCallback(() => {
-      this.#fetchPage('previous');
-    });
   }
 
   /**
@@ -259,10 +348,10 @@ export default class PaginatedList extends Component {
    * @returns {{ page: number, url: URL } | undefined}
    */
   #getPage(type) {
-    const { cards } = this.refs;
+    const cards = Array.from(this.querySelectorAll('[ref="cards[]"]'));
     const isPrevious = type === 'previous';
 
-    if (!Array.isArray(cards)) return;
+    if (cards.length === 0) return;
 
     const targetCard = cards[isPrevious ? 0 : cards.length - 1];
 
@@ -292,8 +381,8 @@ export default class PaginatedList extends Component {
 
     const parsedPage = new DOMParser().parseFromString(pageHTML, 'text/html');
     const gridElement = parsedPage.querySelector('[ref="grid"]');
-    if (!gridElement) return;
-    return gridElement.querySelectorAll(':scope > [ref="cards[]"]');
+    if (!gridElement) return [];
+    return gridElement.querySelectorAll('[ref="cards[]"]');
   }
 
   get sectionId() {

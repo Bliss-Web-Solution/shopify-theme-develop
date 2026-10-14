@@ -357,5 +357,21 @@
       "default_title": "Tytuł domyślny",
       "sticky_add_to_cart": "Pasek szybkiego dodawania do koszyka"
     }
+  },
+  "compare": {
+    "compare_label": "Porównaj",
+    "compare_tabel": {
+      "compare_table_heading": "Porównanie produktów",
+      "compare_table_loading": "Wczytywanie danych porównania...",
+      "description": "Opis",
+      "availability": "Dostępność",
+      "in_stock": "W magazynie",
+      "out_of_stock": "Brak w magazynie",
+      "not_available": "Brak danych",
+      "sku": "SKU",
+      "vendor": "Marka",
+      "view_product": "Zobacz produkt",
+      "remove_product_btn": "Usuń"
+    }
   }
 }

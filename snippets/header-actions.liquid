@@ -63,6 +63,46 @@
   {% endif %}
   {{- block.shopify_attributes -}}
 >
+  {% capture compare_icon %}
+      <span
+        class="svg-wrapper {% if display_style != 'icon' %}desktop:hidden{% endif %}"
+        aria-hidden="true"
+      >
+        {{ 'bliss-icon-compare.svg' | inline_asset_content }}
+      </span>
+      <span class="{% if display_style == 'icon' %}hidden{% else %}mobile:hidden{% endif %}">
+        {{ 'compare.compare_label' | t | default: 'Compare' }}
+      </span>
+      
+      {% liquid
+        assign bubble_bg_fallback = settings.page_text_color
+        assign bubble_text_fallback = settings.page_background_color
+      %}
+      <div
+        class="cart-bubble compare-bubble"
+        style="display: none; --cart-bubble-background-fallback: {{ bubble_bg_fallback }}; --cart-bubble-text-fallback: {{ bubble_text_fallback }};"
+      >
+        <span class="cart-bubble__background"></span>
+        <span class="cart-bubble__text">
+          <span class="cart-bubble__text-count compare-bubble-count" aria-hidden="true">
+            0
+          </span>
+        </span>
+      </div>
+    {% endcapture %}
+
+  {% if section.settings.show_compare == true %}
+    <a
+      href="/pages/compare"
+      class="header-actions__action action__compare{% if display_style == 'text' %} header-actions__text-style{% endif %}"
+      aria-label="{{ 'compare.compare_label' | t | default: 'Compare' }}"
+    >
+      <div class="header-actions__cart-icon{% if display_style == 'text' %} header-actions__cart-icon--text{% endif %}">
+        {{ compare_icon }}
+      </div>
+    </a>
+  {% endif %}
+
   {% if shop.customer_accounts_enabled %}
     {% liquid
       assign account_actions_style = ''

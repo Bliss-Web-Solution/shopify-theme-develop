@@ -343,5 +343,21 @@
       "success_moderated": "コメントを投稿しました。承認待ちです",
       "success": "コメントを投稿しました"
     }
+  },
+  "compare": {
+    "compare_label": "比較",
+    "compare_tabel": {
+      "compare_table_heading": "商品を比較",
+      "compare_table_loading": "比較データを読み込んでいます...",
+      "description": "説明",
+      "availability": "在庫状況",
+      "in_stock": "在庫あり",
+      "out_of_stock": "在庫切れ",
+      "not_available": "該当なし",
+      "sku": "SKU",
+      "vendor": "ブランド",
+      "view_product": "商品を見る",
+      "remove_product_btn": "削除"
+    }
   }
 }
