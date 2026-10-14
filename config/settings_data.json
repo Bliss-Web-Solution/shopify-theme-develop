@@ -79,6 +79,13 @@
     "variant_button_radius": 14,
     "variant_button_width": "equal-width-buttons",
     "content_for_index": [],
+    "blocks": {
+      "15278158815476985229": {
+        "type": "shopify://apps/breadcrumbs-categories/blocks/breadcrumbs-embed/01a138ec-74c2-7c18-b5f6-357fc78602f5",
+        "disabled": false,
+        "settings": {}
+      }
+    },
     "color_palette": {
       "background": "#ffffff",
       "foreground": "#000000",
