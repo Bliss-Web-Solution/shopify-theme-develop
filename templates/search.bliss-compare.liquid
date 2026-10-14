@@ -11,13 +11,17 @@
               <figure class="card-figure">
                 <a href="{{ product.url }}" class="card-figure__link">
                   <div class="card-img-container">
-                    <img
-                      src="{{ product.featured_media | image_url: width: 300 }}"
-                      alt="{{ product.title | escape }}"
-                      width="300"
-                      height="300"
-                      loading="lazy"
-                    >
+                    {% if product.featured_media != blank %}
+                      <img
+                        src="{{ product.featured_media | image_url: width: 300 }}"
+                        alt="{{ product.title | escape }}"
+                        width="300"
+                        height="300"
+                        loading="lazy"
+                      >
+                    {% else %}
+                      {% render 'placeholder-image', text: product.title %}
+                    {% endif %}
                   </div>
                 </a>
               </figure>
@@ -121,7 +125,9 @@
               <ul style="margin: 0; padding-inline-start: 15px; list-style-type: disc;">
                 {% for option in product.options_with_values %}
                   {% if option.values.size > 0 and option.values.first != blank %}
-                    <li><strong>{{ option.name }}:</strong> {{ option.values | join: ', ' }}</li>
+                    <li>
+                      <strong>{{ option.name }}:</strong> {{ option.values | join: ', ' }}
+                    </li>
                   {% endif %}
                 {% endfor %}
               </ul>
@@ -139,7 +145,8 @@
           <td class="compareTable-item">
             {% if product.collections.size > 0 %}
               {% for collection in product.collections %}
-                {{ collection.title }}{% unless forloop.last %}, {% endunless %}
+                {{ collection.title -}}
+                {%- unless forloop.last %}, {% endunless %}
               {% endfor %}
             {% else %}
               {{ 'compare.compare_tabel.not_available' | t }}
@@ -175,15 +182,25 @@
                   <span class="product-form__error-message"></span>
                 </div>
 
-                {%- form 'product', product, id: product_form_id, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+                {%- form 'product',
+                  product,
+                  id: product_form_id,
+                  class: 'form',
+                  novalidate: 'novalidate',
+                  data-type: 'add-to-cart-form'
+                -%}
                   {%- if product.variants.size > 1 -%}
                     <div class="select" style="margin-bottom: 10px;">
                       <select name="id" class="select__select" style="width: 100%;">
                         {%- for variant in product.variants -%}
                           <option
                             value="{{ variant.id }}"
-                            {% if variant == product.selected_or_first_available_variant %}selected="selected"{% endif %}
-                            {% if variant.available == false %}disabled{% endif %}
+                            {% if variant == product.selected_or_first_available_variant %}
+                              selected="selected"
+                            {% endif %}
+                            {% if variant.available == false %}
+                              disabled
+                            {% endif %}
                           >
                             {{ variant.title }} - {{ variant.price | money }}
                           </option>
@@ -199,7 +216,9 @@
                     name="add"
                     class="button button--primary"
                     style="width: 100%; margin-bottom: 10px;"
-                    {% if product.selected_or_first_available_variant.available == false %}disabled{% endif %}
+                    {% if product.selected_or_first_available_variant.available == false %}
+                      disabled
+                    {% endif %}
                   >
                     <span>
                       {%- if product.selected_or_first_available_variant.available -%}
