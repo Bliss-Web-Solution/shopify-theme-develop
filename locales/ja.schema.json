@@ -575,6 +575,7 @@
     "selected_button_style": "選択されたボタンのスタイル",
     "open_by_default": "デフォルトで開く",
     "title_preset": "タイトルプリセット",
+    "customer_account_menu": "お客様アカウントメニュー",
     "articles_per_page": "1ページあたりの記事数",
     "collections_per_page": "1ページあたりのコレクション数",
     "pagination_style": "ページネーションのスタイル",
