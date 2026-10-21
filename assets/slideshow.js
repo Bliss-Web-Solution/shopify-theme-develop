@@ -414,8 +414,20 @@ export class Slideshow extends Component {
     return this.#current;
   }
 
+  /**
+   * This slideshow's own dots container, ignoring dots of nested slideshows (e.g. product card galleries).
+   * @returns {HTMLElement | null}
+   */
+  #getOwnDotsContainer() {
+    return (
+      Array.from(this.querySelectorAll('.slideshow-controls__dots')).find(
+        (container) => container.closest('slideshow-component') === this
+      ) ?? null
+    );
+  }
+
   #updateActiveDot() {
-    const liveDots = this.querySelectorAll('.slideshow-controls__dots button');
+    const liveDots = this.#getOwnDotsContainer()?.querySelectorAll('button') ?? [];
     const { dots, scroller, slides } = this.refs;
     const dotsToUpdate = liveDots.length ? Array.from(liveDots) : (dots || []);
     if (!dotsToUpdate.length) return;
@@ -1035,7 +1047,7 @@ export class Slideshow extends Component {
     const scroller = this.refs.scroller;
     if (scroller) {
       const visibleColumns = this.columnsCount;
-      const dotsContainer = this.querySelector('.slideshow-controls__dots');
+      const dotsContainer = this.#getOwnDotsContainer();
       if (dotsContainer) {
         const totalPages = Math.ceil(slides.length / Math.max(1, visibleColumns));
 

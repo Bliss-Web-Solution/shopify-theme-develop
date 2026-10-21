@@ -214,6 +214,7 @@ export class ProductCard extends ProductCardLink {
   disconnectedCallback() {
     super.disconnectedCallback();
     this.removeEventListener('click', this.navigateToProduct);
+    clearInterval(this.#hoverAutoplayTimer);
   }
 
   #preloadNextPreviewImage() {
@@ -472,6 +473,46 @@ export class ProductCard extends ProductCardLink {
     slideshow.select({ id }, undefined, { animate: false });
   }
 
+  /** @type {number | undefined} */
+  #hoverAutoplayTimer;
+
+  /**
+   * Rotates the card images while the card is hovered (Carousel navigation: Dots).
+   * @param {PointerEvent} event - The pointer event.
+   */
+  startHoverAutoplay(event) {
+    if (event.pointerType !== 'mouse' || this.#hoverAutoplayTimer) return;
+
+    const { slideshow } = this.refs;
+
+    if (!slideshow || slideshow.disabled) return;
+
+    this.resetVariant.cancel();
+    slideshow.next();
+    this.#hoverAutoplayTimer = setInterval(() => slideshow.next(), 2000);
+  }
+
+  /**
+   * Stops the hover rotation and returns to the first (or selected variant's) image.
+   * @param {PointerEvent} event - The pointer event.
+   */
+  stopHoverAutoplay(event) {
+    if (event.pointerType !== 'mouse') return;
+
+    clearInterval(this.#hoverAutoplayTimer);
+    this.#hoverAutoplayTimer = undefined;
+
+    const { slideshow } = this.refs;
+
+    if (!slideshow || slideshow.disabled) return;
+
+    if (this.variantPicker) {
+      this.#resetVariant();
+    } else {
+      slideshow.select(0, undefined, { animate: false });
+    }
+  }
+
   /**
    * Previews the next image.
    * @param {PointerEvent} event - The pointer event.
@@ -557,6 +598,12 @@ export class ProductCard extends ProductCardLink {
 
     // Don't navigate if this product card is marked as no-navigation (e.g., in theme editor)
     if (this.hasAttribute('data-no-navigation')) return;
+
+    // Card carousel dots sit inside the product link; clicking them (or the gaps between) must not open the product.
+    if (event.target.closest('.card-gallery__dots')) {
+      event.preventDefault();
+      return;
+    }
 
     const interactiveElement = event.target.closest('button, input, label, select, [tabindex="1"]');
 

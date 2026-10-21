@@ -60,6 +60,12 @@
       assign ratio = product.featured_media.preview_image.aspect_ratio | default: '1'
   endcase
 
+  # Carousel navigation "Dots": images rotate only while the card is hovered (replaces "second image on hover").
+  assign hover_autoplay = false
+  if settings.product_card_carousel and settings.product_card_carousel_navigation == 'dots' and product.media.size > 2
+    assign hover_autoplay = true
+  endif
+
   if block_settings.image_ratio == 'adapt' and block_settings.constrain_to_viewport
     if block_settings.constrain_to_viewport != ''
       assign constrain_to_viewport = true
@@ -77,7 +83,10 @@
     --gallery-aspect-ratio: {{ ratio }};
   "
   data-product-id="{{ product.id }}"
-  {% if settings.show_second_image_on_hover and product.media.size > 1 %}
+  {% if hover_autoplay %}
+    on:pointerenter="/startHoverAutoplay"
+    on:pointerleave="/stopHoverAutoplay"
+  {% elsif settings.show_second_image_on_hover and product.media.size > 1 %}
     on:pointerenter="/previewImage"
     on:pointerleave="/resetImage"
   {% endif %}
@@ -200,6 +209,21 @@
             assign show_arrows = true
           endif
 
+          # Theme settings > Product cards > Carousel navigation: arrows, dots or both.
+          assign card_carousel_navigation = settings.product_card_carousel_navigation | default: 'arrows'
+          assign card_slideshow_controls = null
+          if settings.product_card_carousel and show_arrows
+            if card_carousel_navigation != 'arrows'
+              assign dot_count = visible_slide_count | at_most: max_visible_slide_count
+              capture card_slideshow_controls
+                render 'slideshow-controls', style: 'dots', item_count: dot_count, controls_on_media: true, class: 'card-gallery__dots'
+              endcapture
+            endif
+            if card_carousel_navigation == 'dots'
+              assign show_arrows = false
+            endif
+          endif
+
           assign slideshow_attributes = 'data-generic-media-size="[generic_media_size]"' | replace: '[generic_media_size]', generic_media_size
           if settings.product_card_carousel == false
             assign slideshow_attributes = slideshow_attributes | append: ' disabled="true"'
@@ -211,6 +235,7 @@
           slides: slides,
           slide_count: media_list_to_show.size,
           show_arrows: show_arrows,
+          controls: card_slideshow_controls,
           attributes: slideshow_attributes
         %}
       {%- endif -%}
@@ -426,6 +451,43 @@
 
   ul[product-grid-view='zoom-out'] .card-gallery > img {
     display: block;
+  }
+
+  /* Carousel navigation: dots (Theme settings > Product cards) */
+  .card-gallery slideshow-component:has(> .card-gallery__dots) {
+    position: relative;
+  }
+
+  /* A card shows one image at a time; don't inherit the section's --column-count (slideshow.js uses it for dots and paging). */
+  .card-gallery slideshow-component {
+    --column-count: 1;
+  }
+
+  .card-gallery .card-gallery__dots {
+    inset-inline: 0;
+    justify-content: center;
+    z-index: var(--layer-heightened);
+    pointer-events: none;
+  }
+
+  .card-gallery .card-gallery__dots .slideshow-controls__dots {
+    pointer-events: auto;
+  }
+
+  .card-gallery slideshow-component[disabled='true'] > .card-gallery__dots {
+    display: none;
+  }
+
+  /* Dots appear on hover like the arrows; touch devices have no hover, so they stay visible there. */
+  @media (hover: hover) {
+    .card-gallery .card-gallery__dots {
+      opacity: 0;
+      transition: opacity var(--animation-speed) var(--animation-easing);
+    }
+
+    .card-gallery:is(:hover, :focus-within) .card-gallery__dots {
+      opacity: 1;
+    }
   }
 
   .card-gallery slideshow-arrows .slideshow-control {
