@@ -429,6 +429,7 @@
     "apple": "Apple",
     "arrow": "Arrow",
     "arrows": "Arrows",
+    "arrows_and_dots": "Arrows and dots",
     "arrows_large": "Large arrows",
     "aspect_ratio": "Aspect ratio",
     "auto": "Auto",
@@ -1027,6 +1028,7 @@
     "product_and_card_title_case": "Product and card title case",
     // Checkbox to enable image carousel within product cards
     "product_card_carousel": "Show carousel",
+    "product_card_carousel_navigation": "Carousel navigation",
     "product_cards": "Product cards",
     "product_count": "Product count",
     "product_pages": "Product pages",

@@ -1983,6 +1983,28 @@ input[type='radio'] {
   }
 }
 
+/* Product card arrows keep Horizon's default: hidden until the card is hovered or focused, then slide in.
+   All other slideshow arrows stay visible (see slideshow-arrows.liquid). */
+.card-gallery slideshow-arrows .slideshow-control {
+  opacity: 0;
+}
+
+.card-gallery slideshow-container[animate-arrows]:hover > slideshow-arrows .slideshow-control,
+.card-gallery slideshow-component:focus-within > slideshow-container[animate-arrows] > slideshow-arrows .slideshow-control {
+  animation: arrowsSlideIn var(--animation-speed) var(--animation-easing) forwards;
+}
+
+@keyframes arrowsSlideIn {
+  from {
+    transform: translate(var(--padding-sm), 0);
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
 .section-resource-list,
 .section-carousel {
   row-gap: var(--gap);
