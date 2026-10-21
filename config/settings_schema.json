@@ -1933,6 +1933,27 @@
         "id": "product_card_carousel",
         "label": "t:settings.product_card_carousel",
         "default": true
+      },
+      {
+        "type": "select",
+        "id": "product_card_carousel_navigation",
+        "label": "t:settings.product_card_carousel_navigation",
+        "options": [
+          {
+            "value": "arrows",
+            "label": "t:options.arrows"
+          },
+          {
+            "value": "dots",
+            "label": "t:options.dots"
+          },
+          {
+            "value": "both",
+            "label": "t:options.arrows_and_dots"
+          }
+        ],
+        "default": "arrows",
+        "visible_if": "{{ settings.product_card_carousel }}"
       }
     ]
   },

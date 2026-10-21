@@ -2,7 +2,7 @@ import { Component } from '@theme/component';
 import { debounce, onAnimationEnd, prefersReducedMotion } from '@theme/utilities';
 import { sectionRenderer } from '@theme/section-renderer';
 import { morph } from '@theme/morph';
-import { RecentlyViewed } from '@theme/bliss-recently-viewed-products';
+import { RecentlyViewed } from '@theme/recently-viewed-products';
 import { DialogCloseEvent, DialogOpenEvent, DialogComponent } from '@theme/dialog';
 import { SearchUpdateEvent } from '@shopify/events';
 
