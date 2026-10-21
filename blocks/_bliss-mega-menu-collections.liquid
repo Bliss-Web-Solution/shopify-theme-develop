@@ -1,0 +1,212 @@
+{%- doc -%}
+  Promoted collections for one top-level item of the Bliss menu.
+  The output is wrapped in position markers so the parent `_bliss-menu` block
+  can place it inside the submenu of the matching menu item.
+{%- enddoc -%}
+
+{% liquid
+  assign position = block.settings.menu_item_position | default: '1'
+  assign background_color = block.settings.background_color
+  assign card_style = 'default'
+  if block.settings.text_placement == 'on_image'
+    assign card_style = 'overlay'
+  endif
+%}
+
+<!--bliss-mega-{{ position }}-->
+{% if background_color != blank and background_color.alpha != 0.0 %}
+  {% style %}
+    #header-component:has(.menu-list__list-item:is(:hover, :has([aria-expanded='true'])) [data-bliss-mega-id='{{ block.id }}']) .header__underlay {
+      --color-submenu: {{ background_color }};
+    }
+  {% endstyle %}
+{% endif %}
+<div
+  class="bliss-mega-collections bliss-mega-collections--text-{{ block.settings.text_placement }}"
+  style="--bliss-text-align: {{ block.settings.text_alignment }}; --bliss-text-gap: {{ block.settings.text_vertical_gap }}px;"
+  data-bliss-mega-id="{{ block.id }}"
+  data-bliss-mega-position="{{ position }}"
+  {{ block.shopify_attributes }}
+>
+  {% if block.settings.heading != blank %}
+    <p class="bliss-mega-collections__heading h6">{{ block.settings.heading }}</p>
+  {% endif %}
+  <ul class="bliss-mega-collections__list list-unstyled" role="list">
+    {% for collection in block.settings.collections %}
+      <li class="bliss-mega-collections__item">
+        {% render 'resource-card',
+          resource: collection,
+          resource_type: 'collection',
+          style: card_style,
+          image_aspect_ratio: block.settings.image_ratio,
+          image_sizes: '(min-width: 750px) 20vw, 50vw'
+        %}
+      </li>
+    {% else %}
+      {% if request.design_mode %}
+        <li class="bliss-mega-collections__item">
+          {% render 'resource-card',
+            resource: collections.all,
+            resource_type: 'collection',
+            style: card_style,
+            image_aspect_ratio: block.settings.image_ratio
+          %}
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</div>
+<!--/bliss-mega-{{ position }}-->
+
+{% stylesheet %}
+  .bliss-mega-collections {
+    flex: 1 1 100%;
+    padding-block-start: var(--padding-md);
+  }
+
+  .bliss-mega-collections__heading {
+    margin-block: 0 var(--margin-sm);
+  }
+
+  .bliss-mega-collections__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--gap-md);
+  }
+
+  /* Force the chosen image ratio on the media box so every card (including placeholders) matches */
+  .bliss-mega-collections .resource-card__media {
+    aspect-ratio: var(--resource-card-aspect-ratio, auto);
+    overflow: hidden;
+    border-radius: var(--resource-card-corner-radius);
+  }
+
+  .bliss-mega-collections .resource-card__media > .resource-card__image,
+  .bliss-mega-collections .resource-card__image-placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .bliss-mega-collections .resource-card__image-placeholder {
+    display: flex;
+  }
+
+  .bliss-mega-collections .resource-card__content {
+    text-align: var(--bliss-text-align);
+  }
+
+  .bliss-mega-collections .resource-card__title {
+    width: 100%;
+  }
+
+  .bliss-mega-collections--text-below_image .resource-card {
+    row-gap: var(--bliss-text-gap);
+  }
+
+  .bliss-mega-collections--text-on_image .resource-card__content {
+    padding-block-end: var(--bliss-text-gap);
+  }
+
+  @media screen and (min-width: 990px) {
+    .bliss-mega-collections__list {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Mega menu collections",
+  "tag": null,
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "info": "You can set a different background color for this mega menu"
+    },
+    {
+      "type": "select",
+      "id": "menu_item_position",
+      "label": "Link position in main menu",
+      "options": [
+        { "value": "1", "label": "Item 1" },
+        { "value": "2", "label": "Item 2" },
+        { "value": "3", "label": "Item 3" },
+        { "value": "4", "label": "Item 4" },
+        { "value": "5", "label": "Item 5" },
+        { "value": "6", "label": "Item 6" },
+        { "value": "7", "label": "Item 7" },
+        { "value": "8", "label": "Item 8" },
+        { "value": "9", "label": "Item 9" },
+        { "value": "10", "label": "Item 10" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "header",
+      "content": "Promoted collections"
+    },
+    {
+      "type": "collection_list",
+      "id": "collections",
+      "label": "Collections",
+      "limit": 4
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Promoted collections"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        { "value": "adapt", "label": "Auto" },
+        { "value": "16 / 9", "label": "Landscape" },
+        { "value": "1 / 1", "label": "Square" },
+        { "value": "4 / 5", "label": "Portrait" }
+      ],
+      "default": "1 / 1"
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "select",
+      "id": "text_placement",
+      "label": "Placement",
+      "options": [
+        { "value": "on_image", "label": "On image" },
+        { "value": "below_image", "label": "Below image" }
+      ],
+      "default": "below_image"
+    },
+    {
+      "type": "text_alignment",
+      "id": "text_alignment",
+      "label": "Alignment",
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "text_vertical_gap",
+      "label": "Vertical gap",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "Mega menu collections"
+    }
+  ]
+}
+{% endschema %}

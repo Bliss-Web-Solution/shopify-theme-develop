@@ -82,17 +82,40 @@
     content_for 'block', type: '_header-logo', id: 'header-logo'
   endcapture
 
-  capture menu
-    content_for 'block', type: '_header-menu', id: 'header-menu'
-  endcapture
+  # Use the Bliss menu when enabled, or when the default Menu block is hidden
+  assign use_bliss_menu = section.settings.use_bliss_menu
+  unless use_bliss_menu
+    capture default_menu
+      content_for 'block', type: '_header-menu', id: 'header-menu'
+    endcapture
+    if default_menu == blank
+      assign use_bliss_menu = true
+    endif
+  endunless
 
-  capture drawer_menu
-    content_for 'block', type: '_header-menu', id: 'header-menu', variant: 'mobile'
-  endcapture
+  if use_bliss_menu
+    capture menu
+      content_for 'block', type: '_bliss-menu', id: 'bliss-menu'
+    endcapture
 
-  capture navigation_bar
-    content_for 'block', type: '_header-menu', id: 'header-menu', variant: 'navigation_bar', transparent: transparent
-  endcapture
+    capture drawer_menu
+      content_for 'block', type: '_bliss-menu', id: 'bliss-menu', variant: 'mobile'
+    endcapture
+
+    capture navigation_bar
+      content_for 'block', type: '_bliss-menu', id: 'bliss-menu', variant: 'navigation_bar', transparent: transparent
+    endcapture
+  else
+    assign menu = default_menu
+
+    capture drawer_menu
+      content_for 'block', type: '_header-menu', id: 'header-menu', variant: 'mobile'
+    endcapture
+
+    capture navigation_bar
+      content_for 'block', type: '_header-menu', id: 'header-menu', variant: 'navigation_bar', transparent: transparent
+    endcapture
+  endif
 
   assign has_navigation_bar = false
   if navigation_bar contains 'data-navigation-bar-enabled'
@@ -1338,6 +1361,13 @@
         }
       ],
       "default": "top"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_bliss_menu",
+      "label": "Use Bliss menu",
+      "info": "Replaces the Menu block with the Bliss menu block, which supports Mega menu collections. Bliss menu is also used when the Menu block is hidden.",
+      "default": false
     },
     {
       "type": "header",
