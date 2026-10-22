@@ -135,13 +135,45 @@
     },
     "179198583623e6c1ce": {
       "type": "_blocks",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "background_media": "none",
+        "background_color": "",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_color": "",
+        "border_radius": 0,
+        "padding-block-start": 0,
+        "padding-block-end": 0,
+        "custom_class": ""
+      }
+    },
+    "1792674492559c890e": {
+      "type": "_blocks",
       "blocks": {
-        "breadcrumbs_categories_breadcrumbs_DFzdCk": {
-          "type": "shopify://apps/breadcrumbs-categories/blocks/breadcrumbs/01a138ec-74c2-7c18-b5f6-357fc78602f5",
+        "breadcrumbs_categories_breadcrumbs_CtGz6L": {
+          "type": "shopify://apps/breadcrumbs-categories/blocks/breadcrumbs/019ef31f-10ad-7e5b-b8a6-e3a0637b6832",
           "settings": {
             "separator_char": ">",
             "bg_color": "#f9fafb",
-            "text_color": "#000000",
+            "text_color": "#6b7280",
             "hover_color": "#111827",
             "active_color": "#111827",
             "border_color": "#e5e7eb",
@@ -151,7 +183,7 @@
         }
       },
       "block_order": [
-        "breadcrumbs_categories_breadcrumbs_DFzdCk"
+        "breadcrumbs_categories_breadcrumbs_CtGz6L"
       ],
       "settings": {
         "content_direction": "column",
@@ -187,6 +219,7 @@
   "order": [
     "header_announcements_9jGBFp",
     "header_section",
-    "179198583623e6c1ce"
+    "179198583623e6c1ce",
+    "1792674492559c890e"
   ]
 }
