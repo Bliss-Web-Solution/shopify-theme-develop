@@ -1,0 +1,319 @@
+{%- doc -%}
+  Up to two promotional images (CTA) for one top-level item of the Bliss menu, each with an
+  optional link, heading and button label. The output is wrapped in position
+  markers so the parent `_bliss-menu` block can place it inside the submenu of the
+  matching menu item, to the right of the submenu links.
+{%- enddoc -%}
+
+{% liquid
+  assign position = block.settings.menu_item_position | default: '1'
+  assign background_color = block.settings.background_color
+
+  # Build the list of filled image slots (max 2)
+  assign slot_count = 0
+  for i in (1..2)
+    assign image_key = 'image_' | append: i
+    assign slot_image = block.settings[image_key]
+    if slot_image != blank
+      assign slot_count = slot_count | plus: 1
+    endif
+  endfor
+
+  assign images_width = block.settings.images_width | default: 50
+  assign per_image_vw = images_width
+  if slot_count > 1
+    assign per_image_vw = images_width | divided_by: slot_count
+  endif
+  assign image_sizes = '(min-width: 990px) ' | append: per_image_vw | append: 'vw, 50vw'
+%}
+
+<!--bliss-mega-{{ position }}-->
+{% liquid
+  # Keep Horizon's column width (6 columns across the full menu): the links get as many of
+  # those columns as fit next to the images, e.g. images 50% -> 3 link columns.
+  assign link_columns = 100 | minus: images_width | times: 6 | divided_by: 100.0 | round
+  if link_columns < 1
+    assign link_columns = 1
+  endif
+%}
+{% style %}
+  @media screen and (min-width: 990px) {
+    .mega-menu:has(> [data-bliss-mega-id='{{ block.id }}']) :is(.mega-menu__grid, .mega-menu__list) {
+      --menu-columns-desktop: {{ link_columns }};
+    }
+
+    /* The links get the width the images leave. Set here (not via a variable on the images element,
+       which the sibling grid can't inherit). */
+    .mega-menu:has(> [data-bliss-mega-id='{{ block.id }}']) > .mega-menu__grid {
+      width: calc(100% - {{ images_width }}% - var(--gap-xl));
+    }
+  }
+{% endstyle %}
+{% if background_color != blank and background_color.alpha != 0.0 %}
+  {% style %}
+    #header-component:has(.menu-list__list-item:is(:hover, :has([aria-expanded='true'])) [data-bliss-mega-id='{{ block.id }}']) .header__underlay {
+      --color-submenu: {{ background_color }};
+    }
+  {% endstyle %}
+{% endif %}
+{% # Always rendered: with no image set, placeholders show on the storefront and in the editor %}
+  <div
+    class="bliss-mega-images"
+    style="--bliss-images-width: {{ images_width }}%; --bliss-images-ratio: {{ block.settings.image_ratio }}; --bliss-text-align: {{ block.settings.text_alignment }};"
+    data-bliss-mega-id="{{ block.id }}"
+    data-bliss-mega-position="{{ position }}"
+    {{ block.shopify_attributes }}
+  >
+    <ul class="bliss-mega-images__list list-unstyled" role="list">
+      {% for i in (1..2) %}
+        {% liquid
+          assign image_key = 'image_' | append: i
+          assign link_key = 'link_' | append: i
+          assign heading_key = 'heading_' | append: i
+          assign button_key = 'button_label_' | append: i
+
+          assign slot_image = block.settings[image_key]
+          assign slot_link = block.settings[link_key]
+          assign slot_heading = block.settings[heading_key]
+          assign slot_button = block.settings[button_key]
+        %}
+        {% if slot_image != blank %}
+          <li class="bliss-mega-images__item">
+            {% if slot_link != blank %}<a href="{{ slot_link }}" class="bliss-mega-images__link">{% endif %}
+            <div class="bliss-mega-images__media">
+              {{
+                slot_image
+                | image_url: width: 1200
+                | image_tag:
+                  loading: 'lazy',
+                  sizes: image_sizes,
+                  widths: '300, 400, 600, 800, 1000, 1200',
+                  alt: slot_image.alt,
+                  class: 'bliss-mega-images__image'
+              }}
+            </div>
+            {% if slot_heading != blank or slot_button != blank %}
+              <div class="bliss-mega-images__content">
+                {% if slot_heading != blank %}
+                  <p class="bliss-mega-images__heading h6">{{ slot_heading }}</p>
+                {% endif %}
+                {% if slot_button != blank %}
+                  <span class="bliss-mega-images__button">{{ slot_button }}</span>
+                {% endif %}
+              </div>
+            {% endif %}
+            {% if slot_link != blank %}</a>{% endif %}
+          </li>
+        {% elsif slot_count == 0 %}
+          {% liquid
+            assign placeholder_name = 'collection-' | append: i
+            assign svg_id_prefix = 'clip-' | append: block.id | append: '-' | append: i | append: '-'
+          %}
+          <li class="bliss-mega-images__item">
+            <div class="bliss-mega-images__media">
+              {{
+                placeholder_name
+                | placeholder_svg_tag: 'bliss-mega-images__image bliss-mega-images__placeholder'
+                | replace: 'clip0_', svg_id_prefix
+              }}
+            </div>
+          </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+<!--/bliss-mega-{{ position }}-->
+
+{% stylesheet %}
+  .bliss-mega-images {
+    padding-block-start: var(--padding-md);
+    /* The menu sets white-space: nowrap; let headings and button labels wrap */
+    white-space: normal;
+  }
+
+  .bliss-mega-images__list {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: var(--gap-md);
+  }
+
+  .bliss-mega-images__link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .bliss-mega-images__media {
+    aspect-ratio: var(--bliss-images-ratio, auto);
+    overflow: hidden;
+  }
+
+  .bliss-mega-images__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .bliss-mega-images__placeholder {
+    background-color: rgb(var(--color-foreground-rgb) / var(--opacity-5));
+  }
+
+  .bliss-mega-images__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-2xs);
+    padding-block-start: var(--padding-sm);
+    text-align: var(--bliss-text-align, left);
+  }
+
+  .bliss-mega-images__heading {
+    margin: 0;
+  }
+
+  .bliss-mega-images__button {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .bliss-mega-images__link:hover .bliss-mega-images__image {
+    opacity: 0.9;
+  }
+
+  /* Desktop: submenu links on the left, images on the right (both in the first row of the mega menu grid) */
+  @media screen and (min-width: 990px) {
+    .mega-menu:has(> .bliss-mega-images) > .mega-menu__grid {
+      grid-row: 1;
+      justify-self: start;
+    }
+
+    .mega-menu > .bliss-mega-images {
+      grid-row: 1;
+      justify-self: end;
+      width: var(--bliss-images-width);
+    }
+
+    /* Menu item without child links: images use the full width */
+    .mega-menu:has(> .mega-menu__grid:not(:has(*))) > .bliss-mega-images {
+      justify-self: stretch;
+      width: auto;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Mega menu images",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "info": "You can set a different background color for this mega menu"
+    },
+    {
+      "type": "select",
+      "id": "menu_item_position",
+      "label": "Link position in main menu",
+      "options": [
+        { "value": "1", "label": "Item 1" },
+        { "value": "2", "label": "Item 2" },
+        { "value": "3", "label": "Item 3" },
+        { "value": "4", "label": "Item 4" },
+        { "value": "5", "label": "Item 5" },
+        { "value": "6", "label": "Item 6" },
+        { "value": "7", "label": "Item 7" },
+        { "value": "8", "label": "Item 8" },
+        { "value": "9", "label": "Item 9" },
+        { "value": "10", "label": "Item 10" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "range",
+      "id": "images_width",
+      "label": "Images width on desktop",
+      "info": "Share of the menu width used by the images. The submenu links use the rest.",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 50
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        { "value": "auto", "label": "Auto" },
+        { "value": "16 / 9", "label": "Landscape" },
+        { "value": "1 / 1", "label": "Square" },
+        { "value": "4 / 5", "label": "Portrait" }
+      ],
+      "default": "16 / 9"
+    },
+    {
+      "type": "text_alignment",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Image 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image",
+      "info": "Can be connected to a metafield."
+    },
+    {
+      "type": "url",
+      "id": "link_1",
+      "label": "Link"
+    },
+    {
+      "type": "text",
+      "id": "heading_1",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "button_label_1",
+      "label": "Button label"
+    },
+    {
+      "type": "header",
+      "content": "Image 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image",
+      "info": "Can be connected to a metafield."
+    },
+    {
+      "type": "url",
+      "id": "link_2",
+      "label": "Link"
+    },
+    {
+      "type": "text",
+      "id": "heading_2",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "button_label_2",
+      "label": "Button label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Mega menu images"
+    }
+  ]
+}
+{% endschema %}

@@ -143,7 +143,10 @@
             const isTouchDevice = 'ontouchstart' in window && navigator.maxTouchPoints > 0;
             const overflowList = headerComponent.querySelector('overflow-list');
             const hasReachedMinimum = overflowList && overflowList.hasAttribute('minimum-reached');
-            headerComponent.dataset.menuStyle = isTouchDevice || hasReachedMinimum ? 'drawer' : 'menu';
+            const mobileMenuBreakpoint = Number(headerComponent.dataset.mobileMenuBreakpoint) || 749;
+            const isBelowBreakpoint = window.innerWidth <= mobileMenuBreakpoint;
+            headerComponent.dataset.menuStyle =
+              isTouchDevice || hasReachedMinimum || isBelowBreakpoint ? 'drawer' : 'menu';
           }
         })();
       </script>

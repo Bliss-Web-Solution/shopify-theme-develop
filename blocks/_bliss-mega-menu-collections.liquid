@@ -11,9 +11,45 @@
   if block.settings.text_placement == 'on_image'
     assign card_style = 'overlay'
   endif
+
+  # "Next to the menu links": the collections take this share of the width, the links the rest
+  assign beside = false
+  if block.settings.layout == 'beside'
+    assign beside = true
+  endif
+  assign beside_width = block.settings.beside_width | default: 40
+
+  # Keep Horizon's link column width (6 columns across the full menu), e.g. 40% -> 4 link columns
+  assign link_columns = 100 | minus: beside_width | times: 6 | divided_by: 100.0 | round
+  if link_columns < 1
+    assign link_columns = 1
+  endif
 %}
 
 <!--bliss-mega-{{ position }}-->
+{% if beside %}
+  {% style %}
+    @media screen and (min-width: 990px) {
+      /* Links on the left. Skipped when a Mega menu images block already sits next to the links. */
+      .mega-menu:has(> [data-bliss-mega-id='{{ block.id }}']):not(:has(> .bliss-mega-images))
+        :is(.mega-menu__grid, .mega-menu__list) {
+        --menu-columns-desktop: {{ link_columns }};
+      }
+
+      .mega-menu:has(> [data-bliss-mega-id='{{ block.id }}']):not(:has(> .bliss-mega-images)) > .mega-menu__grid {
+        grid-row: 1;
+        justify-self: start;
+        width: calc(100% - {{ beside_width }}% - var(--gap-xl));
+      }
+
+      .mega-menu:not(:has(> .bliss-mega-images)) > [data-bliss-mega-id='{{ block.id }}'] {
+        grid-row: 1;
+        justify-self: end;
+        width: {{ beside_width }}%;
+      }
+    }
+  {% endstyle %}
+{% endif %}
 {% if background_color != blank and background_color.alpha != 0.0 %}
   {% style %}
     #header-component:has(.menu-list__list-item:is(:hover, :has([aria-expanded='true'])) [data-bliss-mega-id='{{ block.id }}']) .header__underlay {
@@ -23,7 +59,7 @@
 {% endif %}
 <div
   class="bliss-mega-collections bliss-mega-collections--text-{{ block.settings.text_placement }}"
-  style="--bliss-text-align: {{ block.settings.text_alignment }}; --bliss-text-gap: {{ block.settings.text_vertical_gap }}px;"
+  style="--bliss-text-align: {{ block.settings.text_alignment }}; --bliss-text-gap: {{ block.settings.text_vertical_gap }}px; --bliss-columns: {{ block.settings.columns | default: 4 }};"
   data-bliss-mega-id="{{ block.id }}"
   data-bliss-mega-position="{{ position }}"
   {{ block.shopify_attributes }}
@@ -31,26 +67,44 @@
   {% if block.settings.heading != blank %}
     <p class="bliss-mega-collections__heading h6">{{ block.settings.heading }}</p>
   {% endif %}
+  {% liquid
+    # Each card is roughly 1 / columns of the page width on desktop
+    assign columns = block.settings.columns | default: 4
+    assign area_width = 100
+    if beside
+      assign area_width = beside_width
+    endif
+    assign desktop_vw = area_width | divided_by: columns
+    assign image_sizes = '(min-width: 990px) ' | append: desktop_vw | append: 'vw, 50vw'
+  %}
   <ul class="bliss-mega-collections__list list-unstyled" role="list">
     {% for collection in block.settings.collections %}
       <li class="bliss-mega-collections__item">
-        {% render 'resource-card',
-          resource: collection,
-          resource_type: 'collection',
-          style: card_style,
-          image_aspect_ratio: block.settings.image_ratio,
-          image_sizes: '(min-width: 750px) 20vw, 50vw'
+        {% # One "Collection card" child block per collection, with closest.collection so its settings can use collection dynamic sources %}
+        {% assign svg_id_prefix = 'clip-' | append: block.id | append: '-' | append: forloop.index | append: '-' %}
+        {% content_for 'block',
+          type: '_bliss-mega-collection-card',
+          id: 'collection-card',
+          closest.collection: collection,
+          card_style: card_style,
+          image_ratio: block.settings.image_ratio,
+          image_sizes: image_sizes,
+          svg_id_prefix: svg_id_prefix
         %}
       </li>
     {% else %}
       {% if request.design_mode %}
         <li class="bliss-mega-collections__item">
-          {% render 'resource-card',
-            resource: collections.all,
-            resource_type: 'collection',
-            style: card_style,
-            image_aspect_ratio: block.settings.image_ratio
-          %}
+          {% capture card %}
+            {% render 'resource-card',
+              resource: collections.all,
+              resource_type: 'collection',
+              style: card_style,
+              image_aspect_ratio: block.settings.image_ratio
+            %}
+          {% endcapture %}
+          {% assign svg_id_prefix = 'clip-' | append: block.id | append: '-0-' %}
+          {{ card | replace: 'clip0_', svg_id_prefix }}
         </li>
       {% endif %}
     {% endfor %}
@@ -96,8 +150,19 @@
     text-align: var(--bliss-text-align);
   }
 
+  /* The menu sets white-space: nowrap (inherited here) and Horizon clamps card titles;
+     always show the full collection name, wrapping onto more lines when needed */
+  .bliss-mega-collections {
+    white-space: normal;
+  }
+
   .bliss-mega-collections .resource-card__title {
     width: 100%;
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+    white-space: normal;
+    overflow-wrap: break-word;
   }
 
   .bliss-mega-collections--text-below_image .resource-card {
@@ -110,7 +175,7 @@
 
   @media screen and (min-width: 990px) {
     .bliss-mega-collections__list {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(var(--bliss-columns, 4), minmax(0, 1fr));
     }
   }
 {% endstylesheet %}
@@ -151,8 +216,40 @@
     {
       "type": "collection_list",
       "id": "collections",
-      "label": "Collections",
-      "limit": 4
+      "label": "Collections"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Position on desktop",
+      "options": [
+        { "value": "below", "label": "Below the menu links" },
+        { "value": "beside", "label": "Next to the menu links" }
+      ],
+      "default": "below",
+      "info": "Next to the menu links works like the Mega menu images block. If both blocks use the same menu item, the images stay next to the links and the collections go below."
+    },
+    {
+      "type": "range",
+      "id": "beside_width",
+      "label": "Width next to the links",
+      "info": "Share of the menu width for the collections. The menu links use the rest.",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 40,
+      "visible_if": "{{ block.settings.layout == 'beside' }}"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns on desktop",
+      "info": "Collections per row. Choose the same number as your collections to show them in one row.",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4
     },
     {
       "type": "text",
