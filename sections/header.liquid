@@ -82,17 +82,40 @@
     content_for 'block', type: '_header-logo', id: 'header-logo'
   endcapture
 
-  capture menu
-    content_for 'block', type: '_header-menu', id: 'header-menu'
-  endcapture
+  # Use the Bliss menu when enabled, or when the default Menu block is hidden
+  assign use_bliss_menu = section.settings.use_bliss_menu
+  unless use_bliss_menu
+    capture default_menu
+      content_for 'block', type: '_header-menu', id: 'header-menu'
+    endcapture
+    if default_menu == blank
+      assign use_bliss_menu = true
+    endif
+  endunless
 
-  capture drawer_menu
-    content_for 'block', type: '_header-menu', id: 'header-menu', variant: 'mobile'
-  endcapture
+  if use_bliss_menu
+    capture menu
+      content_for 'block', type: '_bliss-menu', id: 'bliss-menu'
+    endcapture
 
-  capture navigation_bar
-    content_for 'block', type: '_header-menu', id: 'header-menu', variant: 'navigation_bar', transparent: transparent
-  endcapture
+    capture drawer_menu
+      content_for 'block', type: '_bliss-menu', id: 'bliss-menu', variant: 'mobile'
+    endcapture
+
+    capture navigation_bar
+      content_for 'block', type: '_bliss-menu', id: 'bliss-menu', variant: 'navigation_bar', transparent: transparent
+    endcapture
+  else
+    assign menu = default_menu
+
+    capture drawer_menu
+      content_for 'block', type: '_header-menu', id: 'header-menu', variant: 'mobile'
+    endcapture
+
+    capture navigation_bar
+      content_for 'block', type: '_header-menu', id: 'header-menu', variant: 'navigation_bar', transparent: transparent
+    endcapture
+  endif
 
   assign has_navigation_bar = false
   if navigation_bar contains 'data-navigation-bar-enabled'
@@ -318,6 +341,7 @@
   class="{{ class }}"
   data-theme-color="rgb({{ section.settings.background_color_top.rgb | default: settings.page_background_color.rgb }})"
   data-bubble-style="{{ section.settings.bubble_style }}"
+  data-mobile-menu-breakpoint="{{ section.settings.mobile_menu_breakpoint | default: '749' }}"
   {% if transparent %}
     transparent="{{ transparent }}"
   {% endif %}
@@ -689,9 +713,9 @@
     transition: height var(--submenu-animation-speed) var(--ease-out-cubic);
   }
 
-  /* Prevent underlay from expanding for compact dropdowns */
-  #header-component:has(.menu-list__list-item--compact-parent:is(:hover, :has([aria-expanded='true']))):not(
-      :has(.menu-list__list-item:not(.menu-list__list-item--compact-parent):is(:hover, :has([aria-expanded='true'])))
+  /* Prevent underlay from expanding for compact dropdowns (mouse and keyboard focus) */
+  #header-component:has(.menu-list__list-item--compact-parent:is(:hover, :focus-within, :has([aria-expanded='true']))):not(
+      :has(.menu-list__list-item:not(.menu-list__list-item--compact-parent):is(:hover, :focus-within, :has([aria-expanded='true'])))
     )
     .header__underlay-open {
     height: var(--header-height) !important;
@@ -1338,6 +1362,38 @@
         }
       ],
       "default": "top"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_bliss_menu",
+      "label": "Use Bliss menu",
+      "info": "Replaces the Menu block with the Bliss menu block, which supports Mega menu collections. Bliss menu is also used when the Menu block is hidden.",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "mobile_menu_breakpoint",
+      "label": "Show mobile menu",
+      "info": "Screen width below which the menu is replaced by the mobile menu (drawer).",
+      "options": [
+        {
+          "value": "749",
+          "label": "Below 750px (default)"
+        },
+        {
+          "value": "989",
+          "label": "Below 990px"
+        },
+        {
+          "value": "1023",
+          "label": "Below 1024px"
+        },
+        {
+          "value": "1199",
+          "label": "Below 1200px"
+        }
+      ],
+      "default": "749"
     },
     {
       "type": "header",

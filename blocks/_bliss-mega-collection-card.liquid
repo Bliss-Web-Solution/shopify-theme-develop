@@ -1,0 +1,91 @@
+{%- doc -%}
+  One collection card inside the Mega menu collections block. Rendered once per collection
+  with `closest.collection`, so its Image and Name settings can be connected in the theme editor
+  to "Closest collection" data (featured image, collection metafields), like Horizon's product card
+  image block. Same markup and classes as snippets/resource-card.liquid (collection, single thumbnail).
+
+  @param {string} [card_style] - 'default' or 'overlay'
+  @param {string} [image_ratio] - 'adapt' or a CSS aspect ratio such as '1 / 1'
+  @param {string} [image_sizes] - The sizes attribute for the image
+  @param {string} [svg_id_prefix] - Unique prefix for placeholder SVG ids
+{%- enddoc -%}
+
+{% liquid
+  assign collection = closest.collection
+  assign card_style = card_style | default: 'default'
+
+  # Image: connected/selected image -> collection image -> Shopify's automatic image (first product) -> placeholder
+  assign card_image = block.settings.image
+  if card_image == blank
+    assign card_image = collection.image | default: collection.featured_image
+  endif
+
+  # Name: connected/entered name -> collection title
+  assign card_title = block.settings.title | default: collection.title
+
+  if image_ratio == blank or image_ratio == 'adapt'
+    assign card_ratio = card_image.aspect_ratio | default: 1
+  else
+    assign card_ratio = image_ratio
+  endif
+%}
+
+<div
+  class="resource-card{% if card_style == 'overlay' %} resource-card--overlay{% endif %}"
+  data-resource-type="collection"
+  {{ block.shopify_attributes }}
+>
+  <a class="resource-card__link" href="{{ collection.url }}">
+    <span class="visually-hidden">{{ card_title | escape }}</span>
+  </a>
+  <div class="resource-card__media" style="--resource-card-aspect-ratio: {{ card_ratio }};">
+    {%- if card_image != blank -%}
+      {{
+        card_image
+        | image_url: width: 1200
+        | image_tag:
+          loading: 'lazy',
+          class: 'resource-card__image',
+          sizes: image_sizes,
+          widths: '240, 352, 832, 1200',
+          alt: card_title
+      }}
+    {%- else -%}
+      {%- capture placeholder -%}
+        {% render 'placeholder-image', placeholder_name: 'product-apparel-1', class_name: 'resource-card__image' %}
+      {%- endcapture -%}
+      <div class="resource-card__image-placeholder">
+        {{ placeholder | replace: 'clip0_', svg_id_prefix }}
+      </div>
+    {%- endif -%}
+  </div>
+  <div class="resource-card__content">
+    <p class="resource-card__title{% if card_style == 'overlay' %} h5{% else %} paragraph{% endif %}">
+      {{- card_title | escape -}}
+    </p>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection card",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Applies to every collection in this block. Use the dynamic source button to connect the closest collection's image or metafields."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "Connect a collection metafield (Closest collection). Empty: the collection image is used."
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Name",
+      "info": "Connect a collection metafield (Closest collection). Empty: the collection title is used."
+    }
+  ]
+}
+{% endschema %}
