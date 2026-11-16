@@ -370,5 +370,21 @@
       "default_title": "இயல்புநிலைத் தலைப்பு",
       "sticky_add_to_cart": "விரைவாக கார்ட்டில் சேர்க்கும் பட்டை"
     }
+  },
+  "compare": {
+    "compare_label": "ஒப்பிடு",
+    "compare_tabel": {
+      "compare_table_heading": "தயாரிப்புகளை ஒப்பிடுதல்",
+      "compare_table_loading": "ஒப்பீட்டுத் தரவு ஏற்றப்படுகிறது...",
+      "description": "விளக்கம்",
+      "availability": "கிடைக்கும் நிலை",
+      "in_stock": "கையிருப்பில் உள்ளது",
+      "out_of_stock": "கையிருப்பில் இல்லை",
+      "not_available": "பொருந்தாது",
+      "sku": "SKU",
+      "vendor": "விற்பனையாளர்/பிராண்ட்",
+      "view_product": "தயாரிப்பைக் காண்க",
+      "remove_product_btn": "அகற்று"
+    }
   }
 }

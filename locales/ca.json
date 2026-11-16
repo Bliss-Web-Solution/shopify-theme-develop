@@ -370,5 +370,21 @@
       "default_title": "Títol per defecte",
       "sticky_add_to_cart": "Barra per afegir ràpidament al carretó"
     }
+  },
+  "compare": {
+    "compare_label": "Compara",
+    "compare_tabel": {
+      "compare_table_heading": "Comparant productes",
+      "compare_table_loading": "S'estan carregant les dades de comparació...",
+      "description": "Descripció",
+      "availability": "Disponibilitat",
+      "in_stock": "En estoc",
+      "out_of_stock": "Esgotat",
+      "not_available": "N/D",
+      "sku": "SKU",
+      "vendor": "Proveïdor/Marca",
+      "view_product": "Mostra el producte",
+      "remove_product_btn": "Elimina"
+    }
   }
 }

@@ -2191,3 +2191,17 @@ main>.shopify-section:first-child .section:not(.disable-section-top-offset) {
     grid-column: 1 / -1;
   }
 }
+
+/* Bliss: product/collection carousels show 4 per page on desktop and 2 on mobile.
+   --column-count is set on desktop only: on mobile the carousel takes it from --column-count-mobile,
+   and slideshow.js reads --column-count to build page-wise dots (e.g. 14 items / 2 = 7 dots). */
+.resource-list__carousel {
+  --resource-list-column-gap-desktop: 20px !important;
+  --column-count-mobile: 2 !important;
+}
+
+@media screen and (min-width: 750px) {
+  .resource-list__carousel {
+    --column-count: 4 !important;
+  }
+}

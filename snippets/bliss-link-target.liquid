@@ -1,0 +1,10 @@
+{%- doc -%}
+  Outputs ` target="_blank"` for links to another website (an absolute URL that is not this shop's
+  domain), and nothing otherwise. Place it inside an <a> tag, after the href attribute.
+
+  @param {string} url - The link URL
+
+  @example
+  <a href="{{ link.url }}" {% render 'bliss-link-target', url: link.url %}>
+{%- enddoc -%}
+{%- if url contains '://' -%}{%- unless url contains shop.domain %} target="_blank"{% endunless -%}{%- endif -%}

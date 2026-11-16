@@ -377,5 +377,21 @@
       "default_title": "Noklusējuma nosaukums",
       "sticky_add_to_cart": "Ātrās grozam pievienošanas josla"
     }
+  },
+  "compare": {
+    "compare_label": "Salīdzināt",
+    "compare_tabel": {
+      "compare_table_heading": "Produktu salīdzināšana",
+      "compare_table_loading": "Notiek salīdzināšanas datu ielāde...",
+      "description": "Apraksts",
+      "availability": "Pieejamība",
+      "in_stock": "Ir noliktavā",
+      "out_of_stock": "Nav noliktavā",
+      "not_available": "Nav pieejams",
+      "sku": "SKU",
+      "vendor": "Piegādātājs/zīmols",
+      "view_product": "Skatīt produktu",
+      "remove_product_btn": "Noņemt"
+    }
   }
 }

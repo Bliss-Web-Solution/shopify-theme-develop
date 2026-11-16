@@ -30,18 +30,18 @@
   {% style %}
     @media screen and (min-width: 990px) {
       /* Links on the left. Skipped when a Mega menu images block already sits next to the links. */
-      .mega-menu:has(> [data-bliss-mega-id='{{ block.id }}']):not(:has(> .bliss-mega-images))
+      .bliss-mega-menu:has(> [data-bliss-mega-id='{{ block.id }}']):not(:has(> .bliss-mega-images))
         :is(.mega-menu__grid, .mega-menu__list) {
         --menu-columns-desktop: {{ link_columns }};
       }
 
-      .mega-menu:has(> [data-bliss-mega-id='{{ block.id }}']):not(:has(> .bliss-mega-images)) > .mega-menu__grid {
+      .bliss-mega-menu:has(> [data-bliss-mega-id='{{ block.id }}']):not(:has(> .bliss-mega-images)) > .mega-menu__grid {
         grid-row: 1;
         justify-self: start;
         width: calc(100% - {{ beside_width }}% - var(--gap-xl));
       }
 
-      .mega-menu:not(:has(> .bliss-mega-images)) > [data-bliss-mega-id='{{ block.id }}'] {
+      .bliss-mega-menu:not(:has(> .bliss-mega-images)) > [data-bliss-mega-id='{{ block.id }}'] {
         grid-row: 1;
         justify-self: end;
         width: {{ beside_width }}%;

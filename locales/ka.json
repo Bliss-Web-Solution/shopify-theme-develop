@@ -370,5 +370,21 @@
       "default_title": "ნაგულისხმევი სათაური",
       "sticky_add_to_cart": "კალათაში სწრაფად დამატების პანელი"
     }
+  },
+  "compare": {
+    "compare_label": "შედარება",
+    "compare_tabel": {
+      "compare_table_heading": "პროდუქტების შედარება",
+      "compare_table_loading": "შედარების მონაცემები იტვირთება...",
+      "description": "აღწერა",
+      "availability": "ხელმისაწვდომობა",
+      "in_stock": "მარაგშია",
+      "out_of_stock": "მარაგში არ არის",
+      "not_available": "არ არის",
+      "sku": "SKU",
+      "vendor": "მომწოდებელი/ბრენდი",
+      "view_product": "პროდუქტის ნახვა",
+      "remove_product_btn": "წაშლა"
+    }
   }
 }

@@ -370,5 +370,21 @@
       "default_title": "ડિફૉલ્ટ શીર્ષક",
       "sticky_add_to_cart": "ઝડપી કાર્ટમાં ઉમેરો બાર"
     }
+  },
+  "compare": {
+    "compare_label": "સરખામણી કરો",
+    "compare_tabel": {
+      "compare_table_heading": "ઉત્પાદનોની સરખામણી",
+      "compare_table_loading": "સરખામણી ડેટા લોડ થઈ રહ્યો છે...",
+      "description": "વર્ણન",
+      "availability": "ઉપલબ્ધતા",
+      "in_stock": "સ્ટોકમાં છે",
+      "out_of_stock": "સ્ટોકમાં નથી",
+      "not_available": "લાગુ પડતું નથી",
+      "sku": "SKU",
+      "vendor": "વિક્રેતા/બ્રાન્ડ",
+      "view_product": "ઉત્પાદન જુઓ",
+      "remove_product_btn": "દૂર કરો"
+    }
   }
 }

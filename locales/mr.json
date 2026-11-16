@@ -370,5 +370,21 @@
       "default_title": "डीफॉल्ट शीर्षक",
       "sticky_add_to_cart": "द्रुत कार्टमध्ये जोडा बार"
     }
+  },
+  "compare": {
+    "compare_label": "तुलना करा",
+    "compare_tabel": {
+      "compare_table_heading": "उत्पादनांची तुलना",
+      "compare_table_loading": "तुलना डेटा लोड होत आहे...",
+      "description": "वर्णन",
+      "availability": "उपलब्धता",
+      "in_stock": "स्टॉकमध्ये आहे",
+      "out_of_stock": "स्टॉकमध्ये नाही",
+      "not_available": "लागू नाही",
+      "sku": "SKU",
+      "vendor": "विक्रेता/ब्रँड",
+      "view_product": "उत्पादन पहा",
+      "remove_product_btn": "काढा"
+    }
   }
 }
