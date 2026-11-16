@@ -331,7 +331,6 @@
     "icon_background": "Ikonbakgrunn",
     "icons": "Ikoner",
     "image_border_radius": "Hjørneradius for bilde",
-    "installments": "Avdrag",
     "integrated_button": "Integrert knapp",
     "language_selector": "Språkvelger",
     "large": "Stor",
@@ -577,6 +576,8 @@
     "open_by_default": "Åpen som standard",
     "title_preset": "Forhåndsinnstilling for tittel",
     "customer_account_menu": "Kundekontomeny",
+    "shop_pay_payment_options": "Vis betalingsalternativer for Shop Pay",
+    "show_physical_stores": "Vis fysiske butikker",
     "articles_per_page": "Artikler per side",
     "collections_per_page": "Kolleksjoner per side",
     "pagination_style": "Pagineringsstil",
@@ -1120,7 +1121,9 @@
     "page_text_color_default_info": "Standard for temaseksjoner",
     "actions_display_style": "Ikoner brukes alltid på mobil",
     "edit_input_field_in_theme_settings": "Rediger inndatafelt i [temainnstillinger](/editor?context=theme&category=input%20fields)",
-    "edit_variants_in_theme_settings": "Rediger variantstiler i [temainnstillinger](/editor?context=theme&category=variant%20pickers)"
+    "edit_variants_in_theme_settings": "Rediger variantstiler i [temainnstillinger](/editor?context=theme&category=variant%20pickers)",
+    "shop_pay_payment_options": "Viser Avdrag via Shop Pay og HSA/FSA-merker når det er tilgjengelig.",
+    "show_physical_stores_help": "List også opp steder merket som et fysisk utstillingsvindu som har produktet på lager, selv om de ikke tilbyr henting."
   },
   "categories": {
     "product_list": "Utvalgt samling",

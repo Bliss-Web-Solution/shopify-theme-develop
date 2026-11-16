@@ -321,7 +321,6 @@
     "icon_background": "พื้นหลังไอคอน",
     "icons": "ไอคอน",
     "image_border_radius": "รัศมีมุมของรูปภาพ",
-    "installments": "การผ่อนชำระ",
     "integrated_button": "ปุ่มในตัว",
     "language_selector": "ตัวเลือกภาษา",
     "large": "ใหญ่",
@@ -577,6 +576,8 @@
     "open_by_default": "เปิดตามค่าเริ่มต้น",
     "title_preset": "พรีเซ็ตชื่อ",
     "customer_account_menu": "เมนูบัญชีผู้ใช้ของลูกค้า",
+    "shop_pay_payment_options": "แสดงตัวเลือกการชำระเงิน Shop Pay",
+    "show_physical_stores": "แสดงร้านค้าจริง",
     "articles_per_page": "บทความต่อหน้า",
     "collections_per_page": "คอลเลกชันต่อหน้า",
     "pagination_style": "รูปแบบการแบ่งหน้า",
@@ -1120,7 +1121,9 @@
     "page_text_color_default_info": "ค่าเริ่มต้นสำหรับส่วนของธีม",
     "actions_display_style": "ใช้ไอคอนเสมอบนมือถือ",
     "edit_input_field_in_theme_settings": "แก้ไขช่องกรอกข้อมูลใน[การตั้งค่าธีม](/editor?context=theme&category=input%20fields)",
-    "edit_variants_in_theme_settings": "แก้ไขสไตล์ตัวเลือกสินค้าใน[การตั้งค่าธีม](/editor?context=theme&category=variant%20pickers)"
+    "edit_variants_in_theme_settings": "แก้ไขสไตล์ตัวเลือกสินค้าใน[การตั้งค่าธีม](/editor?context=theme&category=variant%20pickers)",
+    "shop_pay_payment_options": "แสดงเครื่องหมายการผ่อนชำระผ่าน Shop Pay และ HSA/FSA เมื่อมีให้บริการ",
+    "show_physical_stores_help": "แสดงรายการตำแหน่งที่ตั้งที่ทำเครื่องหมายว่าเป็นหน้าร้านจริงและมีสินค้าในสต็อกด้วย แม้ว่าจะไม่มีบริการการรับก็ตาม"
   },
   "categories": {
     "basic": "พื้นฐาน",
