@@ -481,6 +481,7 @@
     "show_second_image_on_hover": "Pokaż drugi obraz po najechaniu myszą",
     "media": "Multimedia",
     "product_card_carousel": "Pokaż karuzelę",
+    "product_card_carousel_navigation": "Nawigacja karuzeli",
     "media_fit": "Dopasowanie multimediów",
     "scroll_speed": "Czas do następnego ogłoszenia",
     "show_powered_by_shopify": "Pokaż „Technologia Shopify”",
@@ -576,7 +577,13 @@
     "title_preset": "Gotowe ustawienie tytułu",
     "customer_account_menu": "Menu konta klienta",
     "shop_pay_payment_options": "Pokaż opcje płatności Shop Pay",
-    "show_physical_stores": "Pokaż sklepy fizyczne"
+    "show_physical_stores": "Pokaż sklepy fizyczne",
+    "articles_per_page": "Artykułów na stronę",
+    "collections_per_page": "Kolekcji na stronę",
+    "pagination_style": "Styl paginacji",
+    "align_content_to_container": "Wyrównaj zawartość do szerokości kontenera",
+    "product_compare": "Porównanie produktów",
+    "compare_icon": "Ikona porównania"
   },
   "options": {
     "apple": "Apple",
@@ -714,6 +721,7 @@
     "above_carousel": "Nad karuzelą",
     "all": "Wszystkie",
     "always": "Zawsze",
+    "arrows_and_dots": "Strzałki i kropki",
     "arrows_large": "Duże strzałki",
     "arrows": "Strzałki",
     "balance": "Równowaga",
@@ -858,7 +866,9 @@
     "direction_end": "Po prawej",
     "direction_start": "Po lewej",
     "direction_top_end": "Góra po prawej",
-    "direction_top_start": "Góra po lewej"
+    "direction_top_start": "Góra po lewej",
+    "load_more_button": "Przycisk „Załaduj więcej”",
+    "numbered_pagination": "Paginacja numerowana"
   },
   "content": {
     "background_video": "Wideo w tle",
@@ -986,7 +996,8 @@
     "gift_card_products": "Produkty typu karta prezentowa",
     "disclosures": "Informacje prawne",
     "disclosures_metafield_content": "Wymagane ostrzeżenia dotyczące bezpieczeństwa i informacje prawne dla tego produktu.",
-    "page_text_color_contrast_info": "Sekcje z niestandardowym kolorem tła będą używać tego koloru tekstu tylko w przypadku wystarczającego kontrastu kolorów."
+    "page_text_color_contrast_info": "Sekcje z niestandardowym kolorem tła będą używać tego koloru tekstu tylko w przypadku wystarczającego kontrastu kolorów.",
+    "compare": "Porównaj"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Podziel się informacjami o swojej marce z klientami. Opisz produkt, ogłaszaj nowości lub witaj klientów w swoim sklepie.</p>",

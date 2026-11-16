@@ -12,13 +12,26 @@
 {% assign display_author = author | default: article.author %}
 {% assign display_date = date | default: article.published_at %}
 
-{%- if block_settings.show_date or block_settings.show_author -%}
+{% assign words = article.content | strip_html | split: ' ' %}
+{% assign word_count = words.size %}
+{% assign reading_time = word_count | divided_by: 200 | ceil %}
+{% assign show_reading_time = false %}
+
+{% if block_settings.show_reading_time and article and article.content != blank %}
+  {% assign show_reading_time = true %}
+{% endif %}
+
+{% if reading_time < 1 %}
+  {% assign reading_time = 1 %}
+{% endif %}
+
+{%- if block_settings.show_date or block_settings.show_author or block_settings.show_reading_time -%}
   <div
     class="
       blog-post-details
       spacing-style
       justify-{{ alignment }}
-      {% if block_settings.type_preset != '' %}{{ block_settings.type_preset }}{% endif%}
+      {% if block_settings.type_preset != '' %}{{ block_settings.type_preset }}{% endif %}
     "
     style="
       {% render 'spacing-style', settings: block_settings %}
@@ -38,6 +51,19 @@
     {%- if block_settings.show_author -%}
       <span>{{ display_author }}</span>
     {%- endif -%}
+
+    {%- if block_settings.show_date and show_reading_time and block_settings.show_author == false -%}
+      <span>{{ 'content.blog_details_separator' | t }}</span>
+    {%- endif -%}
+
+    {%- if block_settings.show_author and show_reading_time -%}
+      <span>{{ 'content.blog_details_separator' | t }}</span>
+    {%- endif -%}
+
+    {%- if show_reading_time -%}
+      <span>{{ reading_time }} min read</span>
+    {%- endif -%}
+
   </div>
 {% endif %}
 
@@ -71,6 +97,12 @@
       "type": "checkbox",
       "id": "show_author",
       "label": "t:settings.show_author",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_reading_time",
+      "label": "Blog Reading Time",
       "default": true
     },
     {

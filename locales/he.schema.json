@@ -146,7 +146,8 @@
     "disclosures": "גילוי נאות",
     "disclosures_metafield_content": "אזהרות בטיחות חובה וגילויים רגולטוריים עבור מוצר זה.",
     "app_required_for_ratings": "נדרש יישום עבור דירוגי מוצרים. [למידע נוסף](https://help.shopify.com/manual/apps)",
-    "navigation": "ניווט"
+    "navigation": "ניווט",
+    "compare": "השוואה"
   },
   "html_defaults": {
     "join_our_email_list": "<h2>הצטרף לרשימת הדיוור שלנו</h2>",
@@ -237,10 +238,10 @@
     "show_physical_stores_help": "הצג גם מיקומים המסומנים כחזית חנות פיזית שהמוצר זמין בהם במלאי, גם כאשר הם לא מציעים איסוף."
   },
   "names": {
+    "404": "404",
     "column": "עמודה",
     "product_title": "כותרת מוצר",
     "custom_liquid": "Custom Liquid",
-    "404": "404",
     "accelerated_checkout": "תשלום מואץ",
     "accordion": "אקורדיון",
     "accordion_row": "שורת אקורדיון",
@@ -406,6 +407,7 @@
     "apple": "Apple",
     "arrow": "חץ",
     "arrows": "חצים",
+    "arrows_and_dots": "חיצים ונקודות",
     "arrows_large": "חצים גדולים",
     "aspect_ratio": "יחס גובה-רוחב",
     "auto": "אוטומטי",
@@ -678,7 +680,9 @@
     "direction_end": "סוף",
     "direction_start": "התחלה",
     "direction_top_end": "למעלה, סוף",
-    "direction_top_start": "למעלה, התחלה"
+    "direction_top_start": "למעלה, התחלה",
+    "load_more_button": "לחצן טען עוד",
+    "numbered_pagination": "עימוד ממוספר"
   },
   "settings": {
     "accordion": "אקורדיון",
@@ -933,6 +937,7 @@
     "product": "מוצר",
     "product_and_card_title_case": "אותיות רישיות/קטנות בכותרת מוצר וכרטיס",
     "product_card_carousel": "הצגת קרוסלה",
+    "product_card_carousel_navigation": "ניווט קרוסלה",
     "product_cards": "כרטיסי מוצר",
     "product_count": "כמות מוצרים",
     "product_pages": "דפי מוצר",
@@ -1095,7 +1100,13 @@
     "bottom_row_text": "טקסט לשורה התחתונה",
     "customer_account_menu": "תפריט חשבון לקוח",
     "shop_pay_payment_options": "הצגת אפשרויות תשלום של Shop Pay",
-    "show_physical_stores": "הצגת חנויות פיזיות"
+    "show_physical_stores": "הצגת חנויות פיזיות",
+    "articles_per_page": "מאמרים לדף",
+    "collections_per_page": "אוספים לדף",
+    "pagination_style": "סגנון עימוד",
+    "align_content_to_container": "יישר תוכן לרוחב המיכל",
+    "product_compare": "השוואת מוצרים",
+    "compare_icon": "סמל השוואה"
   },
   "text_defaults": {
     "accordion_heading": "כותרת אקורדיון",

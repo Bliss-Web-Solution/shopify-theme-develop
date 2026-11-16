@@ -481,6 +481,7 @@
     "show_second_image_on_hover": "Vis andet billede ved hover",
     "media": "Medier",
     "product_card_carousel": "Vis karrusel",
+    "product_card_carousel_navigation": "Navigation i karrusel",
     "media_fit": "Medietilpasning",
     "scroll_speed": "Tid til næste meddelelse",
     "show_powered_by_shopify": "Vis \"Drevet af Shopify\"",
@@ -576,7 +577,13 @@
     "title_preset": "Forudindstilling for titel",
     "customer_account_menu": "Kundekontomenu",
     "shop_pay_payment_options": "Vis betalingsmuligheder for Shop Pay",
-    "show_physical_stores": "Vis fysiske butikker"
+    "show_physical_stores": "Vis fysiske butikker",
+    "articles_per_page": "Artikler pr. side",
+    "collections_per_page": "Kollektioner pr. side",
+    "pagination_style": "Pagineringstype",
+    "align_content_to_container": "Juster indhold i forhold til beholderbredde",
+    "product_compare": "Sammenlign produkter",
+    "compare_icon": "Sammenligningsikon"
   },
   "options": {
     "apple": "Apple",
@@ -708,6 +715,7 @@
     "above_carousel": "Over karrusel",
     "all": "Alle",
     "always": "Altid",
+    "arrows_and_dots": "Pile og prikker",
     "arrows_large": "Store pile",
     "arrows": "Pile",
     "balance": "Balance",
@@ -858,7 +866,9 @@
     "direction_end": "Højre",
     "direction_start": "Venstre",
     "direction_top_end": "Øverst til højre",
-    "direction_top_start": "Øverst til venstre"
+    "direction_top_start": "Øverst til venstre",
+    "load_more_button": "Knappen 'Indlæs mere'",
+    "numbered_pagination": "Nummereret paginering"
   },
   "content": {
     "advanced": "Avanceret",
@@ -986,7 +996,8 @@
     "gift_card_products": "Gavekortprodukter",
     "disclosures": "Oplysninger",
     "disclosures_metafield_content": "Obligatoriske sikkerhedsadvarsler og lovpligtige oplysninger for dette produkt.",
-    "page_text_color_contrast_info": "Afsnit med en brugerdefineret baggrundsfarve bruger kun denne tekstfarve, når der er tilstrækkelig farvekontrast."
+    "page_text_color_contrast_info": "Afsnit med en brugerdefineret baggrundsfarve bruger kun denne tekstfarve, når der er tilstrækkelig farvekontrast.",
+    "compare": "Sammenlign"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Del oplysninger om dit brand med dine kunder. Beskriv et produkt, kom med meddelelser, eller byd kunder velkommen i din butik.</p>",

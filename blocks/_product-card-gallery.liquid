@@ -27,6 +27,9 @@
     {% if product.available and settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add', product: product, section_id: section.id %}
     {% endif %}
+    {% if settings.product_compare_toggle %}
+      {% render 'bliss-compare-icon-button', product: product %}
+    {% endif %}
   {% endunless %}
 {% endcapture %}
 

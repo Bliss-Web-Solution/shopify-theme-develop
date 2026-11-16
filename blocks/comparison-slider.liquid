@@ -74,7 +74,7 @@
             class="comparison-slider__placeholder before-image"
             ref="beforeImage"
           >
-            {{ 'product-apparel-1' | placeholder_svg_tag }}
+            {% render 'placeholder-image', placeholder_name: 'product-apparel-1' %}
           </div>
         {%- endif -%}
 
@@ -109,7 +109,7 @@
             class="comparison-slider__placeholder after-image"
             ref="afterImage"
           >
-            {{ 'product-apparel-2' | placeholder_svg_tag }}
+            {% render 'placeholder-image', placeholder_name: 'product-apparel-2' %}
           </div>
         {%- endif -%}
 

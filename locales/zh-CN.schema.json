@@ -481,6 +481,7 @@
     "show_second_image_on_hover": "悬停时显示第二张图片",
     "media": "媒体文件",
     "product_card_carousel": "显示轮播",
+    "product_card_carousel_navigation": "轮播导航",
     "media_fit": "媒体文件适应",
     "scroll_speed": "显示下一条公告的时间",
     "show_powered_by_shopify": "显示“由 Shopify 提供支持”",
@@ -576,7 +577,13 @@
     "title_preset": "标题预设",
     "customer_account_menu": "客户账户菜单",
     "shop_pay_payment_options": "显示 Shop Pay 付款选项",
-    "show_physical_stores": "显示实体店"
+    "show_physical_stores": "显示实体店",
+    "articles_per_page": "每页文章数",
+    "collections_per_page": "每页系列数",
+    "pagination_style": "分页样式",
+    "align_content_to_container": "将内容对齐至容器宽度",
+    "product_compare": "商品对比",
+    "compare_icon": "对比图标"
   },
   "options": {
     "apple": "Apple",
@@ -713,6 +720,7 @@
     "above_carousel": "轮播上方",
     "all": "全部",
     "always": "始终",
+    "arrows_and_dots": "箭头和圆点",
     "arrows_large": "大箭头",
     "arrows": "箭头",
     "aspect_ratio": "宽高比",
@@ -858,7 +866,9 @@
     "direction_end": "右侧",
     "direction_start": "左侧",
     "direction_top_end": "右上方",
-    "direction_top_start": "左上方"
+    "direction_top_start": "左上方",
+    "load_more_button": "“加载更多”按钮",
+    "numbered_pagination": "数字分页"
   },
   "content": {
     "advanced": "高级",
@@ -986,7 +996,8 @@
     "gift_card_products": "礼品卡产品",
     "disclosures": "披露信息",
     "disclosures_metafield_content": "此产品所需的安全警告和监管披露信息。",
-    "page_text_color_contrast_info": "具有自定义背景色的分区仅在颜色对比度足够时才会使用此文本颜色。"
+    "page_text_color_contrast_info": "具有自定义背景色的分区仅在颜色对比度足够时才会使用此文本颜色。",
+    "compare": "对比"
   },
   "html_defaults": {
     "share_information_about_your": "<p>与您的客户分享有关您品牌的信息。描述产品、发布公告或欢迎客户光临您的商店。</p>",

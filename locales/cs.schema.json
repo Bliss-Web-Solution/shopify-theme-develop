@@ -481,6 +481,7 @@
     "show_second_image_on_hover": "Při najetí zobrazit druhý obrázek",
     "media": "Média",
     "product_card_carousel": "Zobrazit karusel",
+    "product_card_carousel_navigation": "Navigace karuselu",
     "media_fit": "Přizpůsobení médií",
     "scroll_speed": "Čas do dalšího oznámení",
     "show_powered_by_shopify": "Zobrazit „Powered by Shopify“",
@@ -576,7 +577,13 @@
     "title_preset": "Předvolba nadpisu",
     "customer_account_menu": "Nabídka zákaznického účtu",
     "shop_pay_payment_options": "Zobrazit platební možnosti Shop Pay",
-    "show_physical_stores": "Zobrazit fyzické obchody"
+    "show_physical_stores": "Zobrazit fyzické obchody",
+    "articles_per_page": "Článků na stránku",
+    "collections_per_page": "Kolekcí na stránku",
+    "pagination_style": "Styl stránkování",
+    "align_content_to_container": "Zarovnat obsah na šířku kontejneru",
+    "product_compare": "Porovnání produktů",
+    "compare_icon": "Ikona porovnání"
   },
   "options": {
     "apple": "Apple",
@@ -708,6 +715,7 @@
     "above_carousel": "Nad karuselem",
     "all": "Vše",
     "always": "Vždy",
+    "arrows_and_dots": "Šipky a tečky",
     "arrows_large": "Velké šipky",
     "arrows": "Šipky",
     "balance": "Vyvážení",
@@ -858,7 +866,9 @@
     "direction_end": "Vpravo",
     "direction_start": "Vlevo",
     "direction_top_end": "Vpravo nahoře",
-    "direction_top_start": "Vlevo nahoře"
+    "direction_top_start": "Vlevo nahoře",
+    "load_more_button": "Tlačítko Načíst další",
+    "numbered_pagination": "Číslované stránkování"
   },
   "content": {
     "advanced": "Pokročilé",
@@ -986,7 +996,8 @@
     "gift_card_products": "Produkty dárkové karty",
     "disclosures": "Prohlášení",
     "disclosures_metafield_content": "Povinná bezpečnostní varování a zákonná prohlášení pro tento produkt.",
-    "page_text_color_contrast_info": "Sekce s vlastní barvou pozadí použijí tuto barvu textu pouze v případě dostatečného barevného kontrastu."
+    "page_text_color_contrast_info": "Sekce s vlastní barvou pozadí použijí tuto barvu textu pouze v případě dostatečného barevného kontrastu.",
+    "compare": "Porovnat"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Sdílejte informace o značce se zákazníky. Popište produkt, oznamte novinky nebo přivítejte zákazníky v obchodě.</p>",

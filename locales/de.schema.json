@@ -481,6 +481,7 @@
     "show_second_image_on_hover": "Zweites Bild bei Hover anzeigen",
     "media": "Medien",
     "product_card_carousel": "Karussell anzeigen",
+    "product_card_carousel_navigation": "Karussell-Navigation",
     "media_fit": "Medienanpassung",
     "scroll_speed": "Zeit bis zur nächsten Ankündigung",
     "show_powered_by_shopify": "„Powered by Shopify“ anzeigen",
@@ -576,7 +577,13 @@
     "title_preset": "Titelvoreinstellung",
     "customer_account_menu": "Kundenkontomenü",
     "shop_pay_payment_options": "Shop Pay-Zahlungsoptionen anzeigen",
-    "show_physical_stores": "Physische Geschäfte anzeigen"
+    "show_physical_stores": "Physische Geschäfte anzeigen",
+    "articles_per_page": "Artikel pro Seite",
+    "collections_per_page": "Kategorien pro Seite",
+    "pagination_style": "Seitennummerierungsstil",
+    "align_content_to_container": "Inhalt an Containerbreite ausrichten",
+    "product_compare": "Produktvergleich",
+    "compare_icon": "Vergleichssymbol"
   },
   "options": {
     "apple": "Apfel",
@@ -708,6 +715,7 @@
     "above_carousel": "Über dem Karussell",
     "all": "Alle",
     "always": "Immer",
+    "arrows_and_dots": "Pfeile und Punkte",
     "arrows_large": "Große Pfeile",
     "arrows": "Pfeile",
     "balance": "Ausgleich",
@@ -858,7 +866,9 @@
     "direction_end": "Rechts",
     "direction_start": "Links",
     "direction_top_end": "Oben rechts",
-    "direction_top_start": "Oben links"
+    "direction_top_start": "Oben links",
+    "load_more_button": "Schaltfläche \"Mehr laden\"",
+    "numbered_pagination": "Nummerierte Seitennummerierung"
   },
   "content": {
     "background_video": "Hintergrundvideo",
@@ -986,7 +996,8 @@
     "gift_card_products": "Gutscheinprodukte",
     "disclosures": "Pflichtangaben",
     "disclosures_metafield_content": "Erforderliche Sicherheitshinweise und gesetzliche Pflichtangaben für dieses Produkt.",
-    "page_text_color_contrast_info": "Abschnitte mit einer benutzerdefinierten Hintergrundfarbe verwenden diese Textfarbe nur bei ausreichendem Farbkontrast."
+    "page_text_color_contrast_info": "Abschnitte mit einer benutzerdefinierten Hintergrundfarbe verwenden diese Textfarbe nur bei ausreichendem Farbkontrast.",
+    "compare": "Vergleichen"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Teile Informationen über deine Marke mit deinen Kunden. Beschreibe ein Produkt, mache Ankündigungen oder heiße Kunden in deinem Shop willkommen.</p>",

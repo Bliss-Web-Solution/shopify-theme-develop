@@ -481,6 +481,7 @@
     "show_second_image_on_hover": "Exibir segunda imagem ao passar o mouse",
     "media": "Mídia",
     "product_card_carousel": "Exibir carrossel",
+    "product_card_carousel_navigation": "Navegação do carrossel",
     "media_fit": "Ajuste da mídia",
     "scroll_speed": "Tempo até o próximo anúncio",
     "show_powered_by_shopify": "Exibir \"Com tecnologia da Shopify\"",
@@ -576,7 +577,13 @@
     "title_preset": "Predefinição de título",
     "customer_account_menu": "Menu da conta de cliente",
     "shop_pay_payment_options": "Exibir opções de pagamento do Shop Pay",
-    "show_physical_stores": "Exibir lojas físicas"
+    "show_physical_stores": "Exibir lojas físicas",
+    "articles_per_page": "Artigos por página",
+    "collections_per_page": "Coleções por página",
+    "pagination_style": "Estilo de paginação",
+    "align_content_to_container": "Alinhar conteúdo à largura do contêiner",
+    "product_compare": "Comparação de produtos",
+    "compare_icon": "Ícone de comparação"
   },
   "options": {
     "apple": "Apple",
@@ -713,6 +720,7 @@
     "up": "Para cima",
     "down": "Para baixo",
     "always": "Sempre",
+    "arrows_and_dots": "Setas e pontos",
     "arrows_large": "Setas grandes",
     "arrows": "Setas",
     "balance": "Equilíbrio",
@@ -858,7 +866,9 @@
     "direction_end": "Direita",
     "direction_start": "Esquerda",
     "direction_top_end": "Superior à direita",
-    "direction_top_start": "Superior à esquerda"
+    "direction_top_start": "Superior à esquerda",
+    "load_more_button": "Botão 'Carregar mais'",
+    "numbered_pagination": "Paginação numerada"
   },
   "content": {
     "advanced": "Avançado",
@@ -986,7 +996,8 @@
     "gift_card_products": "Produtos de cartão-presente",
     "disclosures": "Divulgações",
     "disclosures_metafield_content": "Avisos de segurança e divulgações regulatórias obrigatórios para este produto.",
-    "page_text_color_contrast_info": "Seções com uma cor de fundo personalizada usarão esta cor do texto apenas quando houver contraste de cor suficiente."
+    "page_text_color_contrast_info": "Seções com uma cor de fundo personalizada usarão esta cor do texto apenas quando houver contraste de cor suficiente.",
+    "compare": "Comparar"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Compartilhe informações sobre sua marca com seus clientes. Descreva um produto, faça anúncios ou dê as boas-vindas aos clientes em sua loja.</p>",

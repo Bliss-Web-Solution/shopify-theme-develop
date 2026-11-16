@@ -481,6 +481,7 @@
     "show_second_image_on_hover": "แสดงรูปภาพที่สองเมื่อวางเมาส์เหนือ",
     "media": "สื่อ",
     "product_card_carousel": "แสดงแครูเซล",
+    "product_card_carousel_navigation": "การนำทางแครูเซล",
     "media_fit": "การปรับขนาดสื่อ",
     "scroll_speed": "เวลาก่อนถึงประกาศถัดไป",
     "show_powered_by_shopify": "แสดงขับเคลื่อนโดย Shopify",
@@ -576,7 +577,13 @@
     "title_preset": "พรีเซ็ตชื่อ",
     "customer_account_menu": "เมนูบัญชีผู้ใช้ของลูกค้า",
     "shop_pay_payment_options": "แสดงตัวเลือกการชำระเงิน Shop Pay",
-    "show_physical_stores": "แสดงร้านค้าจริง"
+    "show_physical_stores": "แสดงร้านค้าจริง",
+    "articles_per_page": "บทความต่อหน้า",
+    "collections_per_page": "คอลเลกชันต่อหน้า",
+    "pagination_style": "รูปแบบการแบ่งหน้า",
+    "align_content_to_container": "จัดวางเนื้อหาให้พอดีกับความกว้างกรอบ",
+    "product_compare": "การเปรียบเทียบสินค้า",
+    "compare_icon": "ไอคอนการเปรียบเทียบ"
   },
   "options": {
     "apple": "Apple",
@@ -708,6 +715,7 @@
     "all": "ทั้งหมด",
     "always": "เสมอ",
     "arrows": "ลูกศร",
+    "arrows_and_dots": "ลูกศรและจุด",
     "arrows_large": "ลูกศรขนาดใหญ่",
     "balance": "สมดุล",
     "bento": "Bento",
@@ -858,7 +866,9 @@
     "direction_end": "ขวา",
     "direction_start": "ซ้าย",
     "direction_top_end": "บนขวา",
-    "direction_top_start": "บนซ้าย"
+    "direction_top_start": "บนซ้าย",
+    "load_more_button": "ปุ่มโหลดเพิ่มเติม",
+    "numbered_pagination": "การแบ่งหน้าแบบใส่ตัวเลข"
   },
   "content": {
     "advanced": "ขั้นสูง",
@@ -986,7 +996,8 @@
     "gift_card_products": "สินค้าบัตรของขวัญ",
     "disclosures": "การเปิดเผยข้อมูล",
     "disclosures_metafield_content": "คำเตือนด้านความปลอดภัยและข้อมูลตามระเบียบข้อบังคับที่ต้องเปิดเผยสำหรับสินค้านี้",
-    "page_text_color_contrast_info": "ส่วนที่มีสีพื้นหลังแบบกำหนดเองจะใช้สีตัวอักษรนี้ก็ต่อเมื่อมีความเปรียบต่างของสีเพียงพอ"
+    "page_text_color_contrast_info": "ส่วนที่มีสีพื้นหลังแบบกำหนดเองจะใช้สีตัวอักษรนี้ก็ต่อเมื่อมีความเปรียบต่างของสีเพียงพอ",
+    "compare": "เปรียบเทียบ"
   },
   "html_defaults": {
     "share_information_about_your": "<p>แชร์ข้อมูลเกี่ยวกับแบรนด์ของคุณกับลูกค้า อธิบายสินค้า ประกาศข่าวสาร หรือต้อนรับลูกค้าสู่ร้านค้าของคุณ</p>",

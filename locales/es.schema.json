@@ -481,6 +481,7 @@
     "show_second_image_on_hover": "Mostrar la segunda imagen al pasar el cursor",
     "media": "Multimedia",
     "product_card_carousel": "Mostrar carrusel",
+    "product_card_carousel_navigation": "Navegación del carrusel",
     "media_fit": "Ajuste de la multimedia",
     "scroll_speed": "Tiempo hasta el siguiente anuncio",
     "show_powered_by_shopify": "Mostrar \"Tecnología de Shopify\"",
@@ -576,7 +577,13 @@
     "title_preset": "Preajuste del título",
     "customer_account_menu": "Menú de la cuenta de cliente",
     "shop_pay_payment_options": "Mostrar opciones de pago de Shop Pay",
-    "show_physical_stores": "Mostrar tiendas físicas"
+    "show_physical_stores": "Mostrar tiendas físicas",
+    "articles_per_page": "Artículos por página",
+    "collections_per_page": "Colecciones por página",
+    "pagination_style": "Estilo de paginación",
+    "align_content_to_container": "Alinear contenido con el ancho del contenedor",
+    "product_compare": "Comparar productos",
+    "compare_icon": "Ícono de comparación"
   },
   "options": {
     "apple": "Apple",
@@ -720,6 +727,7 @@
     "above_carousel": "Encima del carrusel",
     "all": "Todo",
     "always": "Siempre",
+    "arrows_and_dots": "Flechas y puntos",
     "arrows_large": "Flechas grandes",
     "arrows": "Flechas",
     "balance": "Equilibrio",
@@ -858,7 +866,9 @@
     "below_media": "Debajo del contenido multimedia",
     "full_frame": "Marco completo",
     "icons": "Íconos",
-    "input_field": "Campo de entrada"
+    "input_field": "Campo de entrada",
+    "load_more_button": "Botón Cargar más",
+    "numbered_pagination": "Paginación numerada"
   },
   "content": {
     "advanced": "Avanzado",
@@ -986,7 +996,8 @@
     "gift_card_products": "Productos de tarjeta de regalo",
     "disclosures": "Divulgaciones",
     "disclosures_metafield_content": "Advertencias de seguridad y divulgaciones normativas obligatorias para este producto.",
-    "page_text_color_contrast_info": "Las secciones con un color de fondo personalizado usarán este color del texto solo cuando haya suficiente contraste de color."
+    "page_text_color_contrast_info": "Las secciones con un color de fondo personalizado usarán este color del texto solo cuando haya suficiente contraste de color.",
+    "compare": "Comparar"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Comparte información sobre tu marca con tus clientes. Describe un producto, anuncia novedades o da la bienvenida a quienes visitan tu tienda.</p>",

@@ -70,7 +70,7 @@
       {%- if placeholder_name == blank -%}
         {%- assign placeholder_name = 'hero-apparel-2' -%}
       {%- endif -%}
-      {{ placeholder_name | placeholder_svg_tag }}
+      {% render 'placeholder-image', placeholder_name: placeholder_name %}
     </div>
   {%- endif -%}
 {% elsif background_media == 'image' %}
@@ -128,7 +128,7 @@
       {%- if placeholder_name == blank -%}
         {%- assign placeholder_name = 'hero-apparel-2' -%}
       {%- endif -%}
-      {{ placeholder_name | placeholder_svg_tag }}
+      {% render 'placeholder-image', placeholder_name: placeholder_name %}
     {%- endif -%}
   </div>
 {% endif %}

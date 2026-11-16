@@ -1,0 +1,265 @@
+{%- doc -%}
+  Promoted products for one top-level item of the Bliss menu, shown with Horizon's product card
+  (`_product-card`, rendered once per product with `closest.product`, like the Product
+  recommendations block). Its gallery, title and price can be customized in the theme editor.
+  The output is wrapped in position markers so the parent `_bliss-menu` block can place it inside
+  the submenu of the matching menu item, below or next to the submenu links.
+{%- enddoc -%}
+
+{% liquid
+  assign position = block.settings.menu_item_position | default: '1'
+  assign background_color = block.settings.background_color
+  assign columns = block.settings.columns | default: 4
+
+  # "Next to the menu links": the products take this share of the width, the links the rest
+  assign beside = false
+  if block.settings.layout == 'beside'
+    assign beside = true
+  endif
+  assign beside_width = block.settings.beside_width | default: 40
+
+  # Keep Horizon's link column width (6 columns across the full menu), e.g. 40% -> 4 link columns
+  assign link_columns = 100 | minus: beside_width | times: 6 | divided_by: 100.0 | round
+  if link_columns < 1
+    assign link_columns = 1
+  endif
+%}
+
+<!--bliss-mega-{{ position }}-->
+{% if beside %}
+  {% style %}
+    @media screen and (min-width: 990px) {
+      /* Links on the left. Skipped when a Mega menu images block already sits next to the links. */
+      .mega-menu:has(> [data-bliss-mega-id='{{ block.id }}']):not(:has(> .bliss-mega-images))
+        :is(.mega-menu__grid, .mega-menu__list) {
+        --menu-columns-desktop: {{ link_columns }};
+      }
+
+      .mega-menu:has(> [data-bliss-mega-id='{{ block.id }}']):not(:has(> .bliss-mega-images)) > .mega-menu__grid {
+        grid-row: 1;
+        justify-self: start;
+        width: calc(100% - {{ beside_width }}% - var(--gap-xl));
+      }
+
+      .mega-menu:not(:has(> .bliss-mega-images)) > [data-bliss-mega-id='{{ block.id }}'] {
+        grid-row: 1;
+        justify-self: end;
+        width: {{ beside_width }}%;
+      }
+    }
+  {% endstyle %}
+{% endif %}
+{% if background_color != blank and background_color.alpha != 0.0 %}
+  {% style %}
+    #header-component:has(.menu-list__list-item:is(:hover, :has([aria-expanded='true'])) [data-bliss-mega-id='{{ block.id }}']) .header__underlay {
+      --color-submenu: {{ background_color }};
+    }
+  {% endstyle %}
+{% endif %}
+<div
+  class="bliss-mega-products"
+  style="--bliss-columns: {{ columns }};"
+  data-bliss-mega-id="{{ block.id }}"
+  data-bliss-mega-position="{{ position }}"
+  {{ block.shopify_attributes }}
+>
+  {% if block.settings.heading != blank %}
+    <p class="bliss-mega-products__heading h6">{{ block.settings.heading }}</p>
+  {% endif %}
+  <ul class="bliss-mega-products__list list-unstyled" role="list">
+    {% for product in block.settings.products %}
+      <li class="bliss-mega-products__item">
+        {% content_for 'block', type: '_product-card', id: 'static-product-card', closest.product: product %}
+      </li>
+    {% else %}
+      {% if request.design_mode %}
+        {% for i in (1..columns) %}
+          <li class="bliss-mega-products__item">
+            {% content_for 'block', type: '_product-card', id: 'static-product-card', closest.product: null %}
+          </li>
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+  </ul>
+</div>
+<!--/bliss-mega-{{ position }}-->
+
+{% stylesheet %}
+  .bliss-mega-products {
+    flex: 1 1 100%;
+    padding-block-start: var(--padding-md);
+    /* The menu sets white-space: nowrap; let product titles and prices wrap */
+    white-space: normal;
+  }
+
+  .bliss-mega-products__heading {
+    margin-block: 0 var(--margin-sm);
+  }
+
+  .bliss-mega-products__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--gap-md);
+  }
+
+  @media screen and (min-width: 990px) {
+    .bliss-mega-products__list {
+      grid-template-columns: repeat(var(--bliss-columns, 4), minmax(0, 1fr));
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Mega menu products",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "info": "You can set a different background color for this mega menu"
+    },
+    {
+      "type": "select",
+      "id": "menu_item_position",
+      "label": "Link position in main menu",
+      "options": [
+        { "value": "1", "label": "Item 1" },
+        { "value": "2", "label": "Item 2" },
+        { "value": "3", "label": "Item 3" },
+        { "value": "4", "label": "Item 4" },
+        { "value": "5", "label": "Item 5" },
+        { "value": "6", "label": "Item 6" },
+        { "value": "7", "label": "Item 7" },
+        { "value": "8", "label": "Item 8" },
+        { "value": "9", "label": "Item 9" },
+        { "value": "10", "label": "Item 10" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "header",
+      "content": "Promoted products"
+    },
+    {
+      "type": "product_list",
+      "id": "products",
+      "label": "Products"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Position on desktop",
+      "options": [
+        { "value": "below", "label": "Below the menu links" },
+        { "value": "beside", "label": "Next to the menu links" }
+      ],
+      "default": "below",
+      "info": "If a Mega menu images block uses the same menu item, the images stay next to the links and the products go below."
+    },
+    {
+      "type": "range",
+      "id": "beside_width",
+      "label": "Width next to the links",
+      "info": "Share of the menu width for the products. The menu links use the rest.",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 40,
+      "visible_if": "{{ block.settings.layout == 'beside' }}"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns on desktop",
+      "info": "Products per row. Choose the same number as your products to show them in one row.",
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Promoted products"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Mega menu products",
+      "blocks": {
+        "static-product-card": {
+          "type": "_product-card",
+          "static": true,
+          "settings": {
+            "product_card_gap": 4
+          },
+          "blocks": {
+            "product-card-gallery": {
+              "type": "_product-card-gallery",
+              "settings": {
+                "image_ratio": "adapt",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              }
+            },
+            "product_title": {
+              "type": "product-title",
+              "name": "t:names.product_title",
+              "settings": {
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "paragraph",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 4,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              }
+            },
+            "price": {
+              "type": "price",
+              "name": "t:names.product_price",
+              "settings": {
+                "show_sale_price_first": true,
+                "show_installments": false,
+                "show_tax_info": false,
+                "type_preset": "h6",
+                "width": "100%",
+                "alignment": "left",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              }
+            }
+          },
+          "block_order": ["product-card-gallery", "product_title", "price"]
+        }
+      }
+    }
+  ]
+}
+{% endschema %}

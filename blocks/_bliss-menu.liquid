@@ -1,0 +1,897 @@
+{%- doc -%}
+  Renders the Bliss header menu block: a copy of the header menu that also shows
+  "Mega menu collections" child blocks inside the submenu of the chosen menu item.
+
+  @param {string} [variant] - What version of the menu to render. Defaults to header menu.
+  @param {string} [transparent] - Show a transparent menu
+{%- enddoc -%}
+
+{% liquid
+  assign block_settings = block.settings
+  assign effective_submenu_color = block_settings.background_color | default: settings.page_background_color
+%}
+
+{% case variant %}
+  {% when 'mobile' %}
+    <div
+      class="header__drawer header__drawer--bliss"
+      ref="headerDrawerContainer"
+      data-hydration-key="header-drawer-mobile"
+      {{ block.shopify_attributes }}
+    >
+      {% render 'header-drawer',
+        linklist: block_settings.menu,
+        data_header_drawer_type: 'mobile-drawer',
+        block: block,
+        section: section
+      %}
+    </div>
+
+  {% when 'navigation_bar' %}
+    {% if block_settings.navigation_bar == true %}
+      {% render 'contrast-override',
+        background_color: block_settings.background_color_navigation_bar,
+        text_color: block_settings.text_color_navigation_bar,
+        section_id: block.id
+      %}
+      <div
+        class="menu-list menu-list--mobile{% if transparent == blank %} color-custom-{{ block.id }}{% endif %}"
+        style="--menu-horizontal-gap: 15px; --mobile-nav-margin: auto;"
+        data-hydration-key="header-menu-mobile-navigation-bar"
+        data-navigation-bar-enabled
+      >
+        <div class="menu-list__scroll-container">
+          <ul
+            class="menu-list__list list-unstyled"
+            role="list"
+          >
+            {% for link in block_settings.menu.links %}
+              <li>
+                <a
+                  href="{{ link.url }}"
+                  {% if link.url contains '://' %}{% unless link.url contains shop.domain %} target="_blank"{% endunless %}{% endif %}
+                  id="MenuItem-{{ link.handle }}"
+                  class="menu-list__item"
+                  {% if link.current %}
+                    aria-current="page"
+                  {% endif %}
+                >
+                  {{- link.title -}}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    {% endif %}
+  {% else %}
+    {% liquid
+      assign block_settings = block.settings
+      assign menu_content_type = block_settings.menu_style | default: 'text'
+      assign image_border_radius = block_settings.image_border_radius
+
+      render 'contrast-override', background_color: block_settings.background_color, text_color: block_settings.text_color, section_id: block.id
+
+      assign background_color_classes = ''
+      assign background_color_setting_id = 'background_color_' | append: section.settings.menu_row
+      assign current_background_color = block_settings.background_color | default: settings.page_background_color
+      assign parent_background_color = section.settings[background_color_setting_id] | default: settings.page_background_color
+
+      if parent_background_color != current_background_color or block_settings.text_color != blank
+        assign background_color_classes = ' color-custom-' | append: block.id
+      endif
+
+      # Check if header and menu colors match. This is used to apply different padding styles in css
+      if parent_background_color.rgb == current_background_color.rgb
+        assign background_color_classes = background_color_classes | append: ' background-matches-parent'
+      endif
+
+      if block_settings.menu_style == 'featured_collections'
+        assign ratio = block_settings.featured_collections_aspect_ratio
+      elsif block_settings.menu_style == 'featured_products'
+        assign ratio = block_settings.featured_products_aspect_ratio
+      endif
+    %}
+
+    {% capture bliss_mega_blocks %}{% content_for 'blocks' %}{% endcapture %}
+
+    {% capture children %}
+      {% for link in block_settings.menu.links %}
+        {%- liquid
+          # Pick the Mega menu collections block(s) assigned to this menu item position
+          assign bliss_mega_content = ''
+          assign bliss_start_marker = '<!--bliss-mega-' | append: forloop.index | append: '-->'
+          assign bliss_end_marker = '<!--/bliss-mega-' | append: forloop.index | append: '-->'
+          if bliss_mega_blocks contains bliss_start_marker
+            assign bliss_segments = bliss_mega_blocks | split: bliss_start_marker
+            for bliss_segment in bliss_segments
+              if forloop.first
+                continue
+              endif
+              assign bliss_part = bliss_segment | split: bliss_end_marker | first
+              assign bliss_mega_content = bliss_mega_content | append: bliss_part
+            endfor
+          endif
+
+          assign has_submenu = false
+          if link.links != blank or bliss_mega_content != blank
+            assign has_submenu = true
+          endif
+
+          assign is_compact = false
+          if block_settings.dynamic_dropdown_layout and link.links != blank
+            assign item_count = 0
+            for child_link in link.links
+              assign item_count = item_count | plus: 1
+              for grandchild_link in child_link.links
+                assign item_count = item_count | plus: 1
+              endfor
+            endfor
+            if item_count <= block_settings.submenu_item_threshold and bliss_mega_content == blank
+              assign is_compact = true
+            endif
+          endif
+        -%}
+        <li
+          role="presentation"
+          class="menu-list__list-item{% if is_compact %} menu-list__list-item--compact-parent{% endif %}"
+          on:focus="/activate"
+          on:blur="/deactivate"
+          on:pointerenter="/activate"
+          on:pointerleave="/deactivate"
+        >
+          {%- if has_submenu -%}
+            <span class="menu-list__trigger">
+          {%- endif -%}
+          <a
+            href="{{ link.url }}"
+            {% if link.url contains '://' %}{% unless link.url contains shop.domain %} target="_blank"{% endunless %}{% endif %}
+            data-skip-node-update="true"
+            class="menu-list__link{% if link.active %} menu-list__link--active{% endif %}"
+            {% if link.current %}
+              aria-current="page"
+            {% endif %}
+            ref="menuitem"
+          >
+            <span class="menu-list__link-title">{{- link.title -}}</span>
+          </a>
+          {%- if has_submenu -%}
+            <button
+              class="menu-list__disclosure button-unstyled"
+              aria-expanded="false"
+              aria-controls="submenu-{{ forloop.index }}"
+              ref="disclosure[]"
+              data-skip-node-update
+              on:click="/toggle"
+            >
+              <svg
+                class="menu-list__disclosure-icon"
+                viewBox="0 0 10 6"
+                aria-hidden="true"
+                focusable="false"
+              >
+                {%- render 'icon', icon: 'caret' -%}
+              </svg>
+            </button>
+            </span>
+          {%- endif -%}
+          {%- if has_submenu -%}
+            {%- comment -%}
+              Collapsed by default via `inert`: keeps the submenu out of the tab order
+              and the accessibility tree until it is opened. Toggled in header-menu.js.
+            {%- endcomment -%}
+            <div class="menu-list__submenu{% if is_compact %} menu-list__submenu--compact{% endif %}{{ background_color_classes }}" ref="submenu[]" data-skip-node-update inert>
+              <div
+                id="submenu-{{ forloop.index }}"
+                class="menu-list__submenu-inner"
+                style="{% render 'submenu-font-styles', settings: block_settings %}"
+              >
+                {%- if is_compact -%}
+                  <ul class="compact-dropdown__list list-unstyled" role="list">
+                    {%- for child_link in link.links -%}
+                      <li class="compact-dropdown__item{% if child_link.links != blank %} compact-dropdown__item--has-children{% endif %}">
+                        <a href="{{ child_link.url }}"{% if child_link.url contains '://' %}{% unless child_link.url contains shop.domain %} target="_blank"{% endunless %}{% endif %} class="compact-dropdown__link{% if child_link.current %} compact-dropdown__link--active{% endif %}"{% if child_link.current %} aria-current="page"{% endif %}>
+                          <span>{{ child_link.title | escape }}</span>
+                          {%- if child_link.links != blank -%}
+                            <svg class="compact-dropdown__arrow" viewBox="0 0 10 6" aria-hidden="true" focusable="false">
+                              {%- render 'icon', icon: 'caret' -%}
+                            </svg>
+                          {%- endif -%}
+                        </a>
+                        {%- if child_link.links != blank -%}
+                          {%- comment -%} Third level: flyout to the right of its parent {%- endcomment -%}
+                          <ul class="compact-dropdown__sublist list-unstyled" role="list">
+                            {%- for grandchild_link in child_link.links -%}
+                              <li class="compact-dropdown__item">
+                                <a href="{{ grandchild_link.url }}"{% if grandchild_link.url contains '://' %}{% unless grandchild_link.url contains shop.domain %} target="_blank"{% endunless %}{% endif %} class="compact-dropdown__link compact-dropdown__link--grandchild{% if grandchild_link.current %} compact-dropdown__link--active{% endif %}"{% if grandchild_link.current %} aria-current="page"{% endif %}>
+                                  <span>{{ grandchild_link.title | escape }}</span>
+                                </a>
+                              </li>
+                            {%- endfor -%}
+                          </ul>
+                        {%- endif -%}
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {%- else -%}
+                  {% assign list_id = 'MegaMenuList-' | append: forloop.index %}
+                  <div class="mega-menu section section--full-width-margin section--{{ section.settings.section_width }}">
+                    <div
+                      class="mega-menu__grid"
+                      data-menu-grid-id="{{ list_id }}"
+                    >
+                      {% if link.links != blank %}
+                        {% render 'mega-menu-list',
+                          parent_link: link,
+                          id: list_id,
+                          section: section,
+                          grid_columns_count: 6,
+                          grid_columns_count_tablet: 4,
+                          grid_columns_count_collection_images: 8,
+                          menu_content_type: menu_content_type,
+                          content_aspect_ratio: ratio,
+                          image_border_radius: image_border_radius
+                        %}
+                      {% endif %}
+                    </div>
+                    {{ bliss_mega_content }}
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
+        </li>
+      {% endfor %}
+      <li
+        class="menu-list__list-item"
+        slot="more"
+        on:blur="/deactivate"
+        on:pointerenter="/activate"
+        on:pointerleave="/deactivate"
+      >
+        <button
+          class="menu-list__link button-unstyled"
+          aria-haspopup="true"
+          aria-expanded="false"
+          ref="menuitem"
+          on:click="/toggle"
+          data-testid="header-menu-more-button"
+          data-skip-node-update
+        >
+          <span class="menu-list__link-title">{{ 'actions.more' | t }}</span>
+        </button>
+      </li>
+    {% endcapture %}
+
+    <header-menu
+      ref="headerMenu"
+      class="header-menu header-menu--bliss"
+      data-submenu-headings="{{ block_settings.submenu_headings | default: 'default' }}"
+      {{ block.shopify_attributes }}
+      data-hydration-key="header-menu"
+      data-skip-node-update
+    >
+      <div class="header-menu__inner">
+        <nav
+          class="menu-list"
+          aria-label="{{ 'accessibility.header_navigation_label' | t }}"
+          style="{% render 'menu-font-styles', settings: block_settings, menu_type: 'mega_menu' %}"
+        >
+          {% assign class = 'overflow-menu' | append: background_color_classes %}
+          {% render 'overflow-list',
+            class: class,
+            ref: 'overflowMenu',
+            children: children,
+            minimum-items: 2,
+            data-testid: 'header-menu-overflow-list',
+            attributes: 'data-skip-node-update disabled="true"'
+          %}
+        </nav>
+      </div>
+
+      <script
+        src="{{ 'header-menu.js' | asset_url }}"
+        type="module"
+        fetchpriority="low"
+      ></script>
+      <script
+        src="{{ 'bliss-menu-dropdown.js' | asset_url }}"
+        type="module"
+        fetchpriority="low"
+      ></script>
+    </header-menu>
+{% endcase %}
+
+{% style %}
+  .header__underlay {
+    --color-submenu: rgb({{effective_submenu_color.rgb}});
+  }
+
+  .header-menu--bliss {
+    --bliss-dropdown-bg: rgb({{ effective_submenu_color.rgb }});
+  }
+
+  /* One text color for every menu level; hover/open = the same color, subdued.
+     Text color setting when set, otherwise the menu's own foreground. Declared on the submenu too,
+     so a submenu with its own background color (color-custom scheme) resolves its own foreground. */
+  {%- liquid
+    if block_settings.text_color != blank
+      assign bliss_menu_rgb = block_settings.text_color.rgb
+    else
+      assign bliss_menu_rgb = 'var(--color-foreground-rgb)'
+    endif
+  %}
+  .header-menu--bliss,
+  .header-menu--bliss .menu-list__submenu {
+    --bliss-menu-color: rgb({{ bliss_menu_rgb }});
+    --bliss-menu-hover-color: red;
+  }
+{% endstyle %}
+{% stylesheet %}
+  /* Bliss menu styles. The shared menu-list__* styles come from the default Menu block (_header-menu.liquid). */
+
+  .header-menu--bliss .menu-list {
+    align-items: center;
+  }
+
+  /* Always show the caret after top-level items that have a submenu.
+     It sits inline after the title instead of floating over the gap, so it can't overlap the next item. */
+  .header-menu--bliss .menu-list__list-item:not([slot='overflow']) .menu-list__trigger {
+    align-items: center;
+  }
+
+  .header-menu--bliss .menu-list__list-item:not([slot='overflow']) .menu-list__disclosure {
+    position: static;
+    align-self: center;
+    transform: none;
+    opacity: 1;
+    pointer-events: auto;
+    margin-inline-start: calc(var(--gap-2xs) - var(--gap-sm));
+    /* No vertical padding: it made these items taller than plain links and pushed their text up. */
+    padding-block: 0;
+    height: auto;
+  }
+
+  /* ---------------------------------------------------------------------------
+     Bliss dropdown design tokens: change the dropdown look HERE only.
+     Used by the compact dropdown ("Enable dynamic dropdown layout") and its
+     third-level flyout. Item typography and hover color come from the same
+     variables as Horizon's mega menu links, so every dropdown behaves the same.
+     (--bliss-dropdown-bg comes from the menu's Background color setting.)
+     --------------------------------------------------------------------------- */
+  .header-menu--bliss {
+    --bliss-dropdown-shadow: 0 6px 20px rgb(0 0 0 / 0.08);
+    --bliss-dropdown-min-width: 220px;
+    /* Longer item names wrap instead of stretching the dropdown */
+    --bliss-dropdown-max-width: 320px;
+    --bliss-dropdown-padding-block: var(--padding-sm);
+    --bliss-dropdown-item-padding-block: var(--padding-xs);
+    --bliss-dropdown-item-padding-inline: var(--padding-xl);
+    --bliss-dropdown-item-gap: var(--gap-xl);
+    /* Optional hover background for items; transparent = Horizon's text-color-only hover */
+    --bliss-dropdown-item-hover-bg: transparent;
+  }
+
+  /* ---------------------------------------------------------------------------
+     Same text colors on every level: top-level items, mega menu headings/links,
+     compact dropdown and third-level flyout. Normal = --bliss-menu-color,
+     hover / focus / open = --bliss-menu-hover-color (both set from the Text color
+     setting; without it each level falls back to Horizon's colors).
+     Replaces Horizon's top-level "fade the other items" hover so all levels behave the same.
+     --------------------------------------------------------------------------- */
+  .header-menu--bliss.header-menu .menu-list .menu-list__list-item :is(.menu-list__link, .menu-list__disclosure) {
+    color: var(--bliss-menu-color, var(--menu-top-level-font-color));
+  }
+
+  .header-menu--bliss.header-menu .menu-list .menu-list__list-item:is(:hover, :focus-within, :has([aria-expanded='true'])) :is(.menu-list__link, .menu-list__disclosure) {
+    color: var(--bliss-menu-hover-color, rgb(var(--menu-top-level-font-color-rgb) / var(--opacity-subdued-text)));
+  }
+
+  .header-menu--bliss .mega-menu__link {
+    color: var(--bliss-menu-color, var(--menu-child-font-color));
+  }
+
+  .header-menu--bliss .mega-menu__link--parent {
+    color: var(--bliss-menu-color, var(--menu-parent-font-color));
+  }
+
+  .header-menu--bliss .mega-menu__link:is(:hover, :focus-visible) {
+    color: var(--bliss-menu-hover-color, var(--menu-child-active-font-color));
+  }
+
+  .header-menu--bliss .mega-menu__link--parent:is(:hover, :focus-visible) {
+    color: var(--bliss-menu-hover-color, var(--menu-parent-active-font-color));
+  }
+
+  /* Compact Dropdown Styles. Scoped to .header-menu--bliss so these win over Horizon's
+     .menu-list__submenu rules (block stylesheets load before _header-menu's). */
+  .header-menu--bliss .menu-list__list-item--compact-parent {
+    position: relative;
+  }
+
+  /* Horizon's hover "safety box" (an invisible ::after on the top-level link, enabled while the pointer
+     moves) hangs below the header and covers the top of the compact dropdown, so that empty space acted
+     as the parent link. The compact dropdown opens right under its item and doesn't need it. */
+  .header-menu--bliss .menu-list__list-item--compact-parent .menu-list__link::after {
+    display: none;
+  }
+
+  .header-menu--bliss .menu-list__list-item:where(:not([slot='overflow'])) > .menu-list__submenu--compact {
+    --submenu-content-opacity: 0;
+    --submenu-content-animation: opacity calc(var(--submenu-animation-speed) * 0.75) var(--animation-easing);
+
+    visibility: hidden;
+    width: max-content;
+    min-width: var(--bliss-dropdown-min-width);
+    max-width: var(--bliss-dropdown-max-width);
+    inset-inline-start: 0;
+    /* Directly under the menu item; the transparent top padding spans the header row's bottom
+       padding so the dropdown sits flush with the header and the pointer never leaves the item */
+    top: 100%;
+    padding-block-start: var(--submenu-gap, 0px);
+    padding-inline: 0;
+    z-index: var(--layer-header-menu);
+    background-color: transparent;
+    /* Horizon clips submenus to their own box; the third-level flyout sits outside it */
+    clip-path: none;
+  }
+
+  .header-menu--bliss .menu-list__list-item--compact-parent:is(:hover, :focus-within) > .menu-list__submenu--compact,
+  .header-menu--bliss .menu-list__list-item--compact-parent:has([aria-expanded='true']) > .menu-list__submenu--compact,
+  .header-menu--bliss .menu-list__submenu--compact:hover {
+    --submenu-content-opacity: 1;
+
+    visibility: visible;
+  }
+
+  .header-menu--bliss .menu-list__submenu--compact .menu-list__submenu-inner {
+    margin: 0;
+    padding: var(--bliss-dropdown-padding-block) 0;
+    transform: none;
+    background-color: var(--bliss-dropdown-bg, var(--color-background));
+    box-shadow: var(--bliss-dropdown-shadow);
+    opacity: var(--submenu-content-opacity);
+    transition: var(--submenu-content-animation);
+    /* Horizon makes submenus scrollable (overflow-x: hidden), which cut off the third-level flyout */
+    overflow: visible;
+    max-height: none;
+  }
+
+  .compact-dropdown__list,
+  .compact-dropdown__sublist {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Fill the dropdown box (the submenu inner is a flex row, so the list would shrink to its text) */
+  .compact-dropdown__list {
+    flex: 1 1 100%;
+    width: 100%;
+    max-width: var(--bliss-dropdown-max-width);
+  }
+
+  .compact-dropdown__item {
+    position: relative;
+    width: 100%;
+  }
+
+  /* Same typography and hover as Horizon's mega menu links (.mega-menu__link) */
+  .compact-dropdown__link {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--bliss-dropdown-item-gap);
+    padding: var(--bliss-dropdown-item-padding-block) var(--bliss-dropdown-item-padding-inline);
+    font-family: var(--menu-child-font-family);
+    font-style: var(--menu-child-font-style);
+    font-weight: var(--menu-child-font-weight);
+    font-size: var(--menu-child-font-size);
+    line-height: var(--menu-child-font-line-height);
+    text-transform: var(--menu-child-font-case);
+    color: var(--bliss-menu-color, var(--menu-child-font-color));
+    text-decoration: none;
+    white-space: normal;
+    transition: color var(--animation-speed) var(--animation-easing),
+      background-color var(--animation-speed) var(--animation-easing);
+  }
+
+  /* Keyboard focus: same inset outline on every level, kept inside the dropdown box */
+  .compact-dropdown__link:focus-visible {
+    outline: var(--focus-outline-width, 2px) solid currentColor;
+    outline-offset: calc(-1 * var(--focus-outline-width, 2px));
+  }
+
+  /* Hover, keyboard focus and the open parent only (current-page links are not colored,
+     same as Horizon's mega menu links) */
+  .compact-dropdown__link:hover,
+  .compact-dropdown__link:focus-visible,
+  .compact-dropdown__item--has-children:is(:hover, :focus-within) > .compact-dropdown__link {
+    color: var(--bliss-menu-hover-color, var(--menu-child-active-font-color));
+    background-color: var(--bliss-dropdown-item-hover-bg);
+  }
+
+  /* Caret pointing right for items that open a third level */
+  .compact-dropdown__arrow {
+    flex-shrink: 0;
+    /* Push the arrow to the row's end corner */
+    margin-inline-start: auto;
+    width: var(--font-size--3xs);
+    aspect-ratio: 10 / 6;
+    fill: currentColor;
+    transform: rotate(-90deg);
+  }
+
+  [dir='rtl'] .compact-dropdown__arrow {
+    transform: rotate(90deg);
+  }
+
+  /* Third level: flyout to the right of its parent item (same tokens as the dropdown) */
+  .compact-dropdown__sublist {
+    position: absolute;
+    top: calc(-1 * var(--bliss-dropdown-padding-block));
+    inset-inline-start: 100%;
+    min-width: var(--bliss-dropdown-min-width);
+    width: max-content;
+    max-width: var(--bliss-dropdown-max-width);
+    padding-block: var(--bliss-dropdown-padding-block);
+    background-color: var(--bliss-dropdown-bg, var(--color-background));
+    box-shadow: var(--bliss-dropdown-shadow);
+    visibility: hidden;
+  }
+
+  .compact-dropdown__item--has-children:is(:hover, :focus-within) > .compact-dropdown__sublist {
+    visibility: visible;
+  }
+
+  /* Not enough room (set by bliss-menu-dropdown.js): align the dropdown to the item's other
+     edge and open the flyout towards the other side, like a native select */
+  .header-menu--bliss .menu-list__list-item:where(:not([slot='overflow'])) > .menu-list__submenu--compact[data-align='end'] {
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+  }
+
+  .compact-dropdown__sublist[data-flyout='start'] {
+    inset-inline-start: auto;
+    inset-inline-end: 100%;
+  }
+
+  /* ---------------------------------------------------------------------------
+     Mobile drawer: "Dividers" setting. Horizon only puts a line under items that have a
+     submenu (and uses the darker border color). Here every top-level item gets the same
+     thin, light line and row height, and submenu groups use the same line.
+     Scoped to the Bliss menu's drawer (.header__drawer--bliss).
+     --------------------------------------------------------------------------- */
+  .header__drawer--bliss {
+    --bliss-drawer-divider: 1px solid rgb(var(--color-foreground-rgb) / var(--opacity-15));
+  }
+
+  /* Dividers on (Horizon adds these classes only when the setting is enabled) */
+  .header__drawer--bliss
+    .menu-drawer__menu.has-submenu:has(.menu-drawer__menu-container--divider, .menu-drawer__list-item--divider)
+    > .menu-drawer__list-item {
+    border-block-end: var(--bliss-drawer-divider);
+  }
+
+  .header__drawer--bliss
+    .menu-drawer__menu.has-submenu:has(.menu-drawer__menu-container--divider, .menu-drawer__list-item--divider)
+    > .menu-drawer__list-item
+    > :is(a, details > summary).menu-drawer__menu-item--mainlist {
+    min-height: calc(2 * var(--padding-lg) + var(--icon-size-xs));
+    align-items: center;
+  }
+
+  /* The line now sits on the list item, so drop Horizon's own (darker) lines to avoid doubles */
+  .header__drawer--bliss .menu-drawer__menu.has-submenu > .menu-drawer__list-item > .menu-drawer__menu-container--divider {
+    border-block-end: 0;
+  }
+
+  /* Submenu groups (e.g. About / Community): same light line */
+  .header__drawer--bliss .menu-drawer__menu--childlist .menu-drawer__list-item--divider {
+    border-block-end: var(--bliss-drawer-divider);
+  }
+
+  /* ---------------------------------------------------------------------------
+     Mega menu: second-level links as group headings (setting "Submenu headings").
+     Third-level links under them keep the normal submenu text style.
+     --------------------------------------------------------------------------- */
+  .header-menu--bliss {
+    --bliss-heading-font-weight: 700;
+    --bliss-heading-letter-spacing: 0.03em;
+    --bliss-heading-gap: var(--padding-sm);
+  }
+
+  .header-menu--bliss[data-submenu-headings='bold_uppercase'] .mega-menu__link--parent {
+    font-weight: var(--bliss-heading-font-weight);
+    text-transform: uppercase;
+    letter-spacing: var(--bliss-heading-letter-spacing);
+    font-size: var(--menu-child-font-size);
+    margin-block-end: var(--bliss-heading-gap);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Bliss menu",
+  "tag": null,
+  "blocks": [
+    {
+      "type": "_bliss-mega-menu-collections"
+    },
+    {
+      "type": "_bliss-mega-menu-images"
+    },
+    {
+      "type": "_bliss-mega-menu-products"
+    }
+  ],
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "t:settings.menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "header",
+      "content": "t:content.appearance"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:content.menu_appearance_paragraph"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "t:settings.background_color",
+      "default": "{{ settings.color_palette.background }}"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "t:settings.text_color",
+      "placeholder": "t:settings.default"
+    },
+    {
+      "type": "header",
+      "content": "t:content.typography"
+    },
+    {
+      "type": "select",
+      "id": "type_font_primary_size",
+      "label": "t:settings.top_level_size",
+      "options": [
+        {
+          "value": "0.625rem",
+          "label": "10px"
+        },
+        {
+          "value": "0.75rem",
+          "label": "12px"
+        },
+        {
+          "value": "0.875rem",
+          "label": "14px"
+        },
+        {
+          "value": "1rem",
+          "label": "16px"
+        },
+        {
+          "value": "1.125rem",
+          "label": "18px"
+        }
+      ],
+      "default": "0.875rem"
+    },
+    {
+      "type": "select",
+      "id": "menu_font_style",
+      "label": "t:settings.submenu_size",
+      "options": [
+        {
+          "value": "regular",
+          "label": "t:options.small"
+        },
+        {
+          "value": "inverse",
+          "label": "t:options.medium"
+        },
+        {
+          "value": "inverse_large",
+          "label": "t:options.large"
+        }
+      ],
+      "default": "inverse"
+    },
+    {
+      "type": "select",
+      "id": "type_font_primary_link",
+      "label": "t:settings.font",
+      "options": [
+        {
+          "value": "body",
+          "label": "t:options.body"
+        },
+        {
+          "value": "subheading",
+          "label": "t:options.subheading"
+        },
+        {
+          "value": "heading",
+          "label": "t:options.heading"
+        },
+        {
+          "value": "accent",
+          "label": "t:options.accent"
+        }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "select",
+      "id": "type_case_primary_link",
+      "label": "t:settings.text_case",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:options.default"
+        },
+        {
+          "value": "uppercase",
+          "label": "t:options.uppercase"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "header",
+      "content": "t:content.submenu_feature"
+    },
+    {
+      "type": "select",
+      "id": "submenu_headings",
+      "label": "Submenu headings",
+      "info": "Style of the second-level links in the mega menu. The third-level links below them stay normal text.",
+      "options": [
+        { "value": "default", "label": "Default" },
+        { "value": "bold_uppercase", "label": "Bold and uppercase" }
+      ],
+      "default": "bold_uppercase"
+    },
+    {
+      "type": "checkbox",
+      "id": "dynamic_dropdown_layout",
+      "label": "Enable dynamic dropdown layout",
+      "default": false
+    },
+    {
+      "type": "number",
+      "id": "submenu_item_threshold",
+      "label": "Submenu item threshold",
+      "default": 5,
+      "visible_if": "{{ block.settings.dynamic_dropdown_layout == true }}"
+    },
+    {
+      "type": "select",
+      "id": "menu_style",
+      "label": "t:settings.media_type",
+      "info": "t:info.media_type_info",
+      "options": [
+        {
+          "value": "text",
+          "label": "t:options.none"
+        },
+        {
+          "value": "collection_images",
+          "label": "t:options.collection_images"
+        },
+        {
+          "value": "featured_products",
+          "label": "t:options.featured_products"
+        },
+        {
+          "value": "featured_collections",
+          "label": "t:options.featured_collections"
+        }
+      ],
+      "default": "collection_images"
+    },
+    {
+      "type": "select",
+      "id": "featured_products_aspect_ratio",
+      "label": "t:settings.image_ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "t:options.auto"
+        },
+        {
+          "value": "4 / 5",
+          "label": "t:options.portrait"
+        },
+        {
+          "value": "1 / 1",
+          "label": "t:options.square"
+        }
+      ],
+      "default": "4 / 5",
+      "visible_if": "{{ block.settings.menu_style == 'featured_products' }}"
+    },
+    {
+      "type": "select",
+      "id": "featured_collections_aspect_ratio",
+      "label": "t:settings.image_ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "t:options.auto"
+        },
+        {
+          "value": "16 / 9",
+          "label": "t:options.landscape"
+        },
+        {
+          "value": "1 / 1",
+          "label": "t:options.square"
+        }
+      ],
+      "default": "16 / 9",
+      "visible_if": "{{ block.settings.menu_style == 'featured_collections' }}"
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "label": "t:settings.image_border_radius",
+      "min": 0,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ block.settings.menu_style != 'text' }}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.mobile_layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "navigation_bar",
+      "label": "t:settings.navigation_bar"
+    },
+    {
+      "type": "color",
+      "id": "background_color_navigation_bar",
+      "label": "t:settings.navigation_bar_background_color",
+      "default": "{{ settings.color_palette.background }}",
+      "visible_if": "{{ block.settings.navigation_bar }}"
+    },
+    {
+      "type": "color",
+      "id": "text_color_navigation_bar",
+      "label": "t:settings.navigation_bar_text_color",
+      "placeholder": "t:settings.default",
+      "visible_if": "{{ block.settings.navigation_bar }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "drawer_accordion",
+      "label": "t:settings.accordion",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "drawer_accordion_expand_first",
+      "label": "t:settings.expand_first_group",
+      "default": false,
+      "visible_if": "{{ block.settings.drawer_accordion == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "drawer_dividers",
+      "label": "t:settings.dividers",
+      "default": false
+    }
+  ]
+}
+{% endschema %}

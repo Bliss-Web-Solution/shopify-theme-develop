@@ -50,7 +50,7 @@
         %}
       {% else %}
         <div class="media-block__media border-style">
-          {{ 'detailed-apparel-1' | placeholder_svg_tag: 'media-block__placeholder' }}
+          {% render 'placeholder-image', placeholder_name: 'detailed-apparel-1', class_name: 'media-block__placeholder' %}
         </div>
       {% endif %}
     {% endcapture %}
@@ -74,7 +74,7 @@
     %}
   {%- else -%}
     <div class="media-block__media border-style">
-      {{ 'hero-apparel-3' | placeholder_svg_tag }}
+      {% render 'placeholder-image', placeholder_name: 'hero-apparel-3' %}
     </div>
   {%- endif -%}
 </div>

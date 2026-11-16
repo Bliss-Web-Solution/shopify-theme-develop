@@ -18,7 +18,7 @@
       "@theme/paginated-list": "{{ 'paginated-list.js' | asset_url }}",
       "@theme/performance": "{{ 'performance.js' | asset_url }}",
       "@theme/product-form": "{{ 'product-form.js' | asset_url }}",
-      "@theme/recently-viewed-products": "{{ 'recently-viewed-products.js' | asset_url }}",
+      "@theme/recently-viewed-products": "{{ 'bliss-recently-viewed-products.js' | asset_url }}",
       "@theme/scrolling": "{{ 'scrolling.js' | asset_url }}",
       "@theme/section-renderer": "{{ 'section-renderer.js' | asset_url }}",
       "@theme/section-hydration": "{{ 'section-hydration.js' | asset_url }}",
@@ -112,7 +112,7 @@
 >
 <link
   rel="modulepreload"
-  href="{{ 'recently-viewed-products.js' | asset_url }}"
+  href="{{ 'bliss-recently-viewed-products.js' | asset_url }}"
   fetchpriority="low"
 >
 <link
@@ -287,6 +287,13 @@
   src="{{ 'auto-close-details.js' | asset_url }}"
   defer="defer"
 ></script>
+
+{% if settings.product_compare_toggle %}
+  <script
+    src="{{ 'bliss-compare.js' | asset_url }}"
+    defer="defer"
+  ></script>
+{% endif %}
 
 <script>
   const supportsNativePopover = 'popover' in HTMLElement.prototype;

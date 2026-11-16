@@ -1,0 +1,129 @@
+{% comment %}
+  Floating back-to-top control.
+  Kept as a self-contained Bliss snippet so Horizon assets stay untouched.
+{% endcomment %}
+
+{% liquid
+    assign back_to_top_enabled = settings.back_to_top_enabled
+    assign back_to_top_position = settings.back_to_top_position | default: 'bottom-right'
+    assign back_to_top_size = settings.back_to_top_size
+    assign back_to_top_background = settings.back_to_top_background
+    assign back_to_top_color = settings.back_to_top_color
+    assign back_to_top_radius = settings.back_to_top_radius
+    assign back_to_top_border_width = settings.back_to_top_border_width
+    assign back_to_top_border_color = settings.back_to_top_border_color
+    assign back_to_top_hover_background = settings.back_to_top_hover_background
+    assign back_to_top_hover_color = settings.back_to_top_hover_color
+    assign back_to_top_hover_border_color = settings.back_to_top_hover_border_color
+%}
+
+{% if back_to_top_enabled %}
+
+    <button type="button" class="back-to-top back-to-top--{{ back_to_top_position }}" aria-label="Back to top" data-back-to-top>
+        {{ 'icon-back-to-top.svg' | inline_asset_content }}
+        <span class="visually-hidden">Back to top</span>
+    </button>
+
+    {%  style %} 
+    .back-to-top {
+        width: clamp(40px, 4vw, {{ back_to_top_size }}px);
+        height: clamp(40px, 4vw, {{ back_to_top_size }}px);
+        color: {{ back_to_top_color }};
+        background: {{ back_to_top_background }};
+        border-radius: {{ back_to_top_radius }}px;
+        border: {{ back_to_top_border_width }}px solid {{ back_to_top_border_color }};
+        position: fixed;
+        bottom: 20px;
+        z-index: 30;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        cursor: pointer;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(12px);
+        transition: all 0.2s ease;
+
+        &:hover {
+            background: {{ back_to_top_hover_background }};
+            color: {{ back_to_top_hover_color }};
+            border-color: {{ back_to_top_hover_border_color }};
+        }
+    }
+
+    .back-to-top--bottom-left {
+        left: 20px;
+    }
+
+    .back-to-top--bottom-right {
+        right: 20px;
+    }
+
+    .back-to-top.is-visible {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .back-to-top:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 3px;
+    }
+
+    .back-to-top__icon {
+        pointer-events: none;
+    }
+
+    @media screen and (max-width: 749px) {
+        .back-to-top {
+            bottom: 16px;
+        }
+
+        .back-to-top--bottom-left {
+            left: 16px;
+        }
+
+        .back-to-top--bottom-right {
+            right: 16px;
+        }
+    }
+    {% endstyle %} 
+
+    <script>
+        (function () {
+        const button = document.querySelector('[data-back-to-top]');
+
+        if (!button) return;
+
+        const desktop = window.matchMedia('(min-width: 990px)');
+        const pageWrapper = document.querySelector('.page-wrapper');
+
+        const getScroller = () => {
+            if (desktop.matches && pageWrapper) {
+            return pageWrapper;
+            }
+
+            return document.scrollingElement || document.documentElement;
+        };
+
+        const toggleVisibility = () => {
+            const scroller = getScroller();
+            const scrollTop = scroller?.scrollTop || 0;
+
+            button.classList.toggle('is-visible', scrollTop >= 400);
+        };
+
+        button.addEventListener('click', () => {
+            getScroller()?.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        document.addEventListener('scroll', toggleVisibility, { passive: true });
+        pageWrapper?.addEventListener('scroll', toggleVisibility, { passive: true });
+        desktop.addEventListener('change', toggleVisibility);
+
+        toggleVisibility();
+        })();
+    </script>
+
+{% endif %}

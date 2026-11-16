@@ -146,7 +146,8 @@
     "disclosures": "ڈسکلوزر",
     "disclosures_metafield_content": "اس پروڈکٹ کے لیے درکار حفاظتی انتباہات اور ریگولیٹری ڈسکلوزر۔",
     "app_required_for_ratings": "پروڈکٹ کی ریٹنگز کے لیے ایک ایپ درکار ہے۔ [مزید جانیں](https://help.shopify.com/manual/apps)",
-    "navigation": "نیویگیشن"
+    "navigation": "نیویگیشن",
+    "compare": "موازنہ کریں"
   },
   "html_defaults": {
     "join_our_email_list": "<h2>ہماری ای میل لسٹ میں شامل ہوں</h2>",
@@ -237,10 +238,10 @@
     "show_physical_stores_help": "ایسی لوکیشن کو بھی فہرست میں شامل کریں جو فزیکل اسٹور فرنٹ کے طور پر نشان زد ہیں اور جہاں پروڈکٹ اسٹاک میں موجود ہے، چاہے وہ پک اپ کی سہولت فراہم نہ کرتی ہوں۔"
   },
   "names": {
+    "404": "404",
     "column": "کالم",
     "product_title": "پروڈکٹ کا ٹائٹل",
     "custom_liquid": "کسٹم Liquid",
-    "404": "404",
     "accelerated_checkout": "تیز رفتار چیک آؤٹ",
     "accordion": "ایکارڈین",
     "accordion_row": "ایکارڈین کی قطار",
@@ -406,6 +407,7 @@
     "apple": "Apple",
     "arrow": "تیر کا نشان",
     "arrows": "تیر کے نشانات",
+    "arrows_and_dots": "تیر اور نقطے",
     "arrows_large": "بڑے تیر کے نشانات",
     "aspect_ratio": "ایسپیکٹ ریشو",
     "auto": "آٹو",
@@ -678,7 +680,9 @@
     "wide": "چوڑا",
     "youtube": "YouTube",
     "with_hints": "اشاروں کے ساتھ",
-    "below_media": "میڈیا کے نیچے"
+    "below_media": "میڈیا کے نیچے",
+    "load_more_button": "مزید لوڈ کا بٹن",
+    "numbered_pagination": "نمبر والی صفحہ بندی"
   },
   "settings": {
     "accordion": "ایکارڈین",
@@ -933,6 +937,7 @@
     "product": "پروڈکٹ",
     "product_and_card_title_case": "پروڈکٹ اور کارڈ کے ٹائٹل کا کیس",
     "product_card_carousel": "کیراؤسل دکھائیں",
+    "product_card_carousel_navigation": "کیرول نیویگیشن",
     "product_cards": "پروڈکٹ کے کارڈ",
     "product_count": "پروڈکٹ کی گنتی",
     "product_pages": "پروڈکٹ کے صفحات",
@@ -1095,7 +1100,13 @@
     "bottom_row_text": "نچلی قطار کا متن",
     "customer_account_menu": "کسٹمر اکاؤنٹ مینو",
     "shop_pay_payment_options": "Shop Pay ادائیگی کے اختیارات دکھائیں",
-    "show_physical_stores": "فزیکل اسٹور دکھائیں"
+    "show_physical_stores": "فزیکل اسٹور دکھائیں",
+    "articles_per_page": "فی صفحہ مضامین",
+    "collections_per_page": "فی صفحہ مجموعے",
+    "pagination_style": "صفحہ بندی کا انداز",
+    "align_content_to_container": "مواد کو کنٹینر کی چوڑائی کے مطابق کریں",
+    "product_compare": "پروڈکٹ کا موازنہ",
+    "compare_icon": "موازنہ کا آئیکن"
   },
   "text_defaults": {
     "accordion_heading": "ایکارڈین کی سرخی",

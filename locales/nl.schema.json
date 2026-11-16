@@ -481,6 +481,7 @@
     "show_second_image_on_hover": "Tweede afbeelding weergeven bij hover",
     "media": "Media",
     "product_card_carousel": "Carrousel weergeven",
+    "product_card_carousel_navigation": "Carrouselnavigatie",
     "media_fit": "Passing media",
     "scroll_speed": "Tijd tot volgende aankondiging",
     "show_powered_by_shopify": "‘Powered by Shopify’ weergeven",
@@ -576,7 +577,13 @@
     "title_preset": "Titelvoorinstelling",
     "customer_account_menu": "Klantaccountmenu",
     "shop_pay_payment_options": "Shop Pay-betaalopties weergeven",
-    "show_physical_stores": "Fysieke winkels tonen"
+    "show_physical_stores": "Fysieke winkels tonen",
+    "articles_per_page": "Artikelen per pagina",
+    "collections_per_page": "Collecties per pagina",
+    "pagination_style": "Pagineringstijl",
+    "align_content_to_container": "Lijn inhoud uit met containerbreedte",
+    "product_compare": "Productvergelijking",
+    "compare_icon": "Vergelijkingspictogram"
   },
   "options": {
     "apple": "Apple",
@@ -720,6 +727,7 @@
     "above_carousel": "Boven carrousel",
     "all": "Alle",
     "always": "Altijd",
+    "arrows_and_dots": "Pijlen en stippen",
     "arrows_large": "Grote pijlen",
     "arrows": "Pijlen",
     "balance": "Balans",
@@ -858,7 +866,9 @@
     "below_media": "Onder media",
     "full_frame": "Volledig kader",
     "icons": "Pictogrammen",
-    "input_field": "Invoerveld"
+    "input_field": "Invoerveld",
+    "load_more_button": "Knop 'Meer laden'",
+    "numbered_pagination": "Genummerde paginering"
   },
   "content": {
     "background_video": "Achtergrondvideo",
@@ -986,7 +996,8 @@
     "gift_card_products": "Cadeaubonproducten",
     "disclosures": "Toelichtingen",
     "disclosures_metafield_content": "Verplichte veiligheidswaarschuwingen en wettelijke vermeldingen voor dit product.",
-    "page_text_color_contrast_info": "Secties met een aangepaste achtergrondkleur gebruiken deze tekstkleur alleen als er voldoende kleurcontrast is."
+    "page_text_color_contrast_info": "Secties met een aangepaste achtergrondkleur gebruiken deze tekstkleur alleen als er voldoende kleurcontrast is.",
+    "compare": "Vergelijken"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Deel informatie over je merk met je klanten. Beschrijf een product, doe aankondigingen of heet klanten welkom in je winkel.</p>",

@@ -480,6 +480,7 @@
     "transition_to_main_product": "Ürün kartından ürün sayfasına geçiş",
     "media": "Medya",
     "product_card_carousel": "Atlıkarıncayı göster",
+    "product_card_carousel_navigation": "Dönen ekran gezinmesi",
     "show_second_image_on_hover": "Üzerine gelindiğinde ikinci görseli göster",
     "media_fit": "Medya sığdırma",
     "scroll_speed": "Sonraki duyuruya geçme süresi",
@@ -576,7 +577,13 @@
     "title_preset": "Başlık ön ayarı",
     "customer_account_menu": "Müşteri hesabı menüsü",
     "shop_pay_payment_options": "Shop Pay ödeme seçeneklerini göster",
-    "show_physical_stores": "Fiziksel mağazaları göster"
+    "show_physical_stores": "Fiziksel mağazaları göster",
+    "articles_per_page": "Sayfa başına makale",
+    "collections_per_page": "Sayfa başına koleksiyon",
+    "pagination_style": "Sayfalama stili",
+    "align_content_to_container": "İçeriği kapsayıcı genişliğine hizala",
+    "product_compare": "Ürün karşılaştırma",
+    "compare_icon": "Karşılaştırma simgesi"
   },
   "options": {
     "apple": "Apple",
@@ -720,6 +727,7 @@
     "above_carousel": "Dönen ekranın üstünde",
     "all": "Tümü",
     "always": "Her zaman",
+    "arrows_and_dots": "Oklar ve noktalar",
     "arrows_large": "Büyük oklar",
     "arrows": "Oklar",
     "balance": "Denge",
@@ -858,7 +866,9 @@
     "below_media": "Medyanın altında",
     "full_frame": "Tam çerçeve",
     "icons": "Simgeler",
-    "input_field": "Giriş alanı"
+    "input_field": "Giriş alanı",
+    "load_more_button": "\"Daha fazla yükle\" düğmesi",
+    "numbered_pagination": "Numaralı sayfalama"
   },
   "content": {
     "background_video": "Arka plan videosu",
@@ -986,7 +996,8 @@
     "gift_card_products": "Hediye kartı ürünleri",
     "disclosures": "Bildirimler",
     "disclosures_metafield_content": "Bu ürün için zorunlu güvenlik uyarıları ve yasal bildirimler.",
-    "page_text_color_contrast_info": "Özel arka plan rengine sahip bölümler, yalnızca yeterli renk kontrastı olduğunda bu metin rengini kullanır."
+    "page_text_color_contrast_info": "Özel arka plan rengine sahip bölümler, yalnızca yeterli renk kontrastı olduğunda bu metin rengini kullanır.",
+    "compare": "Karşılaştır"
   },
   "html_defaults": {
     "share_information_about_your": "<p>Markanızla ilgili bilgileri müşterilerinizle paylaşın. Bir ürünü açıklayın, duyurular yapın veya mağazanıza gelen müşterileri karşılayın.</p>",

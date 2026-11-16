@@ -28,6 +28,15 @@ export class AnnouncementBar extends Component {
     this.addEventListener('mouseleave', this.resume);
     document.addEventListener('visibilitychange', this.#handleVisibilityChange);
 
+    // Disable transition on initial setup to prevent load flash
+    this.classList.add('is-initializing');
+    this.current = 0;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.classList.remove('is-initializing');
+      });
+    });
+
     this.play();
   }
 
@@ -109,13 +118,26 @@ export class AnnouncementBar extends Component {
   set current(current) {
     this.#current = current;
 
-    let relativeIndex = current % (this.refs.slides ?? []).length;
+    const slides = this.refs.slides ?? [];
+    const total = slides.length;
+
+    let relativeIndex = current % (total || 1);
     if (relativeIndex < 0) {
-      relativeIndex += (this.refs.slides ?? []).length;
+      relativeIndex += total;
     }
 
-    this.refs.slides?.forEach((slide, index) => {
+    slides.forEach((slide, index) => {
       slide.setAttribute('aria-hidden', `${index !== relativeIndex}`);
+
+      if (index === relativeIndex) {
+        slide.dataset.position = 'active';
+      } else if (index === (relativeIndex + 1) % total) {
+        slide.dataset.position = 'next';
+      } else if (index === (relativeIndex - 1 + total) % total) {
+        slide.dataset.position = 'prev';
+      } else {
+        slide.dataset.position = 'hidden';
+      }
     });
   }
 

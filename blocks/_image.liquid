@@ -42,7 +42,8 @@
     style="--border-radius: {{ block_settings.border_radius }}px;"
     {{ block.shopify_attributes }}
   >
-    {{ placeholder | default: 'hero-apparel-2' | placeholder_svg_tag: 'image-block__placeholder' }}
+    {% assign default_ph = placeholder | default: 'hero-apparel-2' %}
+    {% render 'placeholder-image', placeholder_name: default_ph, class_name: 'image-block__placeholder' %}
   </image-block>
 {% endif %}
 
