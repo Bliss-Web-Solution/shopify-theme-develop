@@ -370,5 +370,21 @@
       "default_title": "ডিফল্ট শিরোনাম",
       "sticky_add_to_cart": "দ্রুত কার্টে যোগ করার বার"
     }
+  },
+  "compare": {
+    "compare_label": "তুলনা করুন",
+    "compare_tabel": {
+      "compare_table_heading": "পণ্য তুলনা করা হচ্ছে",
+      "compare_table_loading": "তুলনার তথ্য লোড হচ্ছে...",
+      "description": "বিবরণ",
+      "availability": "প্রাপ্যতা",
+      "in_stock": "স্টকে আছে",
+      "out_of_stock": "স্টকে নেই",
+      "not_available": "প্রযোজ্য নয়",
+      "sku": "SKU",
+      "vendor": "বিক্রেতা/ব্র্যান্ড",
+      "view_product": "পণ্য দেখুন",
+      "remove_product_btn": "সরান"
+    }
   }
 }

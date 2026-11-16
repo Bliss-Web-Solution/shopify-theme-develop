@@ -38,13 +38,13 @@
 %}
 {% style %}
   @media screen and (min-width: 990px) {
-    .mega-menu:has(> [data-bliss-mega-id='{{ block.id }}']) :is(.mega-menu__grid, .mega-menu__list) {
+    .bliss-mega-menu:has(> [data-bliss-mega-id='{{ block.id }}']) :is(.mega-menu__grid, .mega-menu__list) {
       --menu-columns-desktop: {{ link_columns }};
     }
 
     /* The links get the width the images leave. Set here (not via a variable on the images element,
        which the sibling grid can't inherit). */
-    .mega-menu:has(> [data-bliss-mega-id='{{ block.id }}']) > .mega-menu__grid {
+    .bliss-mega-menu:has(> [data-bliss-mega-id='{{ block.id }}']) > .mega-menu__grid {
       width: calc(100% - {{ images_width }}% - var(--gap-xl));
     }
   }
@@ -183,19 +183,19 @@
 
   /* Desktop: submenu links on the left, images on the right (both in the first row of the mega menu grid) */
   @media screen and (min-width: 990px) {
-    .mega-menu:has(> .bliss-mega-images) > .mega-menu__grid {
+    .bliss-mega-menu:has(> .bliss-mega-images) > .mega-menu__grid {
       grid-row: 1;
       justify-self: start;
     }
 
-    .mega-menu > .bliss-mega-images {
+    .bliss-mega-menu > .bliss-mega-images {
       grid-row: 1;
       justify-self: end;
       width: var(--bliss-images-width);
     }
 
     /* Menu item without child links: images use the full width */
-    .mega-menu:has(> .mega-menu__grid:not(:has(*))) > .bliss-mega-images {
+    .bliss-mega-menu:has(> .mega-menu__grid:not(:has(*))) > .bliss-mega-images {
       justify-self: stretch;
       width: auto;
     }

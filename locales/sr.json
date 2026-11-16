@@ -377,5 +377,21 @@
       "default_title": "Podrazumevani naslov",
       "sticky_add_to_cart": "Traka za brzo dodavanje u korpu"
     }
+  },
+  "compare": {
+    "compare_label": "Uporedi",
+    "compare_tabel": {
+      "compare_table_heading": "Poređenje proizvoda",
+      "compare_table_loading": "Učitavanje podataka za poređenje...",
+      "description": "Opis",
+      "availability": "Dostupnost",
+      "in_stock": "Na stanju",
+      "out_of_stock": "Nema na stanju",
+      "not_available": "N/D",
+      "sku": "SKU",
+      "vendor": "Prodavac/brend",
+      "view_product": "Prikaži proizvod",
+      "remove_product_btn": "Ukloni"
+    }
   }
 }

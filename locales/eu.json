@@ -370,5 +370,21 @@
       "default_title": "Izenburu lehenetsia",
       "sticky_add_to_cart": "Saskira azkar gehitzeko barra"
     }
+  },
+  "compare": {
+    "compare_label": "Konparatu",
+    "compare_tabel": {
+      "compare_table_heading": "Produktuak konparatzen",
+      "compare_table_loading": "Konparazio-datuak kargatzen...",
+      "description": "Deskribapena",
+      "availability": "Erabilgarritasuna",
+      "in_stock": "Stockean",
+      "out_of_stock": "Stockik gabe",
+      "not_available": "Ez dago",
+      "sku": "SKU",
+      "vendor": "Saltzailea/Marka",
+      "view_product": "Ikusi produktua",
+      "remove_product_btn": "Kendu"
+    }
   }
 }

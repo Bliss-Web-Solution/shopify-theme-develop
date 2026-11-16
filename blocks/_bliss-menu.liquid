@@ -6,6 +6,13 @@
   @param {string} [transparent] - Show a transparent menu
 {%- enddoc -%}
 
+{% # theme-check-disable ValidScopedCSSClass %}
+{%- comment -%}
+  The Bliss menu reuses Horizon's menu styles (menu-list__*, mega-menu*, header__drawer), which are
+  defined in blocks/_header-menu.liquid and load on every page. Theme check can't see that file from
+  here, so it flags them as out of scope. Kept there instead of copied, so Horizon updates still apply.
+{%- endcomment -%}
+
 {% liquid
   assign block_settings = block.settings
   assign effective_submenu_color = block_settings.background_color | default: settings.page_background_color
@@ -215,7 +222,7 @@
                   </ul>
                 {%- else -%}
                   {% assign list_id = 'MegaMenuList-' | append: forloop.index %}
-                  <div class="mega-menu section section--full-width-margin section--{{ section.settings.section_width }}">
+                  <div class="mega-menu bliss-mega-menu section section--full-width-margin section--{{ section.settings.section_width }}">
                     <div
                       class="mega-menu__grid"
                       data-menu-grid-id="{{ list_id }}"

@@ -370,5 +370,21 @@
       "default_title": "Vaikimisi pealkiri",
       "sticky_add_to_cart": "Kiire ostukorvi lisamise riba"
     }
+  },
+  "compare": {
+    "compare_label": "Võrdle",
+    "compare_tabel": {
+      "compare_table_heading": "Toodete võrdlemine",
+      "compare_table_loading": "Võrdlusandmete laadimine...",
+      "description": "Kirjeldus",
+      "availability": "Saadavus",
+      "in_stock": "Laos",
+      "out_of_stock": "Laost otsas",
+      "not_available": "Puudub",
+      "sku": "SKU",
+      "vendor": "Tarnija/bränd",
+      "view_product": "Vaata toodet",
+      "remove_product_btn": "Eemalda"
+    }
   }
 }

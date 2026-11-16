@@ -370,5 +370,21 @@
       "default_title": "Título predeterminado",
       "sticky_add_to_cart": "Barra rápida para engadir ao carro"
     }
+  },
+  "compare": {
+    "compare_label": "Comparar",
+    "compare_tabel": {
+      "compare_table_heading": "Comparando produtos",
+      "compare_table_loading": "Cargando os datos da comparación...",
+      "description": "Descrición",
+      "availability": "Dispoñibilidade",
+      "in_stock": "En stock",
+      "out_of_stock": "Esgotado",
+      "not_available": "N/D",
+      "sku": "SKU",
+      "vendor": "Provedor/Marca",
+      "view_product": "Ver produto",
+      "remove_product_btn": "Eliminar"
+    }
   }
 }

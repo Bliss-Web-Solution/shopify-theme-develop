@@ -384,5 +384,21 @@
       "default_title": "Назва за замовчуванням",
       "sticky_add_to_cart": "Панель швидкого додавання в кошик"
     }
+  },
+  "compare": {
+    "compare_label": "Порівняти",
+    "compare_tabel": {
+      "compare_table_heading": "Порівняння товарів",
+      "compare_table_loading": "Завантаження даних порівняння...",
+      "description": "Опис",
+      "availability": "Наявність",
+      "in_stock": "В наявності",
+      "out_of_stock": "Немає в наявності",
+      "not_available": "Н/Д",
+      "sku": "SKU",
+      "vendor": "Постачальник/бренд",
+      "view_product": "Переглянути товар",
+      "remove_product_btn": "Видалити"
+    }
   }
 }

@@ -370,5 +370,21 @@
       "default_title": "డిఫాల్ట్ శీర్షిక",
       "sticky_add_to_cart": "కార్ట్‌కు త్వరితంగా జోడించే బార్"
     }
+  },
+  "compare": {
+    "compare_label": "సరిపోల్చండి",
+    "compare_tabel": {
+      "compare_table_heading": "ఉత్పత్తులను సరిపోల్చడం",
+      "compare_table_loading": "పోలిక డేటా లోడ్ అవుతోంది...",
+      "description": "వివరణ",
+      "availability": "లభ్యత",
+      "in_stock": "స్టాక్‌లో ఉంది",
+      "out_of_stock": "స్టాక్‌లో లేదు",
+      "not_available": "వర్తించదు",
+      "sku": "SKU",
+      "vendor": "విక్రేత/బ్రాండ్",
+      "view_product": "ఉత్పత్తిని చూడండి",
+      "remove_product_btn": "తీసివేయండి"
+    }
   }
 }
