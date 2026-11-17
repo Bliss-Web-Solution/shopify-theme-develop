@@ -19,7 +19,7 @@
     transform: translateX(-50%);
     width: 100%;
     max-width: 40%;
-    z-index: 3;
+    z-index: var(--layer-window-overlay, 10);
     background: var(--color-background);
     padding: 0;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
@@ -33,6 +33,30 @@
       opacity: 0;
       transform: translate(-50%, 20px);
     }
+  }
+
+  .compare-toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background-color: var(--color-foreground);
+    color: var(--color-background);
+    padding: 12px 24px;
+    border-radius: var(--button-border-radius, 4px);
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 18;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .compare-toast.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
   }
 
   .compare-bar__inner {
@@ -227,6 +251,9 @@
       border-left: 0;
       border-right: 0;
       border-bottom: 0;
+    }
+    .compare-bar__inner {
+      padding-bottom: max(15px, env(safe-area-inset-bottom, 15px));
     }
     .compare-bar[hidden] {
       transform: translateY(100%);

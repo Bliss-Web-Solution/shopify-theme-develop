@@ -6,9 +6,15 @@
 {% enddoc %}
 
 {% unless product == blank %}
+  {% liquid
+    assign has_quick_add = false
+    if product.available and settings.quick_add or settings.mobile_quick_add
+      assign has_quick_add = true
+    endif
+  %}
   <button
     type="button"
-    class="compare-icon-button"
+    class="compare-icon-button{% if has_quick_add %} compare-icon-button--with-quick-add{% endif %}"
     data-compare-product-id="{{ product.id }}"
     data-product-handle="{{ product.handle }}"
     data-product-title="{{ product.title | escape }}"
@@ -28,10 +34,14 @@
     --quick-add-bottom: calc(var(--quick-add-offset) + var(--padding-block-end));
     position: absolute;
     right: max(var(--quick-add-right), calc((var(--border-radius) + var(--quick-add-right)) * (1 - cos(45deg))));
-    bottom: calc(
-      max(var(--quick-add-bottom), calc((var(--border-radius) + var(--quick-add-bottom)) * (1 - cos(45deg)))) +
-        var(--button-size-md) + 8px
-    );
+    bottom: max(var(--quick-add-bottom), calc((var(--border-radius) + var(--quick-add-bottom)) * (1 - cos(45deg))));
+
+    &.compare-icon-button--with-quick-add {
+      bottom: calc(
+        max(var(--quick-add-bottom), calc((var(--border-radius) + var(--quick-add-bottom)) * (1 - cos(45deg)))) +
+          var(--button-size-md) + 8px
+      );
+    }
 
     z-index: var(--layer-raised);
     display: none;
@@ -51,6 +61,7 @@
 
     @media screen and (min-width: 750px) {
       display: flex;
+      --quick-add-offset: var(--padding-md);
     }
 
     &:hover {

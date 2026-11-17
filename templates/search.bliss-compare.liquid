@@ -176,8 +176,8 @@
         {% if product.object_type == 'product' %}
           <td class="compareTable-action">
             <div class="compareTable-action-buttons">
-              {%- assign product_form_id = 'product-form-' | append: section.id | append: '-' | append: product.id -%}
-              <product-form class="product-form" data-section-id="{{ section.id }}">
+              {%- assign product_form_id = 'product-form-compare-' | append: product.id -%}
+              <div class="product-form" data-product-id="{{ product.id }}">
                 <div class="product-form__error-message-wrapper" role="alert" hidden>
                   <span class="product-form__error-message"></span>
                 </div>
@@ -229,7 +229,7 @@
                     </span>
                   </button>
                 {%- endform -%}
-              </product-form>
+              </div>
 
               <a href="{{ product.url }}" class="button button--secondary">
                 {{ 'compare.compare_tabel.view_product' | t }}
