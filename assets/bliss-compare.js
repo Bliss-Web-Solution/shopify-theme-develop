@@ -27,6 +27,8 @@ if (typeof window.CompareManager === 'undefined') {
                 if (!(target instanceof HTMLElement)) return;
                 const iconBtn = target.closest('.compare-icon-button');
                 if (iconBtn instanceof HTMLElement) {
+                    e.preventDefault();
+                    e.stopPropagation();
                     this.handleIconButtonClick(iconBtn);
                 }
             });
@@ -48,6 +50,7 @@ if (typeof window.CompareManager === 'undefined') {
             document.addEventListener('shopify:section:load', () => {
                 this.updateCheckboxes();
                 this.updateIconButtons();
+                this.renderCompareBar();
             });
 
             // Handle BFcache restoration (Back button)
@@ -56,9 +59,44 @@ if (typeof window.CompareManager === 'undefined') {
                     this.selectedProducts = this.loadFromStorage();
                     this.updateCheckboxes();
                     this.renderCompareBar();
+                    this.updateHeaderBubble();
                     this.updateIconButtons();
                 }
             });
+
+            // Observe dynamic card additions (infinite scroll, pagination, filtering)
+            this.setupMutationObserver();
+        }
+
+        setupMutationObserver() {
+            if (typeof MutationObserver === 'undefined') return;
+            let debounceTimer = null;
+            const observer = new MutationObserver((mutations) => {
+                let hasRelevantNodes = false;
+                for (const mutation of mutations) {
+                    if (mutation.addedNodes.length > 0) {
+                        for (const node of mutation.addedNodes) {
+                            if (node instanceof HTMLElement) {
+                                if (node.matches('.compare-toggle, .compare-icon-button, product-card, .product-card') ||
+                                    node.querySelector('.compare-toggle-input, .compare-icon-button')) {
+                                    hasRelevantNodes = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (hasRelevantNodes) break;
+                }
+                if (hasRelevantNodes) {
+                    if (debounceTimer) cancelAnimationFrame(debounceTimer);
+                    debounceTimer = requestAnimationFrame(() => {
+                        this.updateCheckboxes();
+                        this.updateIconButtons();
+                    });
+                }
+            });
+
+            observer.observe(document.body, { childList: true, subtree: true });
         }
 
         loadFromStorage() {
@@ -94,12 +132,7 @@ if (typeof window.CompareManager === 'undefined') {
             if (!(container instanceof HTMLElement)) return;
 
             const productId = String(container.dataset.productId);
-            console.log('Compare: handleToggle', productId, checkbox.checked);
-
-            if (!productId) {
-                console.error('Compare: No Product ID found');
-                return;
-            }
+            if (!productId) return;
 
             const productData = {
                 id: productId,
@@ -115,7 +148,6 @@ if (typeof window.CompareManager === 'undefined') {
                     return;
                 }
                 const exists = this.selectedProducts.find(p => p.id === productId);
-                console.log('Compare: Exists?', exists);
                 if (!exists) {
                     this.selectedProducts.push(productData);
                     this.showToast('Product added to compare');
@@ -125,7 +157,6 @@ if (typeof window.CompareManager === 'undefined') {
                 this.showToast('Product removed from comparison');
             }
 
-            console.log('Compare: Saving selection', this.selectedProducts);
             this.saveToStorage();
         }
 
@@ -189,7 +220,6 @@ if (typeof window.CompareManager === 'undefined') {
                     url.searchParams.set('ids', this.selectedProducts.map(p => p.id).join(','));
                 }
                 window.history.replaceState({}, '', url.toString());
-                document.dispatchEvent(new CustomEvent('compare:updated', { detail: this.selectedProducts }));
             }
         }
 
@@ -200,7 +230,6 @@ if (typeof window.CompareManager === 'undefined') {
                 const url = new URL(window.location.href);
                 url.searchParams.delete('ids');
                 window.history.replaceState({}, '', url.toString());
-                document.dispatchEvent(new CustomEvent('compare:updated', { detail: [] }));
             }
         }
 
@@ -208,7 +237,6 @@ if (typeof window.CompareManager === 'undefined') {
             const ids = this.selectedProducts.map(p => p.id).join(',');
             return `/pages/compare?ids=${ids}`;
         }
-
 
         showToast(message) {
             let toast = document.querySelector('.compare-toast');
@@ -227,13 +255,20 @@ if (typeof window.CompareManager === 'undefined') {
         }
 
         renderCompareBar() {
-            const bars = document.querySelectorAll('compare-bar');
+            let bars = document.querySelectorAll('compare-bar');
+            if (bars.length === 0 && this.selectedProducts.length > 0) {
+                const bar = document.createElement('compare-bar');
+                bar.className = 'compare-bar';
+                document.body.appendChild(bar);
+                bars = [bar];
+            }
             bars.forEach(bar => {
                 if ('update' in bar && typeof bar.update === 'function') {
                     bar.update(this.selectedProducts);
                 }
             });
         }
+
         updateHeaderBubble() {
             const bubbles = document.querySelectorAll('.compare-bubble-count');
             const containers = document.querySelectorAll('.compare-bubble');
@@ -272,23 +307,30 @@ if (!customElements.get('compare-bar')) {
             super();
             this._minimized = false;
             this._products = [];
+            this._initialized = false;
         }
 
         connectedCallback() {
             const manager = window.compareManager;
             if (manager) this.update(manager.selectedProducts);
 
-            this.addEventListener('click', (e) => {
-                if (e.target.closest('.compare-bar__clear')) {
-                    window.compareManager.clearAll();
-                }
-                if (e.target.closest('.compare-bar__toggle-btn')) {
-                    this.toggleMinimize();
-                }
-                if (e.target.closest('.compare-bar__minimized-trigger')) {
-                    this.toggleMinimize();
-                }
-            });
+            if (!this._initialized) {
+                this._initialized = true;
+                this.addEventListener('click', (e) => {
+                    if (e.target.closest('.compare-bar__clear')) {
+                        e.preventDefault();
+                        window.compareManager.clearAll();
+                    }
+                    if (e.target.closest('.compare-bar__toggle-btn')) {
+                        e.preventDefault();
+                        this.toggleMinimize();
+                    }
+                    if (e.target.closest('.compare-bar__minimized-trigger')) {
+                        e.preventDefault();
+                        this.toggleMinimize();
+                    }
+                });
+            }
         }
 
         toggleMinimize() {
@@ -314,7 +356,7 @@ if (!customElements.get('compare-bar')) {
             } else {
                 this.removeAttribute('data-minimized');
             }
-            const placeholderImage = 'https://cdn.shopify.com/s/files/1/0784/9535/0922/files/Placeholder_image.png';
+            const placeholderImage = "https://cdn.shopify.com/s/files/1/0784/9535/0922/files/Placeholder_image.png";
             const itemsHtml = products.map(p => {
                 const imageSrc = p.image && !p.image.includes('Liquid error') && p.image.trim() !== '' ? p.image : placeholderImage;
                 return `
@@ -336,13 +378,13 @@ if (!customElements.get('compare-bar')) {
                     <div class="compare-bar__header">
                         <div style="display: flex; align-items: center; gap:5px;">
                             <span class="compare-bar__title">Compare Products (${products.length})</span>
-                            <button class="compare-bar__toggle-btn" aria-label="Minimize Compare Bar">
+                            <button type="button" class="compare-bar__toggle-btn" aria-label="Minimize Compare Bar">
                                 <svg width="15" height="15" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M2.25 4.5L6 8.25L9.75 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
                             </button>
                         </div>
-                        <button class="compare-bar__clear link link--text">Clear All</button>
+                        <button type="button" class="compare-bar__clear link link--text">Clear All</button>
                     </div>
                     <div class="compare-bar__content">
                         <div class="compare-bar__items">${itemsHtml}</div>
@@ -354,7 +396,7 @@ if (!customElements.get('compare-bar')) {
                     </div>
                 </div>
                 <div class="compare-bar__minimized-view">
-                    <button class="compare-bar__minimized-trigger">
+                    <button type="button" class="compare-bar__minimized-trigger">
                         <span>Compare (${products.length})</span>
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(180deg);">
                             <path d="M2.25 4.5L6 8.25L9.75 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>

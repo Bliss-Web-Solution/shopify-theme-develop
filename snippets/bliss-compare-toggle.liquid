@@ -1,3 +1,9 @@
+{% doc %}
+  Renders a mobile comparison checkbox toggle for a product card.
+
+  @param {object} product - The product object
+{% enddoc %}
+
 {% liquid
   assign comparetoggle = settings.product_compare_toggle
 %}
@@ -10,7 +16,7 @@
     data-product-title="{{ product.title | escape }}"
     data-product-image="{{ product.featured_media | image_url: width: 100 }}"
   >
-    <label for="compare-{{ product.id }}" class="compare-toggle-lbl">
+    <label class="compare-toggle-lbl">
       <input type="checkbox" id="compare-{{ product.id }}" class="compare-toggle-input">
       <span class="compare-toggle-text">{{ 'compare.compare_label' | t }}</span>
     </label>
@@ -18,6 +24,15 @@
 {% endif %}
 {% stylesheet %}
   .compare-toggle-lbl {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    user-select: none;
+  }
+
+  .compare-toggle-input {
     cursor: pointer;
   }
 
@@ -30,6 +45,7 @@
   @media screen and (max-width: 749px) {
     .compare-toggle {
       display: block;
+      margin-top: 6px;
     }
   }
 {% endstylesheet %}

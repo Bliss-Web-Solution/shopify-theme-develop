@@ -177,5 +177,8 @@
       {% render 'bliss-recently-viewed-save' %}
     {%- endif -%}
     {% render 'bliss-back-to-top' %}
+    {% if settings.product_compare_toggle %}
+      {% section 'bliss-compare-bar' %}
+    {% endif %}
   </body>
 </html>
